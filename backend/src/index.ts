@@ -1,14 +1,22 @@
 import express from 'express';
 const app = express();
-app.use(express.json());
 
-const PORT = 3000;
+import { connectToDatabase } from './utils/db.js';
+import { PORT } from './utils/config.js';
+
+app.use(express.json());
 
 app.get('/ping', (_req, res) => {
   console.log('someone pinged here');
   res.send('pong');
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port asd`);
-});
+try {
+  await connectToDatabase();
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT.toString()}`);
+  });
+} catch (err) {
+  console.error('Failed to start server:', err);
+  process.exit(1);
+}

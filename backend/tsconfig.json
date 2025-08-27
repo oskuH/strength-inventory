@@ -7,7 +7,7 @@
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
-    "target": "es6",
+    "target": "es2017",
 
     // Other Outputs
     "sourceMap": true,
