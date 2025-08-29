@@ -1,8 +1,20 @@
-import { DataTypes, Model } from 'sequelize';
+import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
+
+import { Role } from '../utils/types.js';
 
 import { sequelize } from '../utils/db.js';
 
-class User extends Model { };
+class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  declare id: CreationOptional<number>;
+  declare username: string;
+  declare email: string;
+  declare emailVerified: CreationOptional<boolean>;
+  declare passwordHash: string;
+  declare name: string;
+  declare role: CreationOptional<Role>;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
+};
 
 User.init({
   id: {
@@ -39,10 +51,12 @@ User.init({
     allowNull: false
   },
   role: {
-    type: DataTypes.ENUM('superuser', 'admin', 'gym-owner', 'gym-goer'),
+    type: DataTypes.ENUM('SUPERUSER', 'ADMIN', 'GYM-OWNER', 'GYM-GOER'),
     allowNull: false,
-    defaultValue: 'gym-goer'
-  }
+    defaultValue: 'GYM-GOER'
+  },
+  createdAt: DataTypes.DATE,
+  updatedAt: DataTypes.DATE
 }, {
   sequelize,
   underscored: true,
