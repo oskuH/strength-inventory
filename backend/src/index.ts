@@ -4,7 +4,11 @@ const app = express();
 import { connectToDatabase } from './utils/db.js';
 import { PORT } from './utils/config.js';
 
+import usersRouter from './controllers/users.js';
+
 app.use(express.json());
+
+app.use('/api/users', usersRouter);
 
 app.get('/ping', (_req, res) => {
   console.log('someone pinged here');

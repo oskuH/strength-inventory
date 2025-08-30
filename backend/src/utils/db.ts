@@ -1,9 +1,20 @@
+import 'ts-node/register';
+
 import { Sequelize } from 'sequelize';
 import { SequelizeStorage, Umzug } from 'umzug';
 
 import { DATABASE_URL } from './config.js';
 
 const sequelize = new Sequelize(DATABASE_URL);
+
+const umzug = new Umzug({
+  migrations: {
+    glob: 'src/migrations/*.ts'
+  },
+  storage: new SequelizeStorage({ sequelize, tableName: 'migrations' }),
+  context: sequelize.getQueryInterface(),
+  logger: console
+});
 
 const connectToDatabase = async () => {
   try {
@@ -22,18 +33,8 @@ const connectToDatabase = async () => {
   return null;
 };
 
-const migrationConf = {
-  migrations: {
-    glob: 'migrations/*.ts'
-  },
-  storage: new SequelizeStorage({ sequelize, tableName: 'migrations' }),
-  context: sequelize.getQueryInterface(),
-  logger: console
-};
-
 const runMigrations = async () => {
-  const migrator = new Umzug(migrationConf);
-  const migrations = await migrator.up();
+  const migrations = await umzug.up();
   console.log('Migrations up to date', {
     files: migrations.map((mig) => mig.name)
   });
@@ -41,8 +42,9 @@ const runMigrations = async () => {
 
 const rollbackMigration = async () => {
   await sequelize.authenticate();
-  const migrator = new Umzug(migrationConf);
-  await migrator.down();
+  await umzug.down();
 };
+
+export type Migration = typeof umzug._types.migration;
 
 export { connectToDatabase, sequelize, rollbackMigration };

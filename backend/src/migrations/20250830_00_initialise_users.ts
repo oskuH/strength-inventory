@@ -1,8 +1,8 @@
-import { DataTypes, QueryInterface } from 'sequelize';
-import { type MigrationFn } from 'umzug';
+import { DataTypes } from 'sequelize';
+import { type Migration } from '../utils/db.js';
 
-const up: MigrationFn = async ({ context: queryInterface }) => {
-  await (queryInterface as QueryInterface).createTable('users', {
+const up: Migration = async ({ context: queryInterface }) => {
+  await queryInterface.createTable('users', {
     id: {
       type: DataTypes.STRING,
       primaryKey: true,
@@ -40,8 +40,8 @@ const up: MigrationFn = async ({ context: queryInterface }) => {
   });
 };
 
-const down: MigrationFn = async ({ context: queryInterface }) => {
-  await (queryInterface as QueryInterface).dropTable('users');
+const down: Migration = async ({ context: queryInterface }) => {
+  await queryInterface.dropTable('users');
 };
 
 export { up, down };
