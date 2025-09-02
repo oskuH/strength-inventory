@@ -14,4 +14,9 @@ const passwordValidator = (req: Request<unknown, unknown, NewUserRequest>, res: 
   next();
 };
 
-export { passwordValidator };
+const errorHandler = (err: Error, _req: Request, _res: Response, next: NextFunction) => {
+  console.error(err.message);
+  next();
+};
+
+export { passwordValidator, errorHandler };

@@ -27,4 +27,14 @@ usersRouter.post('/', passwordValidator, async (req: Request<unknown, unknown, N
   return res.json(user);
 });
 
+usersRouter.delete('/:id', async (req, res) => {
+  const user = await User.findByPk(req.params.id);
+  if (user) {
+    await user.destroy();
+    return res.status(204).end();
+  } else {
+    return res.status(404).end();
+  }
+});
+
 export default usersRouter;

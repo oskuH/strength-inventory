@@ -1,6 +1,16 @@
 import 'dotenv/config';
 
-const DATABASE_URL = process.env.DATABASE_URL;
+const { DATABASE_URI, NODE_ENV, TEST_DATABASE_URI } = process.env;
+
+let DB_URI: string;
+
+if (NODE_ENV === 'test' && typeof TEST_DATABASE_URI === 'string') {
+  DB_URI = TEST_DATABASE_URI;
+} else if (typeof DATABASE_URI === 'string') {
+  DB_URI = DATABASE_URI;
+} else {
+  throw new Error('A database URI environment variable is not defined.');
+}
 const PORT = process.env.PORT ?? 3000;
 
-export { DATABASE_URL, PORT };
+export { DB_URI, PORT };

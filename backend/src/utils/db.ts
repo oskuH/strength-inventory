@@ -3,9 +3,9 @@ import 'ts-node/register';
 import { Sequelize } from 'sequelize';
 import { SequelizeStorage, Umzug } from 'umzug';
 
-import { DATABASE_URL } from './config.js';
+import { DB_URI } from './config.js';
 
-const sequelize = new Sequelize(DATABASE_URL);
+const sequelize = new Sequelize(DB_URI);
 
 const umzug = new Umzug({
   migrations: {

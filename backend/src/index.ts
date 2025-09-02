@@ -2,18 +2,20 @@ import express from 'express';
 const app = express();
 
 import { connectToDatabase } from './utils/db.js';
+import { errorHandler } from './utils/middleware.js';
 import { PORT } from './utils/config.js';
 
+import equipmentRouter from './controllers/equipment.js';
+import gymsRouter from './controllers/gyms.js';
 import usersRouter from './controllers/users.js';
 
 app.use(express.json());
 
+app.use('/api/equipment', equipmentRouter);
+app.use('/api/gyms', gymsRouter);
 app.use('/api/users', usersRouter);
 
-app.get('/ping', (_req, res) => {
-  console.log('someone pinged here');
-  res.send('pong');
-});
+app.use(errorHandler);
 
 try {
   await connectToDatabase();
