@@ -3,7 +3,8 @@ import 'ts-node/register';
 import { Sequelize } from 'sequelize';
 import { SequelizeStorage, Umzug } from 'umzug';
 
-import { DB_URI } from './config.js';
+import { DB_URI } from './config.ts';
+//.ts instead of .js to accommodate Vitest
 
 const sequelize = new Sequelize(DB_URI);
 
