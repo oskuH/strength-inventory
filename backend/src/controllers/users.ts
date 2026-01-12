@@ -24,7 +24,7 @@ usersRouter.post('/', passwordValidator, async (req: Request<unknown, unknown, N
   const passwordHash = hashSync(password, salt);
 
   const user: NewUser = await User.create({ id, username, email, passwordHash, name });
-  return res.json(user);
+  return res.status(201).json(user);
 });
 
 usersRouter.delete('/:id', async (req, res) => {

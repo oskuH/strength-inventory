@@ -14,11 +14,11 @@ gymsRouter.get('/', async (_req, res) => {
 });
 
 gymsRouter.post('/', async (req: Request<unknown, unknown, NewGymRequest>, res: Response<NewGym>) => {
-  const { name, chain, street, streetNumber } = req.body;
+  const { name, chain, street, streetNumber, city, notes } = req.body;
 
   const id: string = uuid();
 
-  const gym = await Gym.create({ id, name, chain, street, streetNumber });
+  const gym = await Gym.create({ id, name, chain, street, streetNumber, city, notes });
   return res.json(gym);
 });
 

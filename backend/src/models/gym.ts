@@ -8,6 +8,8 @@ class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare chain: string | null;
   declare street: string;
   declare streetNumber: string;
+  declare city: string;
+  declare notes: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 };
@@ -31,6 +33,13 @@ Gym.init({
   streetNumber: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  city: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  notes: {
+    type: DataTypes.STRING
   },
   createdAt: DataTypes.DATE,
   updatedAt: DataTypes.DATE

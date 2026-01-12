@@ -14,11 +14,11 @@ equipmentRouter.get('/', async (_req, res) => {
 });
 
 equipmentRouter.post('/', async (req: Request<unknown, unknown, NewEquipmentRequest>, res: Response<NewEquipment>) => {
-  const { name, manufacturer, code, weightUnit, weight, startingWeight, availableWeights } = req.body;
+  const { name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, notes } = req.body;
 
   const id: string = uuid();
 
-  const equipment: NewEquipment = await Equipment.create({ id, name, manufacturer, code, weightUnit, weight, startingWeight, availableWeights });
+  const equipment: NewEquipment = await Equipment.create({ id, name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, notes });
   return res.json(equipment);
 });
 

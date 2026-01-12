@@ -15,7 +15,14 @@ const passwordValidator = (req: Request<unknown, unknown, NewUserRequest>, res: 
 };
 
 const errorHandler = (err: Error, _req: Request, _res: Response, next: NextFunction) => {
-  console.error(err.message);
+  console.error(err.name);
+
+  if (err.name === 'SequelizeValidationError') {
+    return _res.status(400).json({ error: err.message });
+  } else {
+    console.log('Unhandled error type:', err.name);
+  }
+
   next();
 };
 

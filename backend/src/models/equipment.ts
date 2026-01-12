@@ -1,18 +1,21 @@
 import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
 
-import { WeightUnit } from '../utils/types.js';
+import { EquipmentCategory, WeightUnit } from '../utils/types.js';
 
 import { sequelize } from '../utils/db.js';
 
 class Equipment extends Model<InferAttributes<Equipment>, InferCreationAttributes<Equipment>> {
   declare id: string;
   declare name: string;
+  declare category: EquipmentCategory;
   declare manufacturer: string;
   declare code: string;
   declare weightUnit: WeightUnit | null;
   declare weight: number | null;
   declare startingWeight: number | null;
   declare availableWeights: number[] | null;
+  declare maximumWeight: number | null;
+  declare notes: string | null;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 };
@@ -24,6 +27,10 @@ Equipment.init({
   },
   name: {
     type: DataTypes.STRING,
+    allowNull: false
+  },
+  category: {
+    type: DataTypes.ENUM('attachment', 'cardio', 'freeWeight', 'strengthMachine', 'tool'),
     allowNull: false
   },
   manufacturer: {
@@ -46,6 +53,12 @@ Equipment.init({
   availableWeights: {
     type: DataTypes.JSON
   },
+  maximumWeight: {
+    type: DataTypes.FLOAT
+  },
+  notes: {
+    type: DataTypes.STRING
+  },
   createdAt: DataTypes.DATE,
   updatedAt: DataTypes.DATE
 }, {
@@ -54,7 +67,7 @@ Equipment.init({
   modelName: 'equipment',
   validate: {
     customValidator() {
-      if (this['weightUnit'] === null && (this['weight'] !== null || this['startingWeight'] !== null || this['availableWeights'] !== null)) {
+      if (this['weightUnit'] === null && (this['weight'] !== null || this['startingWeight'] !== null || this['availableWeights'] !== null || this['maximumWeight'] !== null)) {
         throw new Error('weight unit must be selected if other weight data is used');
       }
     }

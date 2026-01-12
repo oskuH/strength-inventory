@@ -14,12 +14,12 @@ export interface User {
   name: string,
   role: Role,
   createdAt: Date,
-  updatedAt: Date
+  updatedAt: Date;
 }
 
 type NewUserReq = Pick<User, 'username' | 'email' | 'name'>;
 export interface NewUserRequest extends NewUserReq {
-  password: string
+  password: string;
 }
 
 export interface Gym {
@@ -28,11 +28,21 @@ export interface Gym {
   chain: string | null,
   street: string,
   streetNumber: string,
+  city: string,
+  notes: string,
   createdAt: Date,
-  updatedAt: Date
+  updatedAt: Date;
 }
 
-export type NewGymRequest = Pick<Gym, 'name' | 'chain' | 'street' | 'streetNumber'>;
+export type NewGymRequest = Pick<Gym, 'name' | 'chain' | 'street' | 'streetNumber' | 'city' | 'notes'>;
+
+export enum EquipmentCategory {
+  Attachment = 'attachment',
+  Cardio = 'cardio',
+  FreeWeight = 'freeWeight',
+  StrengthMachine = 'strengthMachine',
+  Tool = 'tool'
+}
 
 export enum WeightUnit {
   Kilograms = 'kg',
@@ -42,17 +52,20 @@ export enum WeightUnit {
 export interface Equipment {
   id: string,
   name: string,
+  category: EquipmentCategory,
   manufacturer: string,
   code: string,
   weightUnit: WeightUnit | null,
   weight: number | null,
   startingWeight: number | null,
   availableWeights: number[] | null,
+  maximumWeight: number | null,
+  notes: string | null,
   createdAt: Date,
-  updatedAt: Date
+  updatedAt: Date;
 }
 
 export type NewEquipmentRequest = Pick<
   Equipment,
-  'name' | 'manufacturer' | 'code' | 'weightUnit' | 'weight' | 'startingWeight' | 'availableWeights'
+  'name' | 'category' | 'manufacturer' | 'code' | 'weightUnit' | 'weight' | 'startingWeight' | 'availableWeights' | 'maximumWeight' | 'notes'
 >;
