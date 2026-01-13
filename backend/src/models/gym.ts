@@ -1,5 +1,7 @@
 import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
 
+import { type Hours } from '../utils/types.js';
+
 import { sequelize } from '../utils/db.js';
 
 class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
@@ -9,7 +11,9 @@ class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare street: string;
   declare streetNumber: string;
   declare city: string;
-  declare notes: string;
+  declare notes: string | null;
+  declare openingHours: CreationOptional<Hours>;
+  declare closingHours: CreationOptional<Hours>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 };
@@ -40,6 +44,16 @@ Gym.init({
   },
   notes: {
     type: DataTypes.STRING
+  },
+  openingHours: {
+    type: DataTypes.JSON,
+    allowNull: false,
+    defaultValue: {}
+  },
+  closingHours: {
+    type: DataTypes.JSON,
+    allowNull: false,
+    defaultValue: {}
   },
   createdAt: DataTypes.DATE,
   updatedAt: DataTypes.DATE

@@ -22,6 +22,16 @@ export interface NewUserRequest extends NewUserReq {
   password: string;
 }
 
+export interface Hours {
+  MO?: number;
+  TU?: number;
+  WE?: number;
+  TH?: number;
+  FR?: number;
+  SA?: number;
+  SU?: number;
+}
+
 export interface Gym {
   id: string,
   name: string,
@@ -29,12 +39,14 @@ export interface Gym {
   street: string,
   streetNumber: string,
   city: string,
-  notes: string,
+  notes: string | null,
+  openingHours: Hours,
+  closingHours: Hours,
   createdAt: Date,
   updatedAt: Date;
 }
 
-export type NewGymRequest = Pick<Gym, 'name' | 'chain' | 'street' | 'streetNumber' | 'city' | 'notes'>;
+export type NewGymRequest = Pick<Gym, 'name' | 'chain' | 'street' | 'streetNumber' | 'city' | 'notes' | 'openingHours' | 'closingHours'>;
 
 export enum EquipmentCategory {
   Attachment = 'attachment',

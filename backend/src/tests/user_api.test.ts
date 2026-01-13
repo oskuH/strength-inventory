@@ -8,7 +8,7 @@ import app from '../index.js';
 
 import User from '../models/user.js';
 
-import type { User as fullUser } from '../utils/types.ts';
+import type { User as FullUser } from '../utils/types.ts';
 
 const initialUserCount = 2; // The number of users created in beforeEach
 
@@ -20,14 +20,26 @@ beforeEach(async () => {
 
   id = uuid();
   passwordHash = hashSync('ILiftThereforeIAm', salt);
-  await User.create({ id, username: 'LashaTalakhadze', email: 'lasha@talakhadze.ge', passwordHash, name: 'Lasha Talakhadze' });
+  await User.create({
+    id,
+    username: 'LashaTalakhadze',
+    email: 'lasha@talakhadze.ge',
+    passwordHash,
+    name: 'Lasha Talakhadze'
+  });
 
   id = uuid();
   passwordHash = hashSync('FirstHeavyLiftIsGettingOffTheCouch', salt);
-  await User.create({ id, username: 'WenwenLi', email: 'wenwen@li.ch', passwordHash, name: 'Wenwen Li' });
+  await User.create({
+    id,
+    username: 'WenwenLi',
+    email: 'wenwen@li.ch',
+    passwordHash,
+    name: 'Wenwen Li'
+  });
 });
 
-test('Users are returned as json', async () => {
+test('All users are correctly returned as json', async () => {
   const response = await request(app)
     .get('/api/users')
     .expect(200)
@@ -52,7 +64,7 @@ describe('Creating a new user', () => {
       .expect('Content-Type', /application\/json/);
   });
 
-  test('fails if username is null', async () => {
+  test('fails if "username" is null', async () => {
     const newUser = {
       email: 'heather@connor.us',
       password: 'TheBodyAchievesWhatTheMindBelieves',
@@ -65,7 +77,7 @@ describe('Creating a new user', () => {
       .expect(400);
   });
 
-  test('fails if username is more than 30 characters', async () => {
+  test('fails if "username" is more than 30 characters', async () => {
     const newUser = {
       username: 'HeatherConnorrrrrrrrrrrrrrrrrrrrr',
       email: 'heather@connor.us',
@@ -79,7 +91,7 @@ describe('Creating a new user', () => {
       .expect(400);
   });
 
-  test('fails if email is null', async () => {
+  test('fails if "email" is null', async () => {
     const newUser = {
       username: 'HeatherConnor',
       password: 'TheBodyAchievesWhatTheMindBelieves',
@@ -92,7 +104,7 @@ describe('Creating a new user', () => {
       .expect(400);
   });
 
-  test('fails if password is null', async () => {
+  test('fails if "password" is null', async () => {
     const newUser = {
       username: 'HeatherConnor',
       email: 'heather@connor.us',
@@ -105,7 +117,7 @@ describe('Creating a new user', () => {
       .expect(400);
   });
 
-  test('fails if password is less than 3 characters', async () => {
+  test('fails if "password" is less than 3 characters', async () => {
     const newUser = {
       username: 'HeatherConnor',
       email: 'heather@connor.us',
@@ -119,7 +131,7 @@ describe('Creating a new user', () => {
       .expect(400);
   });
 
-  test('fails if name is null', async () => {
+  test('fails if "name" is null', async () => {
     const newUser = {
       username: 'HeatherConnor',
       email: 'heather@connor.us',
@@ -140,7 +152,7 @@ describe('Deleting a user', () => {
 
     expect(startResponse.body).toHaveLength(initialUserCount);
 
-    const userToDelete: fullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
+    const userToDelete: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
     assert.isNotNull(userToDelete);
 
     await request(app)
