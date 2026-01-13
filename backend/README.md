@@ -1,0 +1,2 @@
+## known issues
+SIGINT on development mode always results in `[tsx] Previous process hasn't exited yet. Force killing...`. Tsx has an [open issue](https://github.com/privatenumber/tsx/issues/586) about this.

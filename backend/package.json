@@ -1,0 +1,46 @@
+{
+  "name": "strength-inventory-backend",
+  "version": "1.0.0",
+  "license": "GPL-3.0-or-later",
+  "author": "Oskari Hyvönen",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "tsc": "tsc",
+    "dev": "cross-env tsx watch src/index.ts",
+    "test": "cross-env NODE_ENV=test vitest run",
+    "coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "migration:down_dev": "tsx src/utils/rollback.js",
+    "migration:down_test": "NODE_ENV=test tsx src/utils/rollback.js",
+    "migration:down": "npm run migration:down_dev && npm run migration:down_test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.34.0",
+    "@stylistic/eslint-plugin": "^5.2.3",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.0",
+    "@types/pg": "^8.15.5",
+    "@types/sequelize": "^4.28.20",
+    "@types/supertest": "^6.0.3",
+    "eslint": "^9.34.0",
+    "sequelize-cli": "^6.6.3",
+    "supertest": "^7.1.4",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.41.0",
+    "vite": "^7.1.4",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "bcrypt-ts": "^7.1.0",
+    "cross-env": "^10.0.0",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "pg": "^8.16.3",
+    "sequelize": "^6.37.7",
+    "umzug": "^3.8.2",
+    "uuid": "^11.1.0"
+  }
+}
