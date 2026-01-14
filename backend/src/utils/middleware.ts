@@ -2,9 +2,10 @@ import type { Request, Response, NextFunction } from 'express';
 
 import type { NewUserRequest } from './types.js';
 
-const passwordValidator = (req: Request<unknown, unknown, NewUserRequest>, res: Response, next: NextFunction) => {
+const passwordValidator = (req: Request<unknown, unknown, NewUserRequest | { password: string; }>, res: Response, next: NextFunction) => {
   const { password } = req.body;
 
+  // ADD FURTHER REQUIREMENTS
   if (!password) {
     return res.status(400).json({ error: 'password of length 3+ required' });
   } else if (password.length < 3) {
