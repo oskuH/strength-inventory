@@ -1,30 +1,21 @@
 import type { Request, Response, NextFunction } from 'express';
+import { z } from 'zod';
+import { ValidationError } from 'sequelize';
 
-import type { NewUserRequest } from './types.js';
-
-const passwordValidator = (req: Request<unknown, unknown, NewUserRequest | { password: string; }>, res: Response, next: NextFunction) => {
-  const { password } = req.body;
-
-  // ADD FURTHER REQUIREMENTS
-  if (!password) {
-    return res.status(400).json({ error: 'password of length 3+ required' });
-  } else if (password.length < 3) {
-    return res.status(400).json({ error: 'password must contain at least 3 characters' });
-  }
-
-  next();
-};
-
-const errorHandler = (err: Error, _req: Request, _res: Response, next: NextFunction) => {
-  console.error(err.name);
-
-  if (err.name === 'SequelizeValidationError') {
+const errorHandler = (err: unknown, _req: Request, _res: Response, next: NextFunction) => {
+  if (err instanceof z.ZodError) {
+    console.error(err.name);
+    const messages = err.issues.map(issue => issue.message);
+    return _res.status(400).json({ errors: messages });
+  } else if (err instanceof ValidationError) {
+    console.error(err.name);
     return _res.status(400).json({ error: err.message });
   } else {
-    console.log('Unhandled error type:', err.name);
+    console.error('Unhandled error type.');
+    next(err);
   }
 
   next();
 };
 
-export { passwordValidator, errorHandler };
+export { errorHandler };

@@ -1,13 +1,40 @@
-import Express, { type Request, type Response } from 'express';
+import Express, { type Request, type Response, type NextFunction } from 'express';
+import { z } from 'zod';
 
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { v4 as uuid } from 'uuid';
 
-import { passwordValidator } from '../utils/middleware.js';
-
 import { User } from '../models/index.js';
 
+import { NewUserSchema, PasswordSchema } from '../utils/schemas.ts';
 import type { User as FullUser, NewUserRequest } from '../utils/types.js';
+
+const newUserParser = (req: Request, _res: Response, next: NextFunction) => {
+  try {
+    NewUserSchema.parse(req.body);
+    next();
+  } catch (e: unknown) {
+    next(e);
+  }
+};
+
+const newEmailParser = (req: Request, _res: Response, next: NextFunction) => {
+  try {
+    z.email().parse(req.body);
+    next();
+  } catch (e: unknown) {
+    next(e);
+  }
+};
+
+const newPasswordParser = (req: Request, _res: Response, next: NextFunction) => {
+  try {
+    PasswordSchema.parse(req.body);
+    next();
+  } catch (e: unknown) {
+    next(e);
+  }
+};
 
 const usersRouter = Express.Router();
 
@@ -16,9 +43,7 @@ usersRouter.get('/', async (_req, res) => {
   return res.json(users);
 });
 
-usersRouter.post('/', passwordValidator, async (req: Request<unknown, unknown, NewUserRequest>, res: Response<FullUser>) => {
-  // ADD ZOD VALIDATION
-
+usersRouter.post('/', newUserParser, async (req: Request<unknown, unknown, NewUserRequest>, res: Response<FullUser>) => {
   const { username, email, password, name } = req.body;
 
   const id: string = uuid();
@@ -30,9 +55,7 @@ usersRouter.post('/', passwordValidator, async (req: Request<unknown, unknown, N
 });
 
 // ADD PERMISSIONS: user themselves
-usersRouter.patch('/:id/email', async (req: Request<{ id: string; }, unknown, { email: string; }>, res: Response<FullUser>) => {
-  // ADD ZOD VALIDATION (isEmail)
-
+usersRouter.patch('/:id/email', newEmailParser, async (req: Request<{ id: string; }, unknown, { email: string; }>, res: Response<FullUser>) => {
   const user = await User.findByPk(req.params.id);
   if (user) {
     await user.update({ email: req.body.email, emailVerified: false });
@@ -44,7 +67,7 @@ usersRouter.patch('/:id/email', async (req: Request<{ id: string; }, unknown, { 
 });
 
 // ADD PERMISSIONS: user themselves
-usersRouter.patch('/:id/password', passwordValidator, async (req: Request<{ id: string; }, unknown, { password: string; }>, res: Response<FullUser>) => {
+usersRouter.patch('/:id/password', newPasswordParser, async (req: Request<{ id: string; }, unknown, { password: string; }>, res: Response<FullUser>) => {
   const user = await User.findByPk(req.params.id);
   if (user) {
     const salt = genSaltSync(10);

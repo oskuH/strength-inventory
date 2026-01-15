@@ -1,3 +1,7 @@
+import { z } from 'zod';
+
+import { NewUserSchema } from './schemas.ts';
+
 export enum Role {
   Superuser = 'SUPERUSER',
   Admin = 'ADMIN',
@@ -17,10 +21,7 @@ export interface User {
   updatedAt: Date;
 }
 
-type NewUserReq = Pick<User, 'username' | 'email' | 'name'>;
-export interface NewUserRequest extends NewUserReq {
-  password: string;
-}
+export type NewUserRequest = z.infer<typeof NewUserSchema>;
 
 export interface Hours {
   MO?: number;
