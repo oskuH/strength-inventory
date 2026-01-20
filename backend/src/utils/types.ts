@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { NewUserSchema } from './schemas.ts';
+import { NewUserSchema, PutUserSchema } from './schemas.ts';
 
 export enum Role {
   Superuser = 'SUPERUSER',
@@ -22,6 +22,7 @@ export interface User {
 }
 
 export type NewUserRequest = z.infer<typeof NewUserSchema>;
+export type PutUserRequest = z.infer<typeof PutUserSchema>;
 
 export interface Hours {
   MO?: number;

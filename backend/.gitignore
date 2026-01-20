@@ -4,3 +4,4 @@ build
 docker-compose.yml
 todo.md
 requests
+../strength-inventory.code-workspace
