@@ -145,11 +145,12 @@ describe('Creating a new user', () => {
   });
 });
 
-describe('Updating user\'s username and name', () => {
+// TODO
+/* describe('Updating user\'s username and name', () => {
   test('succeeds with valid input', async () => {
     // TODO
   });
-});
+}); */
 
 describe('Deleting a user', () => {
   test('succeeds with a valid id', async () => {

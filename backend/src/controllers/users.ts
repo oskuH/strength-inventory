@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { v4 as uuid } from 'uuid';
 
+import { tokenExtractor, userExtractor } from '../utils/middleware.ts';
+
 import { User } from '../models/index.js';
 
 import { NewUserSchema, PasswordSchema, PutUserSchema, UserNamesSchema, UserSchema } from '../utils/schemas.ts';
@@ -64,6 +66,14 @@ const putUserParser = (req: Request, _res: Response, next: NextFunction) => {
   }
 };
 
+const isSelf = (req: Request, res: Response, next: NextFunction): void => {
+  if (!req.user || req.user.id !== req.params['id']) {
+    res.status(403).json({ error: 'You can only modify your own data.' });
+    return;
+  }
+  next();
+};
+
 const usersRouter = Express.Router();
 
 // GET all users
@@ -84,14 +94,12 @@ usersRouter.post('/', newUserParser, async (req: Request<unknown, unknown, NewUs
   return res.status(201).json(user);
 });
 
-// ADD PERMISSIONS: user themselves
 // PATCH for users to change username and/or name
-usersRouter.patch('/:id', newNamesParser, async (req: Request<{ id: string; }, unknown, { username: string, name: string; }>, res: Response<FullUser>) => {
-  const user = await User.findByPk(req.params.id);
-  if (user) {
-    await user.update({ username: req.body.username, name: req.body.name });
-    await user.save();
-    return res.status(200).json(user);
+usersRouter.patch('/:id', newNamesParser, tokenExtractor, userExtractor, isSelf, async (req: Request<{ id: string; }, unknown, { username: string, name: string; }>, res: Response<FullUser>) => {
+  if (req.user) {
+    await req.user.update({ username: req.body.username, name: req.body.name });
+    await req.user.save();
+    return res.status(200).json(req.user);
   } else {
     return res.status(404).end();
   }

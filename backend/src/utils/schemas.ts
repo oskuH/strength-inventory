@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+
+// user
+
 // TODO: ADD FURTHER REQUIREMENTS
 export const PasswordSchema = z
   .string()
@@ -39,6 +42,9 @@ export const UserNamesSchema = UserSchema.pick({
   name: true
 });
 
+
+// gym
+
 export const NewGymSchema = z.object({
   name: z.string(),
   chain: z.string().optional(),
@@ -49,6 +55,9 @@ export const NewGymSchema = z.object({
   openingHours: z.json(),
   closingHours: z.json()
 });
+
+
+// equipment
 
 export const NewEquipmentSchema = z.object({
   name: z.string(),

@@ -1,7 +1,7 @@
-import type { Request } from 'express';
 import { z } from 'zod';
 
 import { LoginSchema, NewUserSchema, PutUserSchema } from './schemas.ts';
+
 
 // user
 
@@ -26,10 +26,6 @@ export interface User {
 
 export type NewUserRequest = z.infer<typeof NewUserSchema>;
 export type PutUserRequest = z.infer<typeof PutUserSchema>;
-
-export interface RequestWithToken extends Request {
-  token: string;
-}
 
 export type TokenPayload = Pick<User, 'id' | 'username'>;
 
