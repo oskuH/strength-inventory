@@ -62,3 +62,8 @@ export const NewEquipmentSchema = z.object({
   maximumWeight: z.float32().optional(),
   notes: z.string().optional()
 });
+
+export const LoginSchema = z.object({
+  username: z.string(),
+  password: z.string()
+});

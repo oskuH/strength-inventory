@@ -1,6 +1,9 @@
+import type { Request } from 'express';
 import { z } from 'zod';
 
-import { NewUserSchema, PutUserSchema } from './schemas.ts';
+import { LoginSchema, NewUserSchema, PutUserSchema } from './schemas.ts';
+
+// user
 
 export enum Role {
   Superuser = 'SUPERUSER',
@@ -23,6 +26,15 @@ export interface User {
 
 export type NewUserRequest = z.infer<typeof NewUserSchema>;
 export type PutUserRequest = z.infer<typeof PutUserSchema>;
+
+export interface RequestWithToken extends Request {
+  token: string;
+}
+
+export type TokenPayload = Pick<User, 'id' | 'username'>;
+
+
+// gym
 
 export interface Hours {
   MO?: number;
@@ -49,6 +61,9 @@ export interface Gym {
 }
 
 export type NewGymRequest = Pick<Gym, 'name' | 'chain' | 'street' | 'streetNumber' | 'city' | 'notes' | 'openingHours' | 'closingHours'>;
+
+
+// equipment
 
 export enum EquipmentCategory {
   Attachment = 'attachment',
@@ -83,3 +98,12 @@ export type NewEquipmentRequest = Pick<
   Equipment,
   'name' | 'category' | 'manufacturer' | 'code' | 'weightUnit' | 'weight' | 'startingWeight' | 'availableWeights' | 'maximumWeight' | 'notes'
 >;
+
+
+// login
+
+export type LoginRequest = z.infer<typeof LoginSchema>;
+export interface LoginResponse {
+  token: string,
+  username: string;
+}
