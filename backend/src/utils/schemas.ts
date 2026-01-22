@@ -45,16 +45,18 @@ export const UserNamesSchema = UserSchema.pick({
 
 // gym
 
-export const NewGymSchema = z.object({
+export const GymSchema = z.object({
   name: z.string(),
   chain: z.string().optional(),
   street: z.string(),
   streetNumber: z.string(),
   city: z.string(),
   notes: z.string().optional(),
-  openingHours: z.json(),
-  closingHours: z.json()
+  openingHours: z.json(),  // TODO
+  closingHours: z.json()  // TODO
 });
+
+// export const PutGymSchema = GymSchema.pick({}) TODO after implementing precise Hours
 
 
 // equipment

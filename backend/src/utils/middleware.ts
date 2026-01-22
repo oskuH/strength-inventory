@@ -6,8 +6,9 @@ import jwt from 'jsonwebtoken';
 
 import { JWT_SECRET } from './config.ts';
 
-import { Session, User } from '../models/index.ts';
+import { Equipment, Gym, Session, User } from '../models/index.ts';
 
+import { NewUserSchema, PasswordSchema, PutUserSchema, UserNamesSchema, UserSchema } from '../utils/schemas.ts';
 import { type TokenPayload } from './types.ts';
 
 const errorHandler = (err: unknown, _req: Request, res: Response, next: NextFunction): void => {
@@ -66,4 +67,161 @@ const userExtractor = async (req: Request, res: Response, next: NextFunction): P
   next();
 };
 
-export { errorHandler, tokenExtractor, userExtractor };
+const isUserAdmin = (req: Request, res: Response, next: NextFunction): void => {
+  if (!req.user || (req.user.role !== 'ADMIN' && req.user.role !== 'SUPERUSER')) {
+    res.status(403).json({ error: 'Admin rights required.' });
+    return;
+  }
+  next();
+};
+
+const isAdmin = [tokenExtractor, userExtractor, isUserAdmin];
+
+
+// user
+
+const targetUserExtractor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  if (!req.params['id']) {
+    res.status(400).json({ error: 'ID missing from request.' });
+    return;
+  }
+
+  const user = await User.findByPk(req.params['id']);
+  if (!user) {
+    res.status(404).json({ error: `User with ID ${req.params['id']} not found.` });
+    return;
+  }
+
+  req.targetUser = user;
+  next();
+};
+
+const newNamesParser = (req: Request, _res: Response, next: NextFunction) => {
+  try {
+    UserNamesSchema.parse(req.body);
+    next();
+  } catch (e: unknown) {
+    next(e);
+  }
+};
+
+const newUserParser = (req: Request, _res: Response, next: NextFunction) => {
+  try {
+    NewUserSchema.parse(req.body);
+    next();
+  } catch (e: unknown) {
+    next(e);
+  }
+};
+
+const newEmailParser = (req: Request, _res: Response, next: NextFunction) => {
+  try {
+    UserSchema.pick({ email: true }).parse(req.body);
+    z.object({ email: z.email() }).parse(req.body);
+    next();
+  } catch (e: unknown) {
+    next(e);
+  }
+};
+
+const newPasswordParser = (req: Request, _res: Response, next: NextFunction) => {
+  try {
+    PasswordSchema.parse(req.body);
+    next();
+  } catch (e: unknown) {
+    next(e);
+  }
+};
+
+const roleParser = (req: Request, _res: Response, next: NextFunction) => {
+  try {
+    UserSchema.pick({ role: true }).parse(req.body);
+    next();
+  } catch (e: unknown) {
+    next(e);
+  }
+};
+
+const putUserParser = (req: Request, _res: Response, next: NextFunction) => {
+  try {
+    PutUserSchema.parse(req.body);
+    next();
+  } catch (e: unknown) {
+    next(e);
+  }
+};
+
+const isUserSelf = (req: Request, res: Response, next: NextFunction): void => {
+  if (!req.user || req.user.id !== req.params['id']) {
+    res.status(403).json({ error: 'You can only modify your own data.' });
+    return;
+  }
+  next();
+};
+
+const isUserSelfOrAdmin = (req: Request, res: Response, next: NextFunction): void => {
+  if (!req.user || ((req.user.id !== req.params['id']) && (req.user.role !== 'ADMIN' && req.user.role !== 'SUPERUSER'))) {
+    res.status(403).json({ error: 'You can only modify your own data.' });
+  }
+  next();
+};
+
+const isSelf = [tokenExtractor, userExtractor, isUserSelf];
+const isSelfOrAdmin = [tokenExtractor, userExtractor, isUserSelfOrAdmin];
+
+
+// gym
+
+const targetGymExtractor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  if (!req.params['id']) {
+    res.status(400).json({ error: 'ID missing from request.' });
+    return;
+  }
+
+  const gym = await Gym.findByPk(req.params['id']);
+  if (!gym) {
+    res.status(404).json({ error: `Gym with ID ${req.params['id']} not found.` });
+    return;
+  }
+
+  req.targetGym = gym;
+  next();
+};
+
+
+// equipment
+
+const targetEquipmentExtractor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  if (!req.params['id']) {
+    res.status(400).json({ error: 'ID missing from request.' });
+    return;
+  }
+
+  const equipment = await Equipment.findByPk(req.params['id']);
+  if (!equipment) {
+    res.status(404).json({ error: `Equipment with ID ${req.params['id']} not found.` });
+    return;
+  }
+
+  req.targetEquipment = equipment;
+  next();
+};
+
+
+export {
+  errorHandler,
+  tokenExtractor,
+  userExtractor,
+  isAdmin,
+  targetUserExtractor,
+  newNamesParser,
+  newUserParser,
+  newEmailParser,
+  newPasswordParser,
+  roleParser,
+  putUserParser,
+  isSelf,
+  isSelfOrAdmin,
+  targetGymExtractor,
+  targetEquipmentExtractor
+};

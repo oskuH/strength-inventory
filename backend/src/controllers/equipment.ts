@@ -2,9 +2,11 @@ import Express, { type Request, type Response } from 'express';
 
 import { v4 as uuid } from 'uuid';
 
+import { isAdmin, targetEquipmentExtractor } from '../utils/middleware.ts';
+
 import { Equipment } from '../models/index.js';
 
-import type { Equipment as NewEquipment, NewEquipmentRequest } from '../utils/types.js';
+import type { Equipment as FullEquipment, EquipmentRequest } from '../utils/types.js';
 
 const equipmentRouter = Express.Router();
 
@@ -14,31 +16,48 @@ equipmentRouter.get('/', async (_req, res) => {
   return res.json(equipment);
 });
 
-// ADD PERMISSIONS: admins only
 // POST a new equipment
-equipmentRouter.post('/', async (req: Request<unknown, unknown, NewEquipmentRequest>, res: Response<NewEquipment>) => {
+equipmentRouter.post('/', ...isAdmin, async (req: Request<unknown, unknown, EquipmentRequest>, res: Response<FullEquipment>) => {
   const { name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, notes } = req.body;
 
   const id: string = uuid();
 
-  const equipment: NewEquipment = await Equipment.create({ id, name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, notes });
+  const equipment: FullEquipment = await Equipment.create({ id, name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, notes });
   return res.json(equipment);
 });
 
-// ADD PERMISSIONS: admins only
 // PUT for admins to modify everything except id and timestamps
-// equipmentRouter.put('/:id')
+equipmentRouter.put('/:id', ...isAdmin, targetEquipmentExtractor, async (req: Request<{ id: string; }, unknown, EquipmentRequest>, res: Response<FullEquipment>) => {
+  if (!req.targetEquipment) { throw new Error('Equipment missing from request.'); }  // Should never trigger after middleware.
 
-// ADD PERMISSIONS: admins only
+  const equipment = req.targetEquipment;
+  const { name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, notes } = req.body;
+
+  await equipment.update({
+    name: name,
+    category: category,
+    manufacturer: manufacturer,
+    code: code,
+    weightUnit: weightUnit,
+    weight: weight,
+    startingWeight: startingWeight,
+    availableWeights: availableWeights,
+    maximumWeight: maximumWeight,
+    notes: notes
+  });
+  await equipment.save();
+
+  return res.status(200).json(equipment);
+});
+
 // DELETE for admins to delete an equipment
-equipmentRouter.delete('/:id', async (req, res) => {
-  const equipment = await Equipment.findByPk(req.params.id);
-  if (equipment) {
-    await equipment.destroy();
-    return res.status(204).end();
-  } else {
-    return res.status(404).end();
-  }
+equipmentRouter.delete('/:id', ...isAdmin, targetEquipmentExtractor, async (req, res) => {
+  if (!req.targetEquipment) { throw new Error('Equipment missing from request.'); }  // Should never trigger after middleware.
+
+  const equipment = req.targetEquipment;
+  await equipment.destroy();
+
+  return res.status(204).end();
 });
 
 export default equipmentRouter;

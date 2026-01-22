@@ -56,7 +56,8 @@ export interface Gym {
   updatedAt: Date;
 }
 
-export type NewGymRequest = Pick<Gym, 'name' | 'chain' | 'street' | 'streetNumber' | 'city' | 'notes' | 'openingHours' | 'closingHours'>;
+export type GymPost = Pick<Gym, 'name' | 'chain' | 'street' | 'streetNumber' | 'city' | 'notes' | 'openingHours' | 'closingHours'>;
+export type GymPatch = Pick<Gym, 'name' | 'chain' | 'street' | 'streetNumber' | 'city' | 'notes'>;
 
 
 // equipment
@@ -90,7 +91,7 @@ export interface Equipment {
   updatedAt: Date;
 }
 
-export type NewEquipmentRequest = Pick<
+export type EquipmentRequest = Pick<
   Equipment,
   'name' | 'category' | 'manufacturer' | 'code' | 'weightUnit' | 'weight' | 'startingWeight' | 'availableWeights' | 'maximumWeight' | 'notes'
 >;
