@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-const { DATABASE_URI, NODE_ENV, TEST_DATABASE_URI } = process.env;
+const { DATABASE_URI, NODE_ENV, TEST_DATABASE_URI, JWT_SECRET } = process.env;
 
 let DB_URI: string;
 
@@ -13,4 +13,4 @@ if (NODE_ENV === 'test' && typeof TEST_DATABASE_URI === 'string') {
 }
 const PORT = process.env.PORT ?? 3000;
 
-export { DB_URI, PORT };
+export { DB_URI, PORT, JWT_SECRET };

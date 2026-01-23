@@ -3,38 +3,137 @@ import Express, { type Request, type Response } from 'express';
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { v4 as uuid } from 'uuid';
 
-import { passwordValidator } from '../utils/middleware.js';
+import {
+  newNamesParser,
+  newUserParser,
+  newEmailParser,
+  newPasswordParser,
+  roleParser,
+  putUserParser,
+  targetUserExtractor,
+  isSelf,
+  isAdmin,
+  isSelfOrAdmin
+} from '../utils/middleware.ts';
 
 import { User } from '../models/index.js';
 
-import type { User as NewUser, NewUserRequest } from '../utils/types.js';
+import type { User as FullUser, NewUserRequest, PutUserRequest, Role } from '../utils/types.js';
 
 const usersRouter = Express.Router();
 
+// GET all users
 usersRouter.get('/', async (_req, res) => {
   const users = await User.findAll();
+
   return res.json(users);
 });
 
-usersRouter.post('/', passwordValidator, async (req: Request<unknown, unknown, NewUserRequest>, res: Response<NewUser>) => {
+// POST a new user
+usersRouter.post('/', newUserParser, async (req: Request<unknown, unknown, NewUserRequest>, res: Response<FullUser>) => {
   const { username, email, password, name } = req.body;
 
   const id: string = uuid();
   const salt = genSaltSync(10);
   const passwordHash = hashSync(password, salt);
 
-  const user: NewUser = await User.create({ id, username, email, passwordHash, name });
+  const user: FullUser = await User.create({ id, username, email, passwordHash, name });
+
   return res.status(201).json(user);
 });
 
-usersRouter.delete('/:id', async (req, res) => {
-  const user = await User.findByPk(req.params.id);
-  if (user) {
-    await user.destroy();
-    return res.status(204).end();
-  } else {
-    return res.status(404).end();
+// PATCH for users to change username and/or name
+usersRouter.patch('/:id', newNamesParser, ...isSelf, async (req: Request<{ id: string; }, unknown, { username: string, name: string; }>, res: Response<FullUser>) => {
+  if (!req.user) { throw new Error('User missing from request.'); }  // Should never trigger after middleware.
+
+  const user = req.user;
+  const { username, name } = req.body;
+
+  await user.update({
+    username: username,
+    name: name
+  });
+  await user.save();
+
+  return res.status(200).json(user);
+});
+
+// PATCH for users to change email
+usersRouter.patch('/:id/email', newEmailParser, ...isSelf, async (req: Request<{ id: string; }, unknown, { email: string; }>, res: Response<FullUser>) => {
+  if (!req.user) { throw new Error('User missing from request.'); }  // Should never trigger after middleware.
+
+  const user = req.user;
+  const { email } = req.body;
+
+  await user.update({
+    email: email,
+    emailVerified: false
+  });
+  await user.save();
+
+  return res.status(200).json(user);
+});
+
+// PATCH for users to change password
+usersRouter.patch('/:id/password', newPasswordParser, ...isSelf, async (req: Request<{ id: string; }, unknown, { password: string; }>, res: Response<FullUser>) => {
+  if (!req.user) { throw new Error('User missing from request.'); }  // Should never trigger after middleware.
+
+  const user = req.user;
+  const { password } = req.body;
+
+  const salt = genSaltSync(10);
+  const passwordHash = hashSync(password, salt);
+
+  await user.update({ passwordHash: passwordHash });
+  await user.save();
+
+  return res.status(200).json(user);
+});
+
+// PATCH for admins to change a user's role
+usersRouter.patch('/:id/role', roleParser, ...isAdmin, targetUserExtractor, async (req: Request<{ id: string; }, unknown, { role: Role; }>, res: Response<FullUser>) => {
+  if (!req.targetUser) { throw new Error('User missing from request.'); }  // Should never trigger after middleware.
+
+  const user = req.targetUser;
+  const { role } = req.body;
+
+  await user.update({ role: role });
+  await user.save();
+
+  return res.status(200).json(user);
+});
+
+// PUT for admins to modify everything except id and timestamps
+usersRouter.put('/:id', putUserParser, ...isAdmin, targetUserExtractor, async (req: Request<{ id: string; }, unknown, PutUserRequest>, res: Response<FullUser>) => {
+  if (!req.targetUser) { throw new Error('User missing from request.'); }  // Should never trigger after middleware.
+
+  const user = req.targetUser;
+  const { username, email, emailVerified, name, password } = req.body;
+
+  await user.update({
+    username: username,
+    email: email,
+    emailVerified: emailVerified,
+    name: name
+  });
+  if (password) {
+    const salt = genSaltSync(10);
+    const passwordHash = hashSync(password, salt);
+    await user.update({ passwordHash: passwordHash });
   }
+  await user.save();
+
+  return res.status(200).json(user);
+});
+
+// DELETE for everyone to delete a user
+usersRouter.delete('/:id', ...isSelfOrAdmin, targetUserExtractor, async (req, res) => {
+  if (!req.targetUser) { throw new Error('User missing from request.'); }  // Should never trigger after middleware.
+
+  const user = req.targetUser;
+  await user.destroy();
+
+  return res.status(204).end();
 });
 
 export default usersRouter;

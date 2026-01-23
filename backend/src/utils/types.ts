@@ -1,3 +1,10 @@
+import { z } from 'zod';
+
+import { LoginSchema, NewUserSchema, PutUserSchema } from './schemas.ts';
+
+
+// user
+
 export enum Role {
   Superuser = 'SUPERUSER',
   Admin = 'ADMIN',
@@ -17,10 +24,13 @@ export interface User {
   updatedAt: Date;
 }
 
-type NewUserReq = Pick<User, 'username' | 'email' | 'name'>;
-export interface NewUserRequest extends NewUserReq {
-  password: string;
-}
+export type NewUserRequest = z.infer<typeof NewUserSchema>;
+export type PutUserRequest = z.infer<typeof PutUserSchema>;
+
+export type TokenPayload = Pick<User, 'id' | 'username'>;
+
+
+// gym
 
 export interface Hours {
   MO?: number;
@@ -46,7 +56,11 @@ export interface Gym {
   updatedAt: Date;
 }
 
-export type NewGymRequest = Pick<Gym, 'name' | 'chain' | 'street' | 'streetNumber' | 'city' | 'notes' | 'openingHours' | 'closingHours'>;
+export type GymPost = Pick<Gym, 'name' | 'chain' | 'street' | 'streetNumber' | 'city' | 'notes' | 'openingHours' | 'closingHours'>;
+export type GymPatch = Pick<Gym, 'name' | 'chain' | 'street' | 'streetNumber' | 'city' | 'notes'>;
+
+
+// equipment
 
 export enum EquipmentCategory {
   Attachment = 'attachment',
@@ -77,7 +91,16 @@ export interface Equipment {
   updatedAt: Date;
 }
 
-export type NewEquipmentRequest = Pick<
+export type EquipmentRequest = Pick<
   Equipment,
   'name' | 'category' | 'manufacturer' | 'code' | 'weightUnit' | 'weight' | 'startingWeight' | 'availableWeights' | 'maximumWeight' | 'notes'
 >;
+
+
+// login
+
+export type LoginRequest = z.infer<typeof LoginSchema>;
+export interface LoginResponse {
+  token: string,
+  username: string;
+}
