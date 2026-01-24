@@ -1,7 +1,6 @@
 import Express, { type Request, type Response, type NextFunction } from 'express';
 
 import { compare } from 'bcrypt-ts';
-import { v4 as uuid } from 'uuid';
 import jwt from 'jsonwebtoken';
 
 import { JWT_SECRET } from '../utils/config.ts';
@@ -49,9 +48,7 @@ loginRouter.post('/', loginParser, async (req: Request<unknown, unknown, LoginRe
     JWT_SECRET
   );
 
-  const id: string = uuid(); // remove when Sequalize UUID
-
-  await Session.create({ id, userId: user.id, token });
+  await Session.create({ userId: user.id, token });
 
   return res.status(200).send({ token, username });
 });

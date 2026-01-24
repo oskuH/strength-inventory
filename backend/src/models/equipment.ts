@@ -5,7 +5,7 @@ import { EquipmentCategory, WeightUnit } from '../utils/types.js';
 import { sequelize } from '../utils/db.js';
 
 class Equipment extends Model<InferAttributes<Equipment>, InferCreationAttributes<Equipment>> {
-  declare id: string;
+  declare id: CreationOptional<string>;
   declare name: string;
   declare category: EquipmentCategory;
   declare manufacturer: string;
@@ -22,8 +22,9 @@ class Equipment extends Model<InferAttributes<Equipment>, InferCreationAttribute
 
 Equipment.init({
   id: {
-    type: DataTypes.STRING,
-    primaryKey: true
+    type: DataTypes.UUID,  // CHAR(36) for MySQL
+    primaryKey: true,
+    defaultValue: DataTypes.UUIDV4
   },
   name: {
     type: DataTypes.STRING,

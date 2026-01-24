@@ -1,7 +1,6 @@
 import Express, { type Request, type Response } from 'express';
 
 import { genSaltSync, hashSync } from 'bcrypt-ts';
-import { v4 as uuid } from 'uuid';
 
 import {
   newNamesParser,
@@ -33,11 +32,10 @@ usersRouter.get('/', async (_req, res) => {
 usersRouter.post('/', newUserParser, async (req: Request<unknown, unknown, NewUserRequest>, res: Response<FullUser>) => {
   const { username, email, password, name } = req.body;
 
-  const id: string = uuid();
   const salt = genSaltSync(10);
   const passwordHash = hashSync(password, salt);
 
-  const user: FullUser = await User.create({ id, username, email, passwordHash, name });
+  const user: FullUser = await User.create({ username, email, passwordHash, name });
 
   return res.status(201).json(user);
 });

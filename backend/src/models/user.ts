@@ -5,7 +5,7 @@ import { Role } from '../utils/types.js';
 import { sequelize } from '../utils/db.js';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-  declare id: string;
+  declare id: CreationOptional<string>;
   declare username: string;
   declare email: string;
   declare emailVerified: CreationOptional<boolean>;
@@ -18,16 +18,16 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
 
 User.init({
   id: {
-    type: DataTypes.STRING,
+    type: DataTypes.UUID,  // CHAR(36) for MySQL
     primaryKey: true,
-    allowNull: false
+    defaultValue: DataTypes.UUIDV4
   },
   username: {
     type: DataTypes.STRING,
     unique: true,
     allowNull: false,
     validate: {
-      len: [1,30]
+      len: [1, 30]
     }
   },
   email: {

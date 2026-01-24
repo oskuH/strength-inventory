@@ -1,7 +1,5 @@
 import Express, { type Request, type Response } from 'express';
 
-import { v4 as uuid } from 'uuid';
-
 import {
   targetGymExtractor,
   isAdmin
@@ -23,9 +21,7 @@ gymsRouter.get('/', async (_req, res) => {
 gymsRouter.post('/', ...isAdmin, async (req: Request<unknown, unknown, GymPost>, res: Response<FullGym>) => {
   const { name, chain, street, streetNumber, city, notes, openingHours, closingHours } = req.body;
 
-  const id: string = uuid();
-
-  const gym = await Gym.create({ id, name, chain, street, streetNumber, city, notes, openingHours, closingHours });
+  const gym = await Gym.create({ name, chain, street, streetNumber, city, notes, openingHours, closingHours });
 
   return res.status(201).json(gym);
 });

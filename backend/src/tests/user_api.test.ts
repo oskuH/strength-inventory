@@ -1,8 +1,9 @@
+// TODO: these tests are currently broken
+
 import { assert, beforeEach, describe, expect, test } from 'vitest';
 import request from 'supertest';
 
 import { genSaltSync, hashSync } from 'bcrypt-ts';
-import { v4 as uuid } from 'uuid';
 
 import app from '../index.js';
 
@@ -10,28 +11,23 @@ import User from '../models/user.js';
 
 import type { User as FullUser } from '../utils/types.ts';
 
-const initialUserCount = 2; // The number of users created in beforeEach
+const initialUserCount = 2;  // The number of users created in beforeEach
 
 beforeEach(async () => {
   await User.truncate();
-  let id: string;
   let passwordHash: string;
   const salt = genSaltSync(10);
 
-  id = uuid();
   passwordHash = hashSync('ILiftThereforeIAm', salt);
   await User.create({
-    id,
     username: 'LashaTalakhadze',
     email: 'lasha@talakhadze.ge',
     passwordHash,
     name: 'Lasha Talakhadze'
   });
 
-  id = uuid();
   passwordHash = hashSync('FirstHeavyLiftIsGettingOffTheCouch', salt);
   await User.create({
-    id,
     username: 'WenwenLi',
     email: 'wenwen@li.ch',
     passwordHash,

@@ -3,7 +3,7 @@ import { type CreationOptional, DataTypes, type InferAttributes, type InferCreat
 import { sequelize } from '../utils/db.ts';
 
 class Session extends Model<InferAttributes<Session>, InferCreationAttributes<Session>> {
-  declare id: string;
+  declare id: CreationOptional<string>;
   declare userId: string;
   declare token: string;
   declare createdAt: CreationOptional<Date>;
@@ -12,11 +12,12 @@ class Session extends Model<InferAttributes<Session>, InferCreationAttributes<Se
 
 Session.init({
   id: {
-    type: DataTypes.STRING, // MIGRATE TO SEQUELIZE UUID
-    primaryKey: true
+    type: DataTypes.UUID,  // CHAR(36) for MySQL
+    primaryKey: true,
+    defaultValue: DataTypes.UUIDV4
   },
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
     references: { model: 'users', key: 'id' }
   },

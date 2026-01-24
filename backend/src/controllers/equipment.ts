@@ -1,7 +1,5 @@
 import Express, { type Request, type Response } from 'express';
 
-import { v4 as uuid } from 'uuid';
-
 import { isAdmin, targetEquipmentExtractor } from '../utils/middleware.ts';
 
 import { Equipment } from '../models/index.js';
@@ -20,9 +18,7 @@ equipmentRouter.get('/', async (_req, res) => {
 equipmentRouter.post('/', ...isAdmin, async (req: Request<unknown, unknown, EquipmentRequest>, res: Response<FullEquipment>) => {
   const { name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, notes } = req.body;
 
-  const id: string = uuid();
-
-  const equipment: FullEquipment = await Equipment.create({ id, name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, notes });
+  const equipment: FullEquipment = await Equipment.create({ name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, notes });
   return res.json(equipment);
 });
 

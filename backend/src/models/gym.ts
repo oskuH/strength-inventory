@@ -5,7 +5,7 @@ import { type Hours } from '../utils/types.js';
 import { sequelize } from '../utils/db.js';
 
 class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
-  declare id: string;
+  declare id: CreationOptional<string>;
   declare name: string;
   declare chain: string | null;
   declare street: string;
@@ -20,8 +20,9 @@ class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
 
 Gym.init({
   id: {
-    type: DataTypes.STRING,
-    primaryKey: true
+    type: DataTypes.UUID,  // CHAR(36) for MySQL
+    primaryKey: true,
+    defaultValue: DataTypes.UUIDV4
   },
   name: {
     type: DataTypes.STRING,

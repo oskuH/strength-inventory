@@ -1,7 +1,7 @@
+// TODO: these tests are currently broken
+
 import { assert, beforeEach, describe, expect, test } from 'vitest';
 import request from 'supertest';
-
-import { v4 as uuid } from 'uuid';
 
 import app from '../index.js';
 
@@ -9,15 +9,12 @@ import Gym from '../models/gym.ts';
 
 import { type Gym as FullGym } from '../utils/types.ts';
 
-const initialGymCount = 2; // The number of gyms created in beforeEach
+const initialGymCount = 2;  // The number of gyms created in beforeEach
 
 beforeEach(async () => {
   await Gym.truncate();
-  let id: string;
 
-  id = uuid();
   await Gym.create({
-    id,
     name: 'Fitness24Seven Helsinki Punavuori',
     chain: 'Fitness24Seven',
     street: 'Albertinkatu',
@@ -25,9 +22,7 @@ beforeEach(async () => {
     city: 'Helsinki'
   });
 
-  id = uuid();
   await Gym.create({
-    id,
     name: 'ELIXIA Kamppi',
     chain: 'ELIXIA',
     street: 'Fredrikinkatu',
