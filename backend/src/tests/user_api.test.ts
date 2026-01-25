@@ -7,16 +7,25 @@ import { genSaltSync, hashSync } from 'bcrypt-ts';
 
 import app from '../index.js';
 
-import User from '../models/user.js';
+import { User } from '../models/index.ts';
 
-import type { User as FullUser } from '../utils/types.ts';
+import { Role, type User as FullUser } from '../utils/types.ts';
 
-const initialUserCount = 2;  // The number of users created in beforeEach
+const initialUserCount = 3;  // The number of users created in beforeEach
 
 beforeEach(async () => {
   await User.truncate();
   let passwordHash: string;
   const salt = genSaltSync(10);
+
+  passwordHash = hashSync('ThereIsOnlyWeightAndThoseTooWeakToLiftIt', salt);
+  await User.create({
+    username: 'TheAdmin',
+    email: 'admin@strengthinventory.eu',
+    passwordHash,
+    name: 'The Admin',
+    role: Role.Admin
+  });
 
   passwordHash = hashSync('ILiftThereforeIAm', salt);
   await User.create({
@@ -139,6 +148,20 @@ describe('Creating a new user', () => {
       .send(newUser)
       .expect(400);
   });
+
+  test('fails if "name" is more than 100 characters', async () => {
+    const newUser = {
+      username: 'HeatherConnor',
+      email: 'heather@connor.us',
+      password: 'TheBodyAchievesWhatTheMindBelieves',
+      name: 'Heatheeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeer'
+    };
+
+    await request(app)
+      .post('/api/users')
+      .send(newUser)
+      .expect(400);
+  });
 });
 
 // TODO
@@ -149,28 +172,30 @@ describe('Creating a new user', () => {
 }); */
 
 describe('Deleting a user', () => {
-  test('succeeds with a valid id', async () => {
-    const startResponse = await request(app)
-      .get('/api/users');
+  describe('as an admin', () => {
+    test('succeeds with a valid id', async () => {
+      const startResponse = await request(app)
+        .get('/api/users');
 
-    expect(startResponse.body).toHaveLength(initialUserCount);
+      expect(startResponse.body).toHaveLength(initialUserCount);
 
-    const userToDelete: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
-    assert.isNotNull(userToDelete);
+      const userToDelete: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
+      assert.isNotNull(userToDelete);
 
-    await request(app)
-      .delete(`/api/users/${userToDelete.id}`)
-      .expect(204);
+      await request(app)
+        .delete(`/api/users/${userToDelete.id}`)
+        .expect(204);
 
-    const endResponse = await request(app)
-      .get('/api/users');
+      const endResponse = await request(app)
+        .get('/api/users');
 
-    expect(endResponse.body).toHaveLength(initialUserCount - 1);
-  });
+      expect(endResponse.body).toHaveLength(initialUserCount - 1);
+    });
 
-  test('fails with an invalid id', async () => {
-    await request(app)
-      .delete('/api/users/5-reps-in-reserve')
-      .expect(404);
+    test('fails with an invalid id', async () => {
+      await request(app)
+        .delete('/api/users/5-reps-in-reserve')
+        .expect(404);
+    });
   });
 });

@@ -80,15 +80,18 @@ const isAdmin = [tokenExtractor, userExtractor, isUserAdmin];
 
 // user
 
-const targetUserExtractor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  if (!req.params['id']) {
+
+const targetUserExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
+  const { id } = req.params;
+
+  if (id) {
     res.status(400).json({ error: 'ID missing from request.' });
     return;
   }
 
-  const user = await User.findByPk(req.params['id']);
+  const user = await User.findByPk(id);
   if (!user) {
-    res.status(404).json({ error: `User with ID ${req.params['id']} not found.` });
+    res.status(404).json({ error: `User with ID ${id} not found.` });
     return;
   }
 
@@ -172,15 +175,17 @@ const isSelfOrAdmin = [tokenExtractor, userExtractor, isUserSelfOrAdmin];
 
 // gym
 
-const targetGymExtractor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  if (!req.params['id']) {
+const targetGymExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
+  const { id } = req.params;
+
+  if (!id) {
     res.status(400).json({ error: 'ID missing from request.' });
     return;
   }
 
-  const gym = await Gym.findByPk(req.params['id']);
+  const gym = await Gym.findByPk(id);
   if (!gym) {
-    res.status(404).json({ error: `Gym with ID ${req.params['id']} not found.` });
+    res.status(404).json({ error: `Gym with ID ${id} not found.` });
     return;
   }
 
@@ -191,15 +196,17 @@ const targetGymExtractor = async (req: Request, res: Response, next: NextFunctio
 
 // equipment
 
-const targetEquipmentExtractor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  if (!req.params['id']) {
+const targetEquipmentExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
+  const { id } = req.params;
+
+  if (!id) {
     res.status(400).json({ error: 'ID missing from request.' });
     return;
   }
 
-  const equipment = await Equipment.findByPk(req.params['id']);
+  const equipment = await Equipment.findByPk(id);
   if (!equipment) {
-    res.status(404).json({ error: `Equipment with ID ${req.params['id']} not found.` });
+    res.status(404).json({ error: `Equipment with ID ${id} not found.` });
     return;
   }
 

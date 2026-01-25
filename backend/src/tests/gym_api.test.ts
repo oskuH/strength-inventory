@@ -3,15 +3,39 @@
 import { assert, beforeEach, describe, expect, test } from 'vitest';
 import request from 'supertest';
 
+import { genSaltSync, hashSync } from 'bcrypt-ts';
+
 import app from '../index.js';
 
-import Gym from '../models/gym.ts';
+import { Gym, User } from '../models/index.ts';
 
-import { type Gym as FullGym } from '../utils/types.ts';
+import { Role, type Gym as FullGym } from '../utils/types.ts';
 
 const initialGymCount = 2;  // The number of gyms created in beforeEach
 
 beforeEach(async () => {
+  await User.truncate();
+  let passwordHash: string;
+  const salt = genSaltSync(10);
+
+  passwordHash = hashSync('ThereIsOnlyWeightAndThoseTooWeakToLiftIt', salt);
+  await User.create({
+    username: 'TheAdmin',
+    email: 'admin@strengthinventory.eu',
+    passwordHash,
+    name: 'The Admin',
+    role: Role.Admin
+  });
+
+  passwordHash = hashSync('YourBodyIsTheOnlyPlaceYouHaveToLive', salt);
+  await User.create({
+    username: 'TheGymOwner',
+    email: 'manager@thebestgym.me',
+    passwordHash,
+    name: 'The Gym Owner',
+    role: Role.GymOwner
+  });
+
   await Gym.truncate();
 
   await Gym.create({
