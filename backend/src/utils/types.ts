@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { LoginSchema, NewUserSchema, PutUserSchema } from './schemas.ts';
+import { GymSchema, HoursSchema, LoginSchema, NewUserSchema, PatchGymSchema, PutUserSchema } from './schemas.ts';
 
 
 // user
@@ -32,32 +32,24 @@ export type TokenPayload = Pick<User, 'id' | 'username'>;
 
 // gym
 
-export interface Hours {
-  MO?: number;
-  TU?: number;
-  WE?: number;
-  TH?: number;
-  FR?: number;
-  SA?: number;
-  SU?: number;
-}
+export type Hours = z.infer<typeof HoursSchema>;
 
 export interface Gym {
   id: string,
   name: string,
-  chain: string | null,
+  chain: string | null | undefined,
   street: string,
   streetNumber: string,
   city: string,
-  notes: string | null,
+  notes: string | null | undefined,
   openingHours: Hours,
   closingHours: Hours,
   createdAt: Date,
   updatedAt: Date;
 }
 
-export type GymPost = Pick<Gym, 'name' | 'chain' | 'street' | 'streetNumber' | 'city' | 'notes' | 'openingHours' | 'closingHours'>;
-export type GymPatch = Pick<Gym, 'name' | 'chain' | 'street' | 'streetNumber' | 'city' | 'notes'>;
+export type GymPost = z.infer<typeof GymSchema>;
+export type GymPatch = z.infer<typeof PatchGymSchema>;
 
 
 // equipment

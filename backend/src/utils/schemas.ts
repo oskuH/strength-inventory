@@ -10,7 +10,6 @@ export const PasswordSchema = z
   .max(100); // upper limit prevents extremely long passwords that would take too long to hash (NIST SP800-63B)
 
 export const UserSchema = z.object({
-  id: z.uuid(),
   username: z.string().min(1).max(30),
   email: z.email(),
   emailVerified: z.boolean(),
@@ -45,6 +44,18 @@ export const UserNamesSchema = UserSchema.pick({
 
 // gym
 
+const TimeSchema = z.number().min(0).max(24).optional();
+
+export const HoursSchema = z.object({
+  MO: TimeSchema,
+  TU: TimeSchema,
+  WE: TimeSchema,
+  TH: TimeSchema,
+  FR: TimeSchema,
+  SA: TimeSchema,
+  SU: TimeSchema
+});
+
 export const GymSchema = z.object({
   name: z.string(),
   chain: z.string().optional(),
@@ -52,11 +63,18 @@ export const GymSchema = z.object({
   streetNumber: z.string(),
   city: z.string(),
   notes: z.string().optional(),
-  openingHours: z.json(),  // TODO
-  closingHours: z.json()  // TODO
+  openingHours: HoursSchema,
+  closingHours: HoursSchema
 });
 
-// export const PutGymSchema = GymSchema.pick({}) TODO after implementing precise Hours
+export const PatchGymSchema = GymSchema.pick({
+  name: true,
+  chain: true,
+  street: true,
+  streetNumber: true,
+  city: true,
+  notes: true
+});
 
 
 // equipment
@@ -73,6 +91,9 @@ export const NewEquipmentSchema = z.object({
   maximumWeight: z.float32().optional(),
   notes: z.string().optional()
 });
+
+
+// login
 
 export const LoginSchema = z.object({
   username: z.string(),

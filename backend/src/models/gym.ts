@@ -7,11 +7,11 @@ import { sequelize } from '../utils/db.js';
 class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare id: CreationOptional<string>;
   declare name: string;
-  declare chain: string | null;
+  declare chain: string | null | undefined;
   declare street: string;
   declare streetNumber: string;
   declare city: string;
-  declare notes: string | null;
+  declare notes: string | null | undefined;
   declare openingHours: CreationOptional<Hours>;
   declare closingHours: CreationOptional<Hours>;
   declare createdAt: CreationOptional<Date>;
