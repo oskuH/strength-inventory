@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { Role } from './types/role.ts';
+
 
 // user
 
@@ -15,7 +17,7 @@ export const UserSchema = z.object({
   emailVerified: z.boolean(),
   passwordHash: z.string(),
   name: z.string().max(100),
-  role: z.enum(['SUPERUSER', 'ADMIN', 'GYM-OWNER', 'GYM-GOER'])
+  role: z.enum(Role)
 });
 
 export const PutUserSchema = UserSchema.pick({

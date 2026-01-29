@@ -1,6 +1,6 @@
 import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
 
-import { EquipmentCategory, WeightUnit } from '../utils/types.js';
+import { EquipmentCategory, WeightUnit } from '../utils/types/types.ts';
 
 import { sequelize } from '../utils/db.js';
 

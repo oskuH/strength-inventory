@@ -7,7 +7,7 @@ import {
 
 import { Gym } from '../models/index.js';
 
-import type { Gym as FullGym, GymPatch, GymPost, Hours } from '../utils/types.js';
+import type { Gym as FullGym, GymPatch, GymPost, Hours } from '../utils/types/types.ts';
 
 const gymsRouter = Express.Router();
 

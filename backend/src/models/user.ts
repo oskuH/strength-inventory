@@ -1,6 +1,6 @@
 import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
 
-import { Role } from '../utils/types.js';
+import { Role } from '../utils/types/role.ts';
 
 import { sequelize } from '../utils/db.js';
 
@@ -48,10 +48,13 @@ User.init({
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      len: [1, 100]
+    }
   },
   role: {
-    type: DataTypes.ENUM('SUPERUSER', 'ADMIN', 'GYM-OWNER', 'GYM-GOER'),
+    type: DataTypes.ENUM('SUPERUSER', 'ADMIN', 'MANAGER', 'GYM-GOER'),
     allowNull: false,
     defaultValue: 'GYM-GOER'
   },

@@ -9,12 +9,13 @@ import app from '../index.js';
 
 import { Gym, User } from '../models/index.ts';
 
-import { Role, type Gym as FullGym } from '../utils/types.ts';
+import { type Gym as FullGym } from '../utils/types/types.ts';
+import { Role } from '../utils/types/role.ts';
 
 const initialGymCount = 2;  // The number of gyms created in beforeEach
 
 beforeEach(async () => {
-  await User.truncate();
+  await User.truncate({ cascade: true });
   let passwordHash: string;
   const salt = genSaltSync(10);
 
@@ -33,7 +34,7 @@ beforeEach(async () => {
     email: 'manager@thebestgym.me',
     passwordHash,
     name: 'The Gym Owner',
-    role: Role.GymOwner
+    role: Role.Manager
   });
 
   await Gym.truncate();

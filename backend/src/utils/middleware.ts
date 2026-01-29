@@ -9,7 +9,7 @@ import { JWT_SECRET } from './config.ts';
 import { Equipment, Gym, Session, User } from '../models/index.ts';
 
 import { NewUserSchema, PasswordSchema, PutUserSchema, UserNamesSchema, UserSchema } from '../utils/schemas.ts';
-import { type TokenPayload } from './types.ts';
+import { type TokenPayload } from './types/types.ts';
 
 const errorHandler = (err: unknown, _req: Request, res: Response, next: NextFunction): void => {
   if (err instanceof z.ZodError) {
@@ -21,18 +21,20 @@ const errorHandler = (err: unknown, _req: Request, res: Response, next: NextFunc
     console.error(err.name);
     res.status(400).json({ error: err.message });
     return;
+  } else if (err instanceof Error) {
+    console.error(err.name);
+    res.status(400).json({ error: err.message });
+    return;
   } else {
     console.error('Unhandled error type.');
-    next();
+    next();  // TODO
   }
-
-  next();
 };
 
 const tokenExtractor = (req: Request, res: Response, next: NextFunction): void => {
   const authorization = req.get('authorization');
   if (authorization?.toLowerCase().startsWith('bearer ')) {
-    req.token = authorization.replace('bearer ', '');
+    req.token = authorization.replace(/bearer /gi, '');
   } else {
     res.status(401).json({ error: 'Token missing.' });
     return;
@@ -84,7 +86,7 @@ const isAdmin = [tokenExtractor, userExtractor, isUserAdmin];
 const targetUserExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
   const { id } = req.params;
 
-  if (id) {
+  if (!id) {
     res.status(400).json({ error: 'ID missing from request.' });
     return;
   }

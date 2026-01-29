@@ -1,16 +1,10 @@
 import { z } from 'zod';
 
-import { GymSchema, HoursSchema, LoginSchema, NewUserSchema, PatchGymSchema, PutUserSchema } from './schemas.ts';
+import { GymSchema, HoursSchema, LoginSchema, NewUserSchema, PatchGymSchema, PutUserSchema } from '../schemas.ts';
+import { Role } from './role.ts';
 
 
 // user
-
-export enum Role {
-  Superuser = 'SUPERUSER',
-  Admin = 'ADMIN',
-  GymOwner = 'GYM-OWNER',
-  GymGoer = 'GYM-GOER'
-}
 
 export interface User {
   id: string,

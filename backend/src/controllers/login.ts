@@ -8,7 +8,7 @@ import { JWT_SECRET } from '../utils/config.ts';
 import { Session, User } from '../models/index.ts';
 
 import { LoginSchema } from '../utils/schemas.ts';
-import type { LoginRequest, LoginResponse, TokenPayload } from '../utils/types.ts';
+import type { LoginRequest, LoginResponse, TokenPayload } from '../utils/types/types.ts';
 
 const loginRouter = Express.Router();
 

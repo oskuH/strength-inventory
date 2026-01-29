@@ -1,20 +1,20 @@
-// TODO: these tests are currently broken
-
 import { assert, beforeEach, describe, expect, test } from 'vitest';
 import request from 'supertest';
 
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 
-import app from '../index.js';
+import app from '../index.ts';
 
 import { User } from '../models/index.ts';
 
-import { Role, type User as FullUser } from '../utils/types.ts';
+import { type User as FullUser, type LoginResponse } from '../utils/types/types.ts';
+import { Role } from '../utils/types/role.ts';
 
 const initialUserCount = 3;  // The number of users created in beforeEach
+let token: string;
 
 beforeEach(async () => {
-  await User.truncate();
+  await User.truncate({ cascade: true });
   let passwordHash: string;
   const salt = genSaltSync(10);
 
@@ -173,6 +173,17 @@ describe('Creating a new user', () => {
 
 describe('Deleting a user', () => {
   describe('as an admin', () => {
+    beforeEach(async () => {
+      const response: request.Response = await request(app)
+        .post('/api/login')
+        .send({ username: 'TheAdmin', password: 'ThereIsOnlyWeightAndThoseTooWeakToLiftIt' })
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      const body = response.body as LoginResponse;
+      token = body.token;
+    });
+
     test('succeeds with a valid id', async () => {
       const startResponse = await request(app)
         .get('/api/users');
@@ -184,6 +195,7 @@ describe('Deleting a user', () => {
 
       await request(app)
         .delete(`/api/users/${userToDelete.id}`)
+        .set('Authorization', `Bearer ${token}`)
         .expect(204);
 
       const endResponse = await request(app)
@@ -194,7 +206,8 @@ describe('Deleting a user', () => {
 
     test('fails with an invalid id', async () => {
       await request(app)
-        .delete('/api/users/5-reps-in-reserve')
+        .delete('/api/users/ca16ce67-718e-497a-acbe-011fcdee4745')
+        .set('Authorization', `Bearer ${token}`)
         .expect(404);
     });
   });

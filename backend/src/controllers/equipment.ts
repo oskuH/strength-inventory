@@ -4,7 +4,7 @@ import { isAdmin, targetEquipmentExtractor } from '../utils/middleware.ts';
 
 import { Equipment } from '../models/index.js';
 
-import type { Equipment as FullEquipment, EquipmentRequest } from '../utils/types.js';
+import type { Equipment as FullEquipment, EquipmentRequest } from '../utils/types/types.ts';
 
 const equipmentRouter = Express.Router();
 

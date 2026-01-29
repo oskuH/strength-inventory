@@ -17,7 +17,8 @@ import {
 
 import { User } from '../models/index.js';
 
-import type { User as FullUser, NewUserRequest, PutUserRequest, Role } from '../utils/types.js';
+import type { User as FullUser, NewUserRequest, PutUserRequest } from '../utils/types/types.ts';
+import { Role } from '../utils/types/role.ts';
 
 const usersRouter = Express.Router();
 
@@ -106,13 +107,14 @@ usersRouter.put('/:id', putUserParser, ...isAdmin, targetUserExtractor, async (r
   if (!req.targetUser) { throw new Error('User missing from request.'); }  // Should never trigger after middleware.
 
   const user = req.targetUser;
-  const { username, email, emailVerified, name, password } = req.body;
+  const { username, email, emailVerified, name, role, password } = req.body;
 
   await user.update({
     username: username,
     email: email,
     emailVerified: emailVerified,
-    name: name
+    name: name,
+    role: role
   });
   if (password) {
     const salt = genSaltSync(10);

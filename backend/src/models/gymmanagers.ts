@@ -1,0 +1,37 @@
+import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
+
+import { sequelize } from '../utils/db.js';
+
+class GymManagers extends Model<InferAttributes<GymManagers>, InferCreationAttributes<GymManagers>> {
+  declare id: CreationOptional<string>;
+  declare userId: string;
+  declare gymId: string;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
+};
+
+GymManagers.init({
+  id: {
+    type: DataTypes.UUID,  // CHAR(36) for MySQL
+    primaryKey: true,
+    defaultValue: DataTypes.UUIDV4
+  },
+  userId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: { model: 'users', key: 'id' }
+  },
+  gymId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: { model: 'gym', key: 'id' }
+  },
+  createdAt: DataTypes.DATE,
+  updatedAt: DataTypes.DATE
+}, {
+  sequelize,
+  underscored: true,
+  modelName: 'gymmanagers'
+});
+
+export default GymManagers;
