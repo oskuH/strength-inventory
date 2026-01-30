@@ -129,9 +129,9 @@ const newEmailParser = (req: Request, _res: Response, next: NextFunction) => {
   }
 };
 
-const newPasswordParser = (req: Request, _res: Response, next: NextFunction) => {
+const newPasswordParser = (req: Request<{ id: string; }, unknown, { password: string; }>, _res: Response, next: NextFunction) => {
   try {
-    PasswordSchema.parse(req.body);
+    PasswordSchema.parse(req.body.password);
     next();
   } catch (e: unknown) {
     next(e);
