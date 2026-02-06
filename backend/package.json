@@ -8,7 +8,7 @@
   "scripts": {
     "tsc": "tsc",
     "dev": "cross-env tsx watch src/index.ts",
-    "test": "cross-env NODE_ENV=test vitest run src/tests/user_api.test.ts",
+    "test": "cross-env NODE_ENV=test vitest run",
     "coverage": "vitest run --coverage",
     "lint": "eslint .",
     "migration:down_dev": "tsx src/utils/rollback.js",

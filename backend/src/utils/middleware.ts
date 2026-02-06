@@ -11,6 +11,11 @@ import { Equipment, Gym, Session, User } from '../models/index.ts';
 import { NewUserSchema, PasswordSchema, PutUserSchema, UserNamesSchema, UserSchema } from '../utils/schemas.ts';
 import { type TokenPayload } from './types/types.ts';
 
+const unknownEndpoint = (_req: Request, res: Response) => {
+  res.status(404).send({ error: 'unknown endpoint' });
+  return;
+};
+
 const errorHandler = (err: unknown, _req: Request, res: Response, next: NextFunction): void => {
   if (err instanceof z.ZodError) {
     console.error(err.name);
@@ -27,7 +32,7 @@ const errorHandler = (err: unknown, _req: Request, res: Response, next: NextFunc
     return;
   } else {
     console.error('Unhandled error type.');
-    next();  // TODO
+    next(err);  // err to be handled by Express built-in error handler
   }
 };
 
@@ -218,6 +223,7 @@ const targetEquipmentExtractor = async (req: Request<{ id: string; }>, res: Resp
 
 
 export {
+  unknownEndpoint,
   errorHandler,
   tokenExtractor,
   userExtractor,

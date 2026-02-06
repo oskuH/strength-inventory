@@ -44,7 +44,7 @@ beforeEach(async () => {
   });
 });
 
-test('All users are correctly returned as json', async () => {
+test('GET all users correctly returns a json', async () => {
   const response = await request(app)
     .get('/api/users')
     .expect(200)
@@ -53,7 +53,7 @@ test('All users are correctly returned as json', async () => {
   expect(response.body).toHaveLength(initialUserCount);
 });
 
-describe('Creating a new user', () => {
+describe('POST a new user', () => {
   test('succeeds if all fields are valid', async () => {
     const newUser = {
       username: 'HeatherConnor',
@@ -163,7 +163,7 @@ describe('Creating a new user', () => {
   });
 });
 
-describe('Patching username and name', () => {
+describe('PATCH username and name', () => {
   beforeEach(async () => {
     const response: request.Response = await request(app)
       .post('/api/login')
@@ -219,7 +219,7 @@ describe('Patching username and name', () => {
   });
 });
 
-describe('Patching email', () => {
+describe('PATCH email', () => {
   beforeEach(async () => {
     const response: request.Response = await request(app)
       .post('/api/login')
@@ -264,7 +264,7 @@ describe('Patching email', () => {
   });
 });
 
-describe('Patching password', () => {
+describe('PATCH password', () => {
   beforeEach(async () => {
     const response: request.Response = await request(app)
       .post('/api/login')
@@ -309,7 +309,7 @@ describe('Patching password', () => {
   });
 });
 
-describe('Patching user\'s role', () => {
+describe('PATCH user\'s role', () => {
   describe('as an admin', () => {
     beforeEach(async () => {
       const response: request.Response = await request(app)
@@ -368,7 +368,7 @@ describe('Patching user\'s role', () => {
   });
 });
 
-describe('Deleting a user', () => {
+describe('DELETE a user', () => {
   describe('as an admin', () => {
     beforeEach(async () => {
       const response: request.Response = await request(app)

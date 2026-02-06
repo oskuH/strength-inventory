@@ -2,7 +2,7 @@ import express from 'express';
 const app = express();
 
 import { connectToDatabase } from './utils/db.js';
-import { errorHandler } from './utils/middleware.js';
+import { errorHandler, unknownEndpoint } from './utils/middleware.js';
 import { PORT } from './utils/config.js';
 
 import equipmentRouter from './controllers/equipment.js';
@@ -19,6 +19,7 @@ app.use('/api/login', loginRouter);
 app.use('/api/logout', logoutRouter);
 app.use('/api/users', usersRouter);
 
+app.use(unknownEndpoint);
 app.use(errorHandler);
 
 try {

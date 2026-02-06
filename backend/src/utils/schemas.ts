@@ -20,6 +20,8 @@ export const UserSchema = z.object({
   role: z.enum(Role)
 });
 
+// export const PatchPasswordSchema = z.o
+
 export const PutUserSchema = UserSchema.pick({
   username: true,
   email: true,
