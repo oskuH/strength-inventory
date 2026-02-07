@@ -37,5 +37,5 @@ export default defineConfig({
     '@stylistic/arrow-spacing': ['error', { 'before': true, 'after': true }],
     '@stylistic/comma-dangle': ['error', 'never']
   },
-  ignores: ['dist']
+  ignores: ['dist', 'src/routeTree.gen.ts']
 });
