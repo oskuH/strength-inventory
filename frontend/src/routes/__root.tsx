@@ -5,7 +5,12 @@ import {
 } from '@tanstack/react-router';
 import type { QueryClient } from '@tanstack/react-query';
 
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+
+import Header from '../components/header';
+import SidebarLeft from '../components/sidebar-left';
+import SidebarRight from '../components/sidebar-right';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -24,21 +29,17 @@ export const Route = createRootRouteWithContext<{
 function RootComponent() {
   return (
     <>
-      <div>
-        <Link
-          to='/'
-          activeOptions={{ exact: true }}
-        >
-          Home
-        </Link>{' '}
-        <Link
-          to='/gyms'
-        >
-          Gym search
-        </Link>
+      <div className='flex min-h-svh flex-col'>
+        <Header />
+        <div className='flex flex-1 flex-row'>
+          <SidebarLeft />
+          <div className='flex flex-1'>
+            <Outlet />
+          </div>
+          <SidebarRight />
+        </div>
       </div>
-      <hr />
-      <Outlet />
+      <ReactQueryDevtools />
       <TanStackRouterDevtools />
     </>
   );
