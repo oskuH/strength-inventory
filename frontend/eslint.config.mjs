@@ -1,12 +1,13 @@
 import eslintReact from '@eslint-react/eslint-plugin';
 import eslintJs from '@eslint/js';
+import pluginQuery from '@tanstack/eslint-plugin-query';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import stylistic from '@stylistic/eslint-plugin';
 import tseslint from 'typescript-eslint';
 
 import globals from 'globals';
-import { defineConfig, globalIgnores } from 'eslint/config';
+import { defineConfig } from 'eslint/config';
 
 export default defineConfig({
   files: ['**/*.{ts,tsx}'],
@@ -16,6 +17,7 @@ export default defineConfig({
     tseslint.configs.strictTypeChecked,
     tseslint.configs.strictTypeChecked,
     eslintReact.configs['recommended-typescript'],
+    pluginQuery.configs['flat/recommended'],
     reactHooks.configs.flat.recommended,
     reactRefresh.configs.vite,
   ],
