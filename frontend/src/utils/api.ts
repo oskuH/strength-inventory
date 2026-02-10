@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 import { GymSchema } from './schemas';
 
 const baseUrl = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api';
@@ -10,7 +12,7 @@ export const getGyms = async () => {
 
   const data: unknown = await res.json();
 
-  const validatedData = GymSchema.parse(data);
+  const validatedData = z.array(GymSchema).parse(data);
 
   return validatedData;
 };

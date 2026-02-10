@@ -13,6 +13,7 @@ export const HoursSchema = z.object({
 });
 
 export const GymSchema = z.object({
+  id: z.uuidv4(),
   name: z.string(),
   chain: z.string().optional(),
   street: z.string(),

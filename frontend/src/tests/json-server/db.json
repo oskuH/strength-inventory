@@ -1,0 +1,57 @@
+{
+  "gyms": [
+    {
+      "id": "6f18417c-78f7-440e-a342-a7e26a3916b6",
+      "name": "Mayor's Gym",
+      "street": "Porkkalankatu",
+      "streetNumber": "13N",
+      "city": "Helsinki",
+      "notes": "Changes in pricing effective February 1, 2026",
+      "openingHours": {
+        "MO": 0,
+        "TU": 0,
+        "WE": 0,
+        "TH": 0,
+        "FR": 0,
+        "SA": 0,
+        "SU": 0
+      },
+      "closingHours": {
+        "MO": 24,
+        "TU": 24,
+        "WE": 24,
+        "TH": 24,
+        "FR": 24,
+        "SA": 24,
+        "SU": 24
+      }
+    },
+    {
+      "id": "742774c2-68fa-450c-8678-93289c3f37a8",
+      "name": "Elixia Citycenter",
+      "chain": "Elixia",
+      "street": "Kaivokatu",
+      "streetNumber": "8",
+      "city": "Helsinki",
+      "notes": "3rd floor",
+      "openingHours": {
+        "MO": 6,
+        "TU": 6,
+        "WE": 6,
+        "TH": 6,
+        "FR": 6,
+        "SA": 9,
+        "SU": 9
+      },
+      "closingHours": {
+        "MO": 22,
+        "TU": 22,
+        "WE": 22,
+        "TH": 22,
+        "FR": 21,
+        "SA": 20,
+        "SU": 20
+      }
+    }
+  ]
+}
