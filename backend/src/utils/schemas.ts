@@ -20,8 +20,6 @@ export const UserSchema = z.object({
   role: z.enum(Role)
 });
 
-// export const PatchPasswordSchema = z.o
-
 export const PutUserSchema = UserSchema.pick({
   username: true,
   email: true,
@@ -29,7 +27,7 @@ export const PutUserSchema = UserSchema.pick({
   name: true,
   role: true
 }).extend({
-  password: PasswordSchema.optional()
+  password: PasswordSchema.nullish()
 });
 
 export const NewUserSchema = UserSchema.pick({
@@ -48,7 +46,7 @@ export const UserNamesSchema = UserSchema.pick({
 
 // gym
 
-const TimeSchema = z.number().min(0).max(24).optional();
+const TimeSchema = z.number().min(0).max(24).nullish();
 
 export const HoursSchema = z.object({
   MO: TimeSchema,
@@ -62,11 +60,11 @@ export const HoursSchema = z.object({
 
 export const GymSchema = z.object({
   name: z.string(),
-  chain: z.string().optional(),
+  chain: z.string().nullish(),
   street: z.string(),
   streetNumber: z.string(),
   city: z.string(),
-  notes: z.string().optional(),
+  notes: z.string().nullish(),
   openingHours: HoursSchema,
   closingHours: HoursSchema
 });
@@ -89,11 +87,11 @@ export const NewEquipmentSchema = z.object({
   manufacturer: z.string(),
   code: z.string(),
   weightUnit: z.enum(['kg', 'lbs']),
-  weight: z.float32().optional(), // TODO: custom validator for this and the three below
-  startingWeight: z.float32().optional(),
-  availableWeights: z.float32().optional(),
-  maximumWeight: z.float32().optional(),
-  notes: z.string().optional()
+  weight: z.float32().nullish(), // TODO: custom validator for this and the three below
+  startingWeight: z.float32().nullish(),
+  availableWeights: z.float32().nullish(),
+  maximumWeight: z.float32().nullish(),
+  notes: z.string().nullish()
 });
 
 

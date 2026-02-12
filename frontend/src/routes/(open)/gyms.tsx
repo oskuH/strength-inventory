@@ -12,8 +12,10 @@ export const Route = createFileRoute('/(open)/gyms')({
 
 function GymEntry({ gym }: { gym: Gym; }) {
   return (
-    <div className='flex'>
-      {gym.name} {gym.chain} {gym.street} {gym.streetNumber} {gym.city} {gym.notes}
+    <div className='flex m-1 p-1 outline rounded-sm flex-col bg-gray-200'>
+      <p>{gym.name} {gym.chain} {gym.street} {gym.streetNumber} {gym.city}</p>
+
+      <p>{gym.notes}</p>
     </div>
   );
 }
@@ -34,7 +36,7 @@ function Gyms() {
 
   return (
     <div className='flex basis-full flex-col'>
-      <div className='flex basis-full'>
+      <div className='flex basis-full flex-col'>
         <ol>
           {data.map(gym =>
             <li key={gym.id}><GymEntry gym={gym} /></li>

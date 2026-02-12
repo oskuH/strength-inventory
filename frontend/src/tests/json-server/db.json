@@ -1,4 +1,38 @@
 {
+  "users": [
+    {
+      "id": "e1fee44a-1b71-4abb-b96d-e70b55696f7f",
+      "username": "superuser",
+      "email": "superuser@strengthinventory.eu",
+      "passwordHash": "$2b$10$gCttnC7WFK8RtwA5O49cyupQdw.TgiV.mcnktqEybzFt0FOyb3CeW",
+      "name": "superuser",
+      "role": "SUPERUSER"
+    },
+    {
+      "id": "54419ee4-2880-4e96-82d7-69dfc1238584",
+      "username": "TheAdmin",
+      "email": "admin@strengthinventory.eu",
+      "passwordHash": "$2b$10$/NIlSahmdKU9TNFDcdqPq.2mwF/3xjCfr92hEuPjei7qeDZUzv4FG",
+      "name": "Admin",
+      "role": "ADMIN"
+    },
+    {
+      "id": "cabd5a6b-8cf7-41be-8333-0d76487681a1",
+      "username": "PureGold",
+      "email": "joe@gold.us",
+      "passwordHash": "$2b$10$i1PFwsyY1n.refWck3bNqeqXyPJTQS5FFPMhiH.a8/jVokBqdb.Nm",
+      "name": "Joe Gold",
+      "role": "MANAGER"
+    },
+    {
+      "id": "8f94f7e9-470e-4c78-bed9-5f30bd59730c",
+      "username": "LashaTalakhadze",
+      "email": "lasha@talakhadze.ge",
+      "passwordHash": "$2b$10$xuU.EF2KJUK5uBVxImjKoewooJBzrReQDtM47Wwj/sorIqgugQ5z.",
+      "name": "Lasha Talakhadze",
+      "role": "GYM-GOER"
+    }
+  ],
   "gyms": [
     {
       "id": "6f18417c-78f7-440e-a342-a7e26a3916b6",

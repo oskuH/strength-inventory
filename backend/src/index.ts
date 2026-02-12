@@ -1,6 +1,8 @@
 import express from 'express';
 const app = express();
 
+import cors from 'cors';
+
 import { connectToDatabase } from './utils/db.js';
 import { errorHandler, unknownEndpoint } from './utils/middleware.js';
 import { PORT } from './utils/config.js';
@@ -11,6 +13,7 @@ import loginRouter from './controllers/login.ts';
 import logoutRouter from './controllers/logout.ts';
 import usersRouter from './controllers/users.js';
 
+app.use(cors());
 app.use(express.json());
 
 app.use('/api/equipment', equipmentRouter);
