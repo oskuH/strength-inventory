@@ -1,92 +1,66 @@
 import { z } from 'zod';
 
-import { GymSchema, HoursSchema, LoginSchema, NewUserSchema, PatchGymSchema, PutUserSchema } from '../schemas.ts';
-import { Role } from './role.ts';
+import {
+  EquipmentCategoryEnum,
+  EquipmentPostAndPutSchema,
+  EquipmentSchema,
+  EquipmentWeightUnitEnum,
+  GymPatchSchema,
+  GymPostSchema,
+  GymSchema,
+  HoursSchema,
+  LoginRequestSchema,
+  LoginResponseSchema,
+  MembershipAvailabilityEntrySchema,
+  MembershipAvailabilitySchema,
+  MembershipTimeUnitEnum,
+  UserPostSchema,
+  UserPutSchema,
+  UserRoleEnum,
+  UserSchema,
+  UserTokenPayloadSchema
+} from '../schemas.ts';
+
+
+export type Hours = z.infer<typeof HoursSchema>;
 
 
 // user
 
-export interface User {
-  id: string,
-  username: string,
-  email: string,
-  emailVerified: boolean,
-  passwordHash: string,
-  name: string,
-  role: Role,
-  createdAt: Date,
-  updatedAt: Date;
-}
+export type UserRole = z.infer<typeof UserRoleEnum>;
 
-export type NewUserRequest = z.infer<typeof NewUserSchema>;
-export type PutUserRequest = z.infer<typeof PutUserSchema>;
+export type User = z.infer<typeof UserSchema>;
+export type UserPost = z.infer<typeof UserPostSchema>;
+export type UserPut = z.infer<typeof UserPutSchema>;
 
-export type TokenPayload = Pick<User, 'id' | 'username'>;
+export type UserTokenPayload = z.infer<typeof UserTokenPayloadSchema>;
 
 
 // gym
 
-export type Hours = z.infer<typeof HoursSchema>;
-
-export interface Gym {
-  id: string,
-  name: string,
-  chain: string | null | undefined,
-  street: string,
-  streetNumber: string,
-  city: string,
-  notes: string | null | undefined,
-  openingHours: Hours,
-  closingHours: Hours,
-  createdAt: Date,
-  updatedAt: Date;
-}
-
-export type GymPost = z.infer<typeof GymSchema>;
-export type GymPatch = z.infer<typeof PatchGymSchema>;
+export type Gym = z.infer<typeof GymSchema>;
+export type GymPost = z.infer<typeof GymPostSchema>;
+export type GymPatch = z.infer<typeof GymPatchSchema>;
 
 
 // equipment
 
-export enum EquipmentCategory {
-  Attachment = 'attachment',
-  Cardio = 'cardio',
-  FreeWeight = 'freeWeight',
-  StrengthMachine = 'strengthMachine',
-  Tool = 'tool'
-}
+export type EquipmentCategory = z.infer<typeof EquipmentCategoryEnum>;
+export type EquipmentWeightUnit = z.infer<typeof EquipmentWeightUnitEnum>;
 
-export enum WeightUnit {
-  Kilograms = 'kg',
-  Pounds = 'lbs'
-}
+export type Equipment = z.infer<typeof EquipmentSchema>;
+export type EquipmentPostAndPut = z.infer<typeof EquipmentPostAndPutSchema>;
 
-export interface Equipment {
-  id: string,
-  name: string,
-  category: EquipmentCategory,
-  manufacturer: string,
-  code: string,
-  weightUnit: WeightUnit | null,
-  weight: number | null,
-  startingWeight: number | null,
-  availableWeights: number[] | null,
-  maximumWeight: number | null,
-  notes: string | null,
-  createdAt: Date,
-  updatedAt: Date;
-}
 
-export type EquipmentRequest = Pick<
-  Equipment,
-  'name' | 'category' | 'manufacturer' | 'code' | 'weightUnit' | 'weight' | 'startingWeight' | 'availableWeights' | 'maximumWeight' | 'notes'
->;
+// membership
+
+export type MembershipTimeUnit = z.infer<typeof MembershipTimeUnitEnum>;
+
+export type MembershipAvailabilityEntry = z.infer<typeof MembershipAvailabilityEntrySchema>;  // Currently redundant.
+export type MembershipAvailability = z.infer<typeof MembershipAvailabilitySchema>;
 
 
 // login
 
-export type LoginRequest = z.infer<typeof LoginSchema>;
-export interface LoginResponse {
-  token: string,
-  username: string;
-}
+export type LoginRequest = z.infer<typeof LoginRequestSchema>;
+export type LoginResponse = z.infer<typeof LoginResponseSchema>;

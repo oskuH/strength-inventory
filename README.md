@@ -9,6 +9,6 @@ Frontend: **React** with **TanStack Router** and **TanStack Query**. **Zod** for
 
 Backend: **Express** with **Sequelize** for ORM and **Zod** for runtime validation.
 
-Compatible databases: PostgreSQL, SQLite, MySQL, MariaDB, and Oracle.
+Compatible databases: PostgreSQL, SQLite (presumed), MySQL (presumed), MariaDB (presumed), and Oracle (presumed).
 
 Node v24.13.0.

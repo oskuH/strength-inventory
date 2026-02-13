@@ -1,0 +1,2 @@
+DELETE http://localhost:3000/api/users/5-reps
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxNWNmNmJmLWE4NmMtNDUyZS04MjcwLTk5MjI1ZWY5YWYyMiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3Njk2ODYwMjR9.ENumu06rFeUfa9lK14WCWYpXSy9MkOE9mtin5AyoxCU

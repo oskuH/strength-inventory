@@ -1,6 +1,6 @@
 import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
 
-import { Role } from '../utils/types/role.ts';
+import type { UserRole } from '../utils/types/types.ts';
 
 import { sequelize } from '../utils/db.js';
 
@@ -11,7 +11,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare emailVerified: CreationOptional<boolean>;
   declare passwordHash: string;
   declare name: string;
-  declare role: CreationOptional<Role>;
+  declare role: CreationOptional<UserRole>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 };

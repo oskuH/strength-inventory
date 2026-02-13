@@ -1,0 +1,40 @@
+POST http://localhost:3000/api/gyms
+Content-Type: application/json
+
+{
+      "name": "Mayor's Gym",
+      "street": "Porkkalankatu",
+      "streetNumber": "13N",
+      "city": "Helsinki",
+      "notes": "Changes in pricing effective February 1, 2026",
+      "openingHours": {
+        "MO": [
+          0,
+          24
+        ],
+        "TU": [
+          0,
+          24
+        ],
+        "WE": [
+          0,
+          24
+        ],
+        "TH": [
+          0,
+          24
+        ],
+        "FR": [
+          0,
+          24
+        ],
+        "SA": [
+          0,
+          24
+        ],
+        "SU": [
+          0,
+          24
+        ]
+      }
+    }

@@ -7,14 +7,14 @@ import { JWT_SECRET } from '../utils/config.ts';
 
 import { Session, User } from '../models/index.ts';
 
-import { LoginSchema } from '../utils/schemas.ts';
-import type { LoginRequest, LoginResponse, TokenPayload } from '../utils/types/types.ts';
+import { LoginRequestSchema } from '../utils/schemas.ts';
+import type { LoginRequest, LoginResponse, UserTokenPayload } from '../utils/types/types.ts';
 
 const loginRouter = Express.Router();
 
 const loginParser = (req: Request, _res: Response, next: NextFunction) => {
   try {
-    LoginSchema.parse(req.body);
+    LoginRequestSchema.parse(req.body);
     next();
   } catch (e: unknown) {
     next(e);
@@ -38,7 +38,7 @@ loginRouter.post('/', loginParser, async (req: Request<unknown, unknown, LoginRe
     return res.status(401).end();
   }
 
-  const userForToken: TokenPayload = {
+  const userForToken: UserTokenPayload = {
     id: user.id,
     username: user.username
   };

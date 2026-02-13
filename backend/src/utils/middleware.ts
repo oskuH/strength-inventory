@@ -8,8 +8,8 @@ import { JWT_SECRET } from './config.ts';
 
 import { Equipment, Gym, Session, User } from '../models/index.ts';
 
-import { NewUserSchema, PasswordSchema, PutUserSchema, UserNamesSchema, UserSchema } from '../utils/schemas.ts';
-import { type TokenPayload } from './types/types.ts';
+import { UserPostSchema, PasswordSchema, UserPutSchema, UserNamesSchema, UserSchema } from '../utils/schemas.ts';
+import { type UserTokenPayload } from './types/types.ts';
 
 const unknownEndpoint = (_req: Request, res: Response) => {
   res.status(404).send({ error: 'unknown endpoint' });
@@ -49,7 +49,7 @@ const tokenExtractor = (req: Request, res: Response, next: NextFunction): void =
 
 const userExtractor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   if (req.token) {
-    const decodedToken = jwt.verify(req.token, JWT_SECRET) as TokenPayload;
+    const decodedToken = jwt.verify(req.token, JWT_SECRET) as UserTokenPayload;
     const activeToken = await Session.findOne({ where: { token: req.token } });
     if (!activeToken) {
       res.status(401).json({ error: 'Token expired.' });
@@ -117,7 +117,7 @@ const newNamesParser = (req: Request, _res: Response, next: NextFunction) => {
 
 const newUserParser = (req: Request, _res: Response, next: NextFunction) => {
   try {
-    NewUserSchema.parse(req.body);
+    UserPostSchema.parse(req.body);
     next();
   } catch (e: unknown) {
     next(e);
@@ -154,7 +154,7 @@ const roleParser = (req: Request, _res: Response, next: NextFunction) => {
 
 const putUserParser = (req: Request, _res: Response, next: NextFunction) => {
   try {
-    PutUserSchema.parse(req.body);
+    UserPutSchema.parse(req.body);
     next();
   } catch (e: unknown) {
     next(e);

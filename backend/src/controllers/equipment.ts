@@ -4,7 +4,7 @@ import { isAdmin, targetEquipmentExtractor } from '../utils/middleware.ts';
 
 import { Equipment } from '../models/index.js';
 
-import type { Equipment as FullEquipment, EquipmentRequest } from '../utils/types/types.ts';
+import type { Equipment as FullEquipment, EquipmentPostAndPut } from '../utils/types/types.ts';
 
 const equipmentRouter = Express.Router();
 
@@ -15,7 +15,7 @@ equipmentRouter.get('/', async (_req, res) => {
 });
 
 // POST a new equipment
-equipmentRouter.post('/', ...isAdmin, async (req: Request<unknown, unknown, EquipmentRequest>, res: Response<FullEquipment>) => {
+equipmentRouter.post('/', ...isAdmin, async (req: Request<unknown, unknown, EquipmentPostAndPut>, res: Response<FullEquipment>) => {
   const { name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, notes } = req.body;
 
   const equipment: FullEquipment = await Equipment.create({ name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, notes });
@@ -23,7 +23,7 @@ equipmentRouter.post('/', ...isAdmin, async (req: Request<unknown, unknown, Equi
 });
 
 // PUT for admins to modify everything except id and timestamps
-equipmentRouter.put('/:id', ...isAdmin, targetEquipmentExtractor, async (req: Request<{ id: string; }, unknown, EquipmentRequest>, res: Response<FullEquipment>) => {
+equipmentRouter.put('/:id', ...isAdmin, targetEquipmentExtractor, async (req: Request<{ id: string; }, unknown, EquipmentPostAndPut>, res: Response<FullEquipment>) => {
   if (!req.targetEquipment) { throw new Error('Equipment missing from request.'); }  // Should never trigger after middleware.
 
   const equipment = req.targetEquipment;

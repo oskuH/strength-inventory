@@ -1,0 +1,3 @@
+DELETE http://localhost:3000/api/gyms/59097e29-d862-40cd-b716-cd089727d164
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxNWNmNmJmLWE4NmMtNDUyZS04MjcwLTk5MjI1ZWY5YWYyMiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzA5Njg2MzR9.6Ltd-hLQSdd2Q5yoKjNOkStFYeXyCyWdEC3ui0jNwts
+// admins only

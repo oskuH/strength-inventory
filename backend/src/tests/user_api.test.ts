@@ -8,7 +8,6 @@ import app from '../index.ts';
 import { User } from '../models/index.ts';
 
 import { type User as FullUser, type LoginResponse } from '../utils/types/types.ts';
-import { Role } from '../utils/types/role.ts';
 
 const initialUserCount = 3;  // The number of users created in the topmost beforeEach
 let token: string;
@@ -22,15 +21,17 @@ beforeEach(async () => {
   await User.create({
     username: 'TheAdmin',
     email: 'admin@strengthinventory.eu',
+    emailVerified: true,
     passwordHash,
     name: 'The Admin',
-    role: Role.Admin
+    role: 'ADMIN'
   });
 
   passwordHash = hashSync('ILiftThereforeIAm', salt);
   await User.create({
     username: 'LashaTalakhadze',
     email: 'lasha@talakhadze.ge',
+    emailVerified: true,
     passwordHash,
     name: 'Lasha Talakhadze'
   });

@@ -20,7 +20,7 @@ const connectToDatabase = async () => {
   try {
     await sequelize.authenticate();
     await runMigrations();
-    console.log('connected to the database');
+    console.log('Connected to the database.');
   } catch (err: unknown) {
     let errorMessage = 'Failed to connect to the database.';
     if (err instanceof Error) {

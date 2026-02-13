@@ -1,0 +1,8 @@
+PATCH http://localhost:3000/api/users/36ff9687-12eb-4f55-bad5-d9a449351b75/role
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxNWNmNmJmLWE4NmMtNDUyZS04MjcwLTk5MjI1ZWY5YWYyMiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3Njk2ODUyNzh9.3tvT-OlcpoapA4tXra9YZWwkLl_F5j9yFvCQqpGxX4E
+// admins only
+
+{
+  "role": "MANAGER"
+}

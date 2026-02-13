@@ -13,7 +13,6 @@ class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare city: string;
   declare notes: string | null | undefined;
   declare openingHours: CreationOptional<Hours>;
-  declare closingHours: CreationOptional<Hours>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 };
@@ -47,11 +46,6 @@ Gym.init({
     type: DataTypes.STRING
   },
   openingHours: {
-    type: DataTypes.JSON,
-    allowNull: false,
-    defaultValue: {}
-  },
-  closingHours: {
     type: DataTypes.JSON,
     allowNull: false,
     defaultValue: {}

@@ -17,8 +17,7 @@ import {
 
 import { User } from '../models/index.js';
 
-import type { User as FullUser, NewUserRequest, PutUserRequest } from '../utils/types/types.ts';
-import { Role } from '../utils/types/role.ts';
+import type { User as FullUser, UserPost, UserPut, UserRole } from '../utils/types/types.ts';
 
 const usersRouter = Express.Router();
 
@@ -30,7 +29,7 @@ usersRouter.get('/', async (_req, res) => {
 });
 
 // POST a new user
-usersRouter.post('/', newUserParser, async (req: Request<unknown, unknown, NewUserRequest>, res: Response<FullUser>) => {
+usersRouter.post('/', newUserParser, async (req: Request<unknown, unknown, UserPost>, res: Response<FullUser>) => {
   const { username, email, password, name } = req.body;
 
   const salt = genSaltSync(10);
@@ -90,7 +89,7 @@ usersRouter.patch('/:id/password', newPasswordParser, ...isSelf, async (req: Req
 });
 
 // PATCH for admins to change a user's role
-usersRouter.patch('/:id/role', roleParser, ...isAdmin, targetUserExtractor, async (req: Request<{ id: string; }, unknown, { role: Role; }>, res: Response<FullUser>) => {
+usersRouter.patch('/:id/role', roleParser, ...isAdmin, targetUserExtractor, async (req: Request<{ id: string; }, unknown, { role: UserRole; }>, res: Response<FullUser>) => {
   if (!req.targetUser) { throw new Error('User missing from request.'); }  // Should never trigger after middleware.
 
   const user = req.targetUser;
@@ -103,7 +102,7 @@ usersRouter.patch('/:id/role', roleParser, ...isAdmin, targetUserExtractor, asyn
 });
 
 // PUT for admins to modify everything except id and timestamps
-usersRouter.put('/:id', putUserParser, ...isAdmin, targetUserExtractor, async (req: Request<{ id: string; }, unknown, PutUserRequest>, res: Response<FullUser>) => {
+usersRouter.put('/:id', putUserParser, ...isAdmin, targetUserExtractor, async (req: Request<{ id: string; }, unknown, UserPut>, res: Response<FullUser>) => {
   if (!req.targetUser) { throw new Error('User missing from request.'); }  // Should never trigger after middleware.
 
   const user = req.targetUser;

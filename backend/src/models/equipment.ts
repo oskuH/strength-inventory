@@ -1,6 +1,6 @@
 import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
 
-import { EquipmentCategory, WeightUnit } from '../utils/types/types.ts';
+import type { EquipmentCategory, EquipmentWeightUnit } from '../utils/types/types.ts';
 
 import { sequelize } from '../utils/db.js';
 
@@ -10,12 +10,12 @@ class Equipment extends Model<InferAttributes<Equipment>, InferCreationAttribute
   declare category: EquipmentCategory;
   declare manufacturer: string;
   declare code: string;
-  declare weightUnit: WeightUnit | null;
-  declare weight: number | null;
-  declare startingWeight: number | null;
-  declare availableWeights: number[] | null;
-  declare maximumWeight: number | null;
-  declare notes: string | null;
+  declare weightUnit: EquipmentWeightUnit | null | undefined;
+  declare weight: number | null | undefined;
+  declare startingWeight: number | null | undefined;
+  declare availableWeights: number[] | null | undefined;
+  declare maximumWeight: number | null | undefined;
+  declare notes: string | null | undefined;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 };

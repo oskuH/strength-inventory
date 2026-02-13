@@ -10,7 +10,6 @@ import app from '../index.js';
 import { Gym, User } from '../models/index.ts';
 
 import { type Gym as FullGym, type LoginResponse } from '../utils/types/types.ts';
-import { Role } from '../utils/types/role.ts';
 
 const initialGymCount = 2;  // The number of gyms created in beforeEach
 let token: string;
@@ -27,7 +26,7 @@ beforeEach(async () => {
     email: 'admin@strengthinventory.eu',
     passwordHash,
     name: 'The Admin',
-    role: Role.Admin
+    role: 'ADMIN'
   });
 
   passwordHash = hashSync('YourBodyIsTheOnlyPlaceYouHaveToLive', salt);
@@ -36,7 +35,7 @@ beforeEach(async () => {
     email: 'manager@thebestgym.me',
     passwordHash,
     name: 'The Gym Owner',
-    role: Role.Manager
+    role: 'MANAGER'
   });
 
   await Gym.truncate({ cascade: true });
@@ -56,8 +55,7 @@ beforeEach(async () => {
     streetNumber: '48',
     city: 'Helsinki',
     notes: 'A lot of natural light',
-    openingHours: { MO: 6, TU: 6, WE: 6, TH: 6, FR: 6, SA: 8, SU: 8 },
-    closingHours: { MO: 22, TU: 22, WE: 22, TH: 22, FR: 21, SA: 20, SU: 20 }
+    openingHours: { MO: [6, 22], TU: [6, 22], WE: [6, 22], TH: [6, 22], FR: [6, 21], SA: [8, 20], SU: [8, 20] }
   });
 });
 
@@ -100,7 +98,6 @@ describe('POST a new gym', () => {
       const body = response.body as FullGym;
 
       expect(body.openingHours).toEqual({});
-      expect(body.closingHours).toEqual({});
     });
 
     test('fails if "name" is null', async () => {
@@ -177,24 +174,12 @@ describe('PATCH gym\'s service hours', () => {
 
     test('succeeds with both sets of hours', async () => {
       assert.isNotNull(gymToPatch);
-      const newOpeningHours = { MO: 7, TU: 7, WE: 7, TH: 7, FR: 7, SA: 8, SU: 8 };
-      const newClosingHours = { MO: 21, TU: 21, WE: 21, TH: 21, FR: 21, SA: 20, SU: 20 };
+      const newOpeningHours = { MO: [7, 21], TU: [7, 21], WE: [7, 21], TH: [7, 21], FR: [7, 21], SA: [8, 20], SU: [8, 20] };
 
       await request(app)
         .patch(`/api/gyms/${gymToPatch.id}`)
         .set('Authorization', `Bearer ${token}`)
-        .send({ openingHours: newOpeningHours, closingHours: newClosingHours })
-        .expect(200);
-    });
-
-    test('succeeds with one set of hours', async () => {
-      assert.isNotNull(gymToPatch);
-      const newClosingHours = { MO: 21, TU: 21, WE: 21, TH: 21, FR: 21, SA: 20, SU: 20 };
-
-      await request(app)
-        .patch(`/api/gyms/${gymToPatch.id}`)
-        .set('Authorization', `Bearer ${token}`)
-        .send({ closingHours: newClosingHours })
+        .send({ openingHours: newOpeningHours })
         .expect(200);
     });
   });

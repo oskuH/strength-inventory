@@ -42,22 +42,34 @@
       "city": "Helsinki",
       "notes": "Changes in pricing effective February 1, 2026",
       "openingHours": {
-        "MO": 0,
-        "TU": 0,
-        "WE": 0,
-        "TH": 0,
-        "FR": 0,
-        "SA": 0,
-        "SU": 0
-      },
-      "closingHours": {
-        "MO": 24,
-        "TU": 24,
-        "WE": 24,
-        "TH": 24,
-        "FR": 24,
-        "SA": 24,
-        "SU": 24
+        "MO": [
+          0,
+          24
+        ],
+        "TU": [
+          0,
+          24
+        ],
+        "WE": [
+          0,
+          24
+        ],
+        "TH": [
+          0,
+          24
+        ],
+        "FR": [
+          0,
+          24
+        ],
+        "SA": [
+          0,
+          24
+        ],
+        "SU": [
+          0,
+          24
+        ]
       }
     },
     {
@@ -69,22 +81,34 @@
       "city": "Helsinki",
       "notes": "3rd floor",
       "openingHours": {
-        "MO": 6,
-        "TU": 6,
-        "WE": 6,
-        "TH": 6,
-        "FR": 6,
-        "SA": 9,
-        "SU": 9
-      },
-      "closingHours": {
-        "MO": 22,
-        "TU": 22,
-        "WE": 22,
-        "TH": 22,
-        "FR": 21,
-        "SA": 20,
-        "SU": 20
+        "MO": [
+          6,
+          22
+        ],
+        "TU": [
+          6,
+          22
+        ],
+        "WE": [
+          6,
+          22
+        ],
+        "TH": [
+          6,
+          22
+        ],
+        "FR": [
+          6,
+          21
+        ],
+        "SA": [
+          9,
+          20
+        ],
+        "SU": [
+          9,
+          20
+        ]
       }
     }
   ]

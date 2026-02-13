@@ -19,9 +19,9 @@ gymsRouter.get('/', async (_req, res) => {
 
 // POST a new gym
 gymsRouter.post('/', ...isAdmin, async (req: Request<unknown, unknown, GymPost>, res: Response<FullGym>) => {
-  const { name, chain, street, streetNumber, city, notes, openingHours, closingHours } = req.body;
+  const { name, chain, street, streetNumber, city, notes, openingHours } = req.body;
 
-  const gym = await Gym.create({ name, chain, street, streetNumber, city, notes, openingHours, closingHours });
+  const gym = await Gym.create({ name, chain, street, streetNumber, city, notes, openingHours });
 
   return res.status(201).json(gym);
 });
@@ -31,7 +31,7 @@ gymsRouter.put('/:id', ...isAdmin, targetGymExtractor, async (req: Request<{ id:
   if (!req.targetGym) { throw new Error('Gym missing from request.'); }  // Should never trigger after middleware.
 
   const gym = req.targetGym;
-  const { name, chain, street, streetNumber, city, notes, openingHours, closingHours } = req.body;
+  const { name, chain, street, streetNumber, city, notes, openingHours } = req.body;
 
   await gym.update({
     name: name,
@@ -40,8 +40,7 @@ gymsRouter.put('/:id', ...isAdmin, targetGymExtractor, async (req: Request<{ id:
     streetNumber: streetNumber,
     city: city,
     notes: notes,
-    openingHours: openingHours,
-    closingHours: closingHours
+    openingHours: openingHours
   });
   await gym.save();
 
@@ -50,15 +49,14 @@ gymsRouter.put('/:id', ...isAdmin, targetGymExtractor, async (req: Request<{ id:
 
 // ADD PERMISSIONS: gym-owners
 // PATCH for admins to edit service hours
-gymsRouter.patch('/:id', ...isAdmin, targetGymExtractor, async (req: Request<{ id: string; }, unknown, { openingHours: Hours, closingHours: Hours; }>, res: Response<FullGym>) => {
+gymsRouter.patch('/:id', ...isAdmin, targetGymExtractor, async (req: Request<{ id: string; }, unknown, { openingHours: Hours; }>, res: Response<FullGym>) => {
   if (!req.targetGym) { throw new Error('Gym missing from request.'); }  // Should never trigger after middleware.
 
   const gym = req.targetGym;
-  const { openingHours, closingHours } = req.body;
+  const { openingHours } = req.body;
 
   await gym.update({
-    openingHours: openingHours,
-    closingHours: closingHours
+    openingHours: openingHours
   });
   await gym.save();
 

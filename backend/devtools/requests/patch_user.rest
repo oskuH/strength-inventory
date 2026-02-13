@@ -1,0 +1,9 @@
+PATCH http://localhost:3000/api/users/ca16ce67-718e-497a-acbe-011fcdee4745
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNhMTZjZTY3LTcxOGUtNDk3YS1hY2JlLTAxMWZjZGVlNDc0NSIsInVzZXJuYW1lIjoiRGltYXMiLCJpYXQiOjE3Njk2NzQ3NzN9.ZAO5IeIDo00Q1eKsiCBDVIeTZm-qu8F8JKsAlHaHrWc
+// users themselves only
+
+{
+  "username": "TheLasha",
+  "name": "Lasha the Strong Man"
+}
