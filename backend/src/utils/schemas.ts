@@ -74,8 +74,9 @@ export const GymSchema = z.object({
   street: z.string(),
   streetNumber: z.string(),
   city: z.string(),
-  notes: z.string().nullish(),
   openingHours: HoursSchema,
+  url: z.url().nullish(),
+  notes: z.string().nullish(),
   createdAt: z.date(),
   updatedAt: z.date()
 });
@@ -86,8 +87,9 @@ export const GymPostSchema = GymSchema.pick({
   street: true,
   streetNumber: true,
   city: true,
-  notes: true,
-  openingHours: true
+  openingHours: true,
+  url: true,
+  notes: true
 });
 
 export const GymPatchSchema = GymSchema.pick({
@@ -96,6 +98,7 @@ export const GymPatchSchema = GymSchema.pick({
   street: true,
   streetNumber: true,
   city: true,
+  url: true,
   notes: true
 });
 
@@ -116,6 +119,7 @@ export const EquipmentSchema = z.object({
   startingWeight: z.float32().nullish(),
   availableWeights: z.array(z.float32()).nullish(),
   maximumWeight: z.float32().nullish(),
+  url: z.url().nullish(),
   notes: z.string().nullish(),
   createdAt: z.date(),
   updatedAt: z.date()
@@ -131,6 +135,7 @@ export const EquipmentPostAndPutSchema = EquipmentSchema.pick({
   startingWeight: true,
   availableWeights: true,
   maximumWeight: true,
+  url: true,
   notes: true
 });
 

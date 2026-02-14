@@ -40,7 +40,6 @@
       "street": "Porkkalankatu",
       "streetNumber": "13N",
       "city": "Helsinki",
-      "notes": "Changes in pricing effective February 1, 2026",
       "openingHours": {
         "MO": [
           0,
@@ -70,7 +69,9 @@
           0,
           24
         ]
-      }
+      },
+      "url": "https://www.mayors.fi/",
+      "notes": "Changes in pricing effective February 1, 2026"
     },
     {
       "id": "742774c2-68fa-450c-8678-93289c3f37a8",
@@ -79,7 +80,6 @@
       "street": "Kaivokatu",
       "streetNumber": "8",
       "city": "Helsinki",
-      "notes": "3rd floor",
       "openingHours": {
         "MO": [
           6,
@@ -109,7 +109,9 @@
           9,
           20
         ]
-      }
+      },
+      "url": "https://www.elixia.fi/kuntosali/helsinki/citycenter",
+      "notes": "3rd floor"
     }
   ]
 }

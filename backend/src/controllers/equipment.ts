@@ -16,9 +16,9 @@ equipmentRouter.get('/', async (_req, res) => {
 
 // POST a new equipment
 equipmentRouter.post('/', ...isAdmin, async (req: Request<unknown, unknown, EquipmentPostAndPut>, res: Response<FullEquipment>) => {
-  const { name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, notes } = req.body;
+  const { name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, url, notes } = req.body;
 
-  const equipment: FullEquipment = await Equipment.create({ name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, notes });
+  const equipment: FullEquipment = await Equipment.create({ name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, url, notes });
   return res.json(equipment);
 });
 
@@ -27,7 +27,7 @@ equipmentRouter.put('/:id', ...isAdmin, targetEquipmentExtractor, async (req: Re
   if (!req.targetEquipment) { throw new Error('Equipment missing from request.'); }  // Should never trigger after middleware.
 
   const equipment = req.targetEquipment;
-  const { name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, notes } = req.body;
+  const { name, category, manufacturer, code, weightUnit, weight, startingWeight, availableWeights, maximumWeight, url, notes } = req.body;
 
   await equipment.update({
     name: name,
@@ -39,6 +39,7 @@ equipmentRouter.put('/:id', ...isAdmin, targetEquipmentExtractor, async (req: Re
     startingWeight: startingWeight,
     availableWeights: availableWeights,
     maximumWeight: maximumWeight,
+    url: url,
     notes: notes
   });
   await equipment.save();
