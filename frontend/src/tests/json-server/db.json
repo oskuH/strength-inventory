@@ -113,5 +113,37 @@
       "url": "https://www.elixia.fi/kuntosali/helsinki/citycenter",
       "notes": "3rd floor"
     }
+  ],
+  "equipment": [
+    {
+      "id": "7c50f30b-ff8c-461d-b065-1ef182fc5493",
+      "name": "PURE KRAFT Hack Squat",
+      "category": "strengthMachine",
+      "manufacturer": "gym80",
+      "code": "4159N",
+      "weightUnit": "kg",
+      "maximumWeight": 200,
+      "url": "https://gym80.de/en/product/plate-loaded-en/pure-kraft-en/4159n-pure-kraft-hack-squat/",
+      "notes": "Maximum weight = maximum load. Starting weight unknown, but can be too heavy for beginners."
+    },
+    {
+      "id": "3029ed7c-138a-4207-93c1-cae29c3961ad",
+      "name": "Eleiko Adjustable Bench Black/PUR",
+      "category": "tool",
+      "manufacturer": "Eleiko",
+      "code": "BD-1-278",
+      "url": "https://eleiko.com/en-fi/equipment/benches/workoutbenches/3062962-03-eleiko-adjustable-bench-black-pur",
+      "notes": "One of four variations."
+    },
+    {
+      "id": "a9232f00-3ce4-4dae-b4b3-3ac2dffbc8af",
+      "name": "Technogym Dumbbell 10 kg",
+      "category": "freeWeight",
+      "manufacturer": "Technogym",
+      "code": "GB10",
+      "weightUnit": "kg",
+      "weight": 10,
+      "url": "https://www.technogym.com/en-INT/product/dumbbell_A0001-UDB.html?weight=10kg&pid=A0001191"
+    }
   ]
 }

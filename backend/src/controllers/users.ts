@@ -3,21 +3,21 @@ import Express, { type Request, type Response } from 'express';
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 
 import {
+  isSelf,
+  isAdmin,
+  isSelfOrAdmin,
   newNamesParser,
   newUserParser,
   newEmailParser,
   newPasswordParser,
-  roleParser,
   putUserParser,
-  targetUserExtractor,
-  isSelf,
-  isAdmin,
-  isSelfOrAdmin
+  roleParser,
+  targetUserExtractor
 } from '../utils/middleware.ts';
 
 import { User } from '../models/index.js';
 
-import type { User as FullUser, UserPost, UserPut, UserRole } from '../utils/types/types.ts';
+import type { User as FullUser, UserPost, UserPut, UserRole } from '../utils/schemas.ts';
 
 const usersRouter = Express.Router();
 

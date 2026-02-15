@@ -8,8 +8,15 @@ import { JWT_SECRET } from './config.ts';
 
 import { Equipment, Gym, Session, User } from '../models/index.ts';
 
-import { UserPostSchema, PasswordSchema, UserPutSchema, UserNamesSchema, UserSchema } from '../utils/schemas.ts';
-import { type UserTokenPayload } from './types/types.ts';
+import {
+  LoginRequestSchema,
+  PasswordSchema,
+  UserNamesSchema,
+  UserPostSchema,
+  UserPutSchema,
+  UserSchema,
+  type UserTokenPayload
+} from '../utils/schemas.ts';
 
 const unknownEndpoint = (_req: Request, res: Response) => {
   res.status(404).send({ error: 'unknown endpoint' });
@@ -222,12 +229,25 @@ const targetEquipmentExtractor = async (req: Request<{ id: string; }>, res: Resp
 };
 
 
+// login
+
+const loginParser = (req: Request, _res: Response, next: NextFunction) => {
+  try {
+    LoginRequestSchema.parse(req.body);
+    next();
+  } catch (e: unknown) {
+    next(e);
+  }
+};
+
+
 export {
   unknownEndpoint,
   errorHandler,
   tokenExtractor,
   userExtractor,
   isAdmin,
+  loginParser,
   targetUserExtractor,
   newNamesParser,
   newUserParser,

@@ -1,25 +1,17 @@
-import Express, { type Request, type Response, type NextFunction } from 'express';
+import Express, { type Request, type Response } from 'express';
 
 import { compare } from 'bcrypt-ts';
 import jwt from 'jsonwebtoken';
 
 import { JWT_SECRET } from '../utils/config.ts';
 
+import { loginParser } from '../utils/middleware.ts';
+
 import { Session, User } from '../models/index.ts';
 
-import { LoginRequestSchema } from '../utils/schemas.ts';
-import type { LoginRequest, LoginResponse, UserTokenPayload } from '../utils/types/types.ts';
+import type { LoginRequest, LoginResponse, UserTokenPayload } from '../utils/schemas.ts';
 
 const loginRouter = Express.Router();
-
-const loginParser = (req: Request, _res: Response, next: NextFunction) => {
-  try {
-    LoginRequestSchema.parse(req.body);
-    next();
-  } catch (e: unknown) {
-    next(e);
-  }
-};
 
 loginRouter.post('/', loginParser, async (req: Request<unknown, unknown, LoginRequest>, res: Response<LoginResponse>) => {
   const { username, password } = req.body;

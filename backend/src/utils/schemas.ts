@@ -11,7 +11,8 @@ export const HoursSchema = z.object({
   FR: TimeSchema,
   SA: TimeSchema,
   SU: TimeSchema
-});  // Used in gym and membership
+});
+export type Hours = z.infer<typeof HoursSchema>;  // Used in gym and membership
 
 
 // user
@@ -23,6 +24,7 @@ export const PasswordSchema = z
   .max(100);  // upper limit prevents extremely long passwords that would take too long to hash (NIST SP800-63B)
 
 export const UserRoleEnum = z.enum(['SUPERUSER', 'ADMIN', 'MANAGER', 'GYM-GOER']);
+export type UserRole = z.infer<typeof UserRoleEnum>;
 
 export const UserSchema = z.object({
   id: z.uuidv4(),
@@ -35,6 +37,7 @@ export const UserSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date()
 });
+export type User = z.infer<typeof UserSchema>;
 
 export const UserPostSchema = UserSchema.pick({
   username: true,
@@ -43,6 +46,7 @@ export const UserPostSchema = UserSchema.pick({
 }).extend({
   password: PasswordSchema
 });
+export type UserPost = z.infer<typeof UserPostSchema>;
 
 export const UserPutSchema = UserSchema.pick({
   username: true,
@@ -53,11 +57,13 @@ export const UserPutSchema = UserSchema.pick({
 }).extend({
   password: PasswordSchema.nullish()
 });
+export type UserPut = z.infer<typeof UserPutSchema>;
 
 export const UserTokenPayloadSchema = UserSchema.pick({
   id: true,
   username: true
 });
+export type UserTokenPayload = z.infer<typeof UserTokenPayloadSchema>;
 
 export const UserNamesSchema = UserSchema.pick({
   username: true,
@@ -80,6 +86,7 @@ export const GymSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date()
 });
+export type Gym = z.infer<typeof GymSchema>;
 
 export const GymPostSchema = GymSchema.pick({
   name: true,
@@ -91,6 +98,7 @@ export const GymPostSchema = GymSchema.pick({
   url: true,
   notes: true
 });
+export type GymPost = z.infer<typeof GymPostSchema>;
 
 export const GymPatchSchema = GymSchema.pick({
   name: true,
@@ -101,12 +109,16 @@ export const GymPatchSchema = GymSchema.pick({
   url: true,
   notes: true
 });
+export type GymPatch = z.infer<typeof GymPatchSchema>;
 
 
 // equipment
 
 export const EquipmentCategoryEnum = z.enum(['attachment', 'cardio', 'freeWeight', 'strengthMachine', 'tool']);
+export type EquipmentCategory = z.infer<typeof EquipmentCategoryEnum>;
+
 export const EquipmentWeightUnitEnum = z.enum(['kg', 'lbs']).nullish();
+export type EquipmentWeightUnit = z.infer<typeof EquipmentWeightUnitEnum>;
 
 export const EquipmentSchema = z.object({
   id: z.uuidv4(),
@@ -124,6 +136,7 @@ export const EquipmentSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date()
 });
+export type Equipment = z.infer<typeof EquipmentSchema>;
 
 export const EquipmentPostAndPutSchema = EquipmentSchema.pick({
   name: true,
@@ -137,14 +150,34 @@ export const EquipmentPostAndPutSchema = EquipmentSchema.pick({
   maximumWeight: true,
   url: true,
   notes: true
-});
+}); export type EquipmentPostAndPut = z.infer<typeof EquipmentPostAndPutSchema>;
+
 
 // membership
 
 export const MembershipTimeUnitEnum = z.enum(['year', 'month', 'week', 'day', 'hour']);
+export type MembershipTimeUnit = z.infer<typeof MembershipTimeUnitEnum>;
 
 export const MembershipAvailabilityEntrySchema = z.tuple([z.string(), HoursSchema]);
 export const MembershipAvailabilitySchema = z.array(MembershipAvailabilityEntrySchema);
+export type MembershipAvailability = z.infer<typeof MembershipAvailabilitySchema>;
+
+export const MembershipSchema = z.object({
+  id: z.uuidv4(),
+  name: z.string(),
+  price: z.float32(),
+  priceCurrency: z.string(),
+  validity: z.int(),
+  validityUnit: MembershipTimeUnitEnum,
+  commitment: z.int().nullish(),
+  commitmentUnit: MembershipTimeUnitEnum.nullish(),  // TODO: custom validator
+  availability: MembershipAvailabilitySchema,
+  url: z.url().nullish(),
+  notes: z.string().nullish(),
+  createdAt: z.date(),
+  updatedAt: z.date()
+});
+export type Membership = z.infer<typeof MembershipSchema>;
 
 
 // login
@@ -153,7 +186,10 @@ export const LoginRequestSchema = z.object({
   username: z.string(),
   password: z.string()
 });
+export type LoginRequest = z.infer<typeof LoginRequestSchema>;
+
 export const LoginResponseSchema = z.object({
   token: z.string(),
   username: z.string()
 });
+export type LoginResponse = z.infer<typeof LoginResponseSchema>;

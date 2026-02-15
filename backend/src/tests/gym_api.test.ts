@@ -9,7 +9,7 @@ import app from '../index.js';
 
 import { Gym, User } from '../models/index.ts';
 
-import { type Gym as FullGym, type LoginResponse } from '../utils/types/types.ts';
+import { type Gym as FullGym, type LoginResponse } from '../utils/schemas.ts';
 
 const initialGymCount = 2;  // The number of gyms created in beforeEach
 let token: string;

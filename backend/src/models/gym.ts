@@ -1,6 +1,6 @@
 import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
 
-import { type Hours } from '../utils/types/types.ts';
+import { type Hours } from '../utils/schemas.ts';
 
 import { sequelize } from '../utils/db.js';
 
