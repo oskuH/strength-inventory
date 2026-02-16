@@ -1,11 +1,13 @@
 import Express, { type Request, type Response } from 'express';
 
 import {
-  targetGymExtractor,
-  isAdmin
+  isAdmin,
+  isAdminOrManager,
+  isManager,
+  targetGymExtractor
 } from '../utils/middleware.ts';
 
-import { Gym } from '../models/index.js';
+import { Gym } from '../models/index.ts';
 
 import type { Gym as FullGym, GymPatch, GymPost, Hours } from '../utils/schemas.ts';
 
@@ -48,9 +50,8 @@ gymsRouter.put('/:id', ...isAdmin, targetGymExtractor, async (req: Request<{ id:
   return res.status(200).json(gym);
 });
 
-// TODO: add manager permissions
-// PATCH for admins to edit opening hours
-gymsRouter.patch('/:id', ...isAdmin, targetGymExtractor, async (req: Request<{ id: string; }, unknown, { openingHours: Hours; }>, res: Response<FullGym>) => {
+// PATCH for admins and managers to edit opening hours
+gymsRouter.patch('/:id', targetGymExtractor, ...isAdminOrManager, async (req: Request<{ id: string; }, unknown, { openingHours: Hours; }>, res: Response<FullGym>) => {
   if (!req.targetGym) { throw new Error('Gym missing from request.'); }  // Should never trigger after middleware.
 
   const gym = req.targetGym;
@@ -64,9 +65,8 @@ gymsRouter.patch('/:id', ...isAdmin, targetGymExtractor, async (req: Request<{ i
   return res.status(200).json(gym);
 });
 
-// TODO: add manager permissions
 // PATCH for managers to edit information other than service hours
-gymsRouter.patch('/:id', targetGymExtractor, async (req: Request<{ id: string; }, unknown, GymPatch>, res: Response<FullGym>) => {
+gymsRouter.patch('/:id', targetGymExtractor, isManager, async (req: Request<{ id: string; }, unknown, GymPatch>, res: Response<FullGym>) => {
   if (!req.targetGym) { throw new Error('Gym missing from request.'); }  // Should never trigger after middleware.
 
   const gym = req.targetGym;

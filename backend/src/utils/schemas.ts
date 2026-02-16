@@ -164,6 +164,7 @@ export type MembershipAvailability = z.infer<typeof MembershipAvailabilitySchema
 
 export const MembershipSchema = z.object({
   id: z.uuidv4(),
+  chain: z.string().nullish(),
   name: z.string(),
   price: z.float32(),
   priceCurrency: z.string(),
@@ -179,6 +180,21 @@ export const MembershipSchema = z.object({
 });
 export type Membership = z.infer<typeof MembershipSchema>;
 
+export const MembershipPostAndPutSchema = MembershipSchema.pick({
+  chain: true,
+  name: true,
+  price: true,
+  priceCurrency: true,
+  validity: true,
+  validityUnit: true,
+  commitment: true,
+  commitmentUnit: true,
+  availability: true,
+  url: true,
+  notes: true
+});
+export type MembershipPostAndPut = z.infer<typeof MembershipPostAndPutSchema>;
+
 
 // login
 
@@ -193,3 +209,55 @@ export const LoginResponseSchema = z.object({
   username: z.string()
 });
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
+
+
+// gymequipment
+
+export const GymEquipmentSchema = z.object({
+  id: z.uuidv4(),
+  gymId: z.uuidv4(),
+  equipmentId: z.uuidv4(),
+  createdAt: z.date(),
+  updatedAt: z.date()
+});
+export type GymEquipment = z.infer<typeof GymEquipmentSchema>;
+
+export const GymEquipmentPostSchema = GymEquipmentSchema.pick({
+  equipmentId: true
+});
+export type GymEquipmentPost = z.infer<typeof GymEquipmentPostSchema>;
+
+
+// gymmanagers
+
+export const GymManagerSchema = z.object({
+  id: z.uuidv4(),
+  userId: z.uuidv4(),
+  gymId: z.uuidv4(),
+  createdAt: z.date(),
+  updatedAt: z.date()
+});
+export type GymManager = z.infer<typeof GymManagerSchema>;
+
+export const GymManagerPostSchema = GymManagerSchema.pick({
+  userId: true,
+  gymId: true
+});
+export type GymManagerPost = z.infer<typeof GymManagerPostSchema>;
+
+
+// gymmemberships
+
+export const GymMembershipSchema = z.object({
+  id: z.uuidv4(),
+  gymId: z.uuidv4(),
+  membershipId: z.uuidv4(),
+  createdAt: z.date(),
+  updatedAt: z.date()
+});
+export type GymMembership = z.infer<typeof GymMembershipSchema>;
+
+export const GymMembershipPostSchema = GymMembershipSchema.pick({
+  membershipId: true
+});
+export type GymMembershipPost = z.infer<typeof GymMembershipPostSchema>;

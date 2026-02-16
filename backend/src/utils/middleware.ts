@@ -6,7 +6,16 @@ import jwt from 'jsonwebtoken';
 
 import { JWT_SECRET } from './config.ts';
 
-import { Equipment, Gym, Session, User } from '../models/index.ts';
+import {
+  Equipment,
+  Gym,
+  GymEquipment,
+  GymManagers,
+  GymMemberships,
+  Membership,
+  Session,
+  User
+} from '../models/index.ts';
 
 import {
   LoginRequestSchema,
@@ -39,7 +48,7 @@ const errorHandler = (err: unknown, _req: Request, res: Response, next: NextFunc
     return;
   } else {
     console.error('Unhandled error type.');
-    next(err);  // err to be handled by Express built-in error handler
+    next(err);  // err passed to the Express built-in error handler
   }
 };
 
@@ -82,7 +91,12 @@ const userExtractor = async (req: Request, res: Response, next: NextFunction): P
 };
 
 const isUserAdmin = (req: Request, res: Response, next: NextFunction): void => {
-  if (!req.user || (req.user.role !== 'ADMIN' && req.user.role !== 'SUPERUSER')) {
+  if (!req.user) {
+    res.status(401).json({ error: 'User missing from request.' });
+    return;
+  }
+
+  if (req.user.role !== 'ADMIN' && req.user.role !== 'SUPERUSER') {
     res.status(403).json({ error: 'Admin rights required.' });
     return;
   }
@@ -91,9 +105,90 @@ const isUserAdmin = (req: Request, res: Response, next: NextFunction): void => {
 
 const isAdmin = [tokenExtractor, userExtractor, isUserAdmin];
 
+const isUserManager = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  if (!req.user) {
+    res.status(401).json({ error: 'User missing from request.' });
+    return;
+  }
+
+  if (req.user.role !== 'MANAGER') {
+    res.status(403).json({ error: 'Manager rights required.' });
+    return;
+  } else {
+    let gymId: string;
+    if (req.targetGym) {  // junction POSTs and Gym PATCHes
+      gymId = req.targetGym.id;
+    } else if (req.targetGymEquipment) {  // GymEquipment DELETE
+      gymId = req.targetGymEquipment.gymId;
+    } else if (req.targetGymMembership) {  // GymMembership DELETE
+      gymId = req.targetGymMembership.gymId;
+    } else {
+      res.status(400).json({ error: 'Gym id missing from request.' });
+      return;
+    }
+
+    const junction = await GymManagers.findOne({
+      where: {
+        userId: req.user.id,
+        gymId: gymId
+      }
+    });
+
+    if (!junction) {
+      res.status(403).json({ error: 'Admin or manager rights required.' });
+      return;
+    }
+  }
+
+  next();
+};
+
+const isManager = [tokenExtractor, userExtractor, isUserManager];  // Will throw an error if there is no preceding target extractor.
+
+const isUserAdminOrManager = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  if (!req.user) {
+    res.status(401).json({ error: 'User missing from request.' });
+    return;
+  }
+
+  if (req.user.role !== 'ADMIN' && req.user.role !== 'SUPERUSER' && req.user.role !== 'MANAGER') {
+    res.status(403).json({ error: 'Admin or manager rights required.' });
+    return;
+  } else {
+    if (req.user.role === 'MANAGER') {
+      let gymId: string;
+      if (req.targetGym) {  // junction POSTs and Gym PATCHes
+        gymId = req.targetGym.id;
+      } else if (req.targetGymEquipment) {  // GymEquipment DELETE
+        gymId = req.targetGymEquipment.gymId;
+      } else if (req.targetGymMembership) {  // GymMembership DELETE
+        gymId = req.targetGymMembership.gymId;
+      } else {
+        res.status(400).json({ error: 'Gym id missing from request.' });
+        return;
+      }
+
+      const junction = await GymManagers.findOne({
+        where: {
+          userId: req.user.id,
+          gymId: gymId
+        }
+      });
+
+      if (!junction) {
+        res.status(403).json({ error: 'Admin or manager rights required.' });
+        return;
+      }
+    }
+  }
+
+  next();
+};
+
+const isAdminOrManager = [tokenExtractor, userExtractor, isUserAdminOrManager];  // Will throw an error for managers if there is no preceding target extractor.
+
 
 // user
-
 
 const targetUserExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
   const { id } = req.params;
@@ -208,7 +303,7 @@ const targetGymExtractor = async (req: Request<{ id: string; }>, res: Response, 
 };
 
 
-// equipment
+// membership
 
 const targetEquipmentExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
   const { id } = req.params;
@@ -218,13 +313,34 @@ const targetEquipmentExtractor = async (req: Request<{ id: string; }>, res: Resp
     return;
   }
 
-  const equipment = await Equipment.findByPk(id);
-  if (!equipment) {
+  const membership = await Equipment.findByPk(id);
+  if (!membership) {
     res.status(404).json({ error: `Equipment with ID ${id} not found.` });
     return;
   }
 
-  req.targetEquipment = equipment;
+  req.targetEquipment = membership;
+  next();
+};
+
+
+// membership
+
+const targetMembershipExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
+  const { id } = req.params;
+
+  if (!id) {
+    res.status(400).json({ error: 'ID missing from request.' });
+    return;
+  }
+
+  const membership = await Membership.findByPk(id);
+  if (!membership) {
+    res.status(404).json({ error: `Membership with ID ${id} not found.` });
+    return;
+  }
+
+  req.targetMembership = membership;
   next();
 };
 
@@ -241,13 +357,77 @@ const loginParser = (req: Request, _res: Response, next: NextFunction) => {
 };
 
 
+// gymequipment
+
+const targetGymEquipmentExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
+  const { id } = req.params;
+
+  if (!id) {
+    res.status(400).json({ error: 'ID missing from request.' });
+    return;
+  }
+
+  const junction = await GymEquipment.findByPk(id);
+  if (!junction) {
+    res.status(404).json({ error: `Association with ID ${id} not found.` });
+    return;
+  }
+
+  req.targetGymEquipment = junction;
+  next();
+};
+
+
+// gymmanagers
+
+const targetGymManagerExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
+  const { id } = req.params;
+
+  if (!id) {
+    res.status(400).json({ error: 'ID missing from request.' });
+    return;
+  }
+
+  const junction = await GymManagers.findByPk(id);
+  if (!junction) {
+    res.status(404).json({ error: `Association with ID ${id} not found.` });
+    return;
+  }
+
+  req.targetGymManager = junction;
+  next();
+};
+
+
+// gymmemberhsips
+
+const targetGymMembershipExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
+  const { id } = req.params;
+
+  if (!id) {
+    res.status(400).json({ error: 'ID missing from request.' });
+    return;
+  }
+
+  const junction = await GymMemberships.findByPk(id);
+  if (!junction) {
+    res.status(404).json({ error: `Association with ID ${id} not found.` });
+    return;
+  }
+
+  req.targetGymMembership = junction;
+  next();
+};
+
+
 export {
   unknownEndpoint,
   errorHandler,
   tokenExtractor,
   userExtractor,
   isAdmin,
-  loginParser,
+  isManager,
+  isAdminOrManager,
   targetUserExtractor,
   newNamesParser,
   newUserParser,
@@ -258,5 +438,10 @@ export {
   isSelf,
   isSelfOrAdmin,
   targetGymExtractor,
-  targetEquipmentExtractor
+  targetEquipmentExtractor,
+  targetMembershipExtractor,
+  loginParser,
+  targetGymEquipmentExtractor,
+  targetGymManagerExtractor,
+  targetGymMembershipExtractor
 };

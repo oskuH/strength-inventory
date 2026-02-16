@@ -28,4 +28,4 @@ Equipment.belongsToMany(Gym, { through: GymEquipment });
 Gym.belongsToMany(Membership, { through: GymMemberships });
 Membership.belongsToMany(Gym, { through: GymMemberships });
 
-export { Equipment, Gym, Membership, Session, User };
+export { Equipment, Gym, GymEquipment, GymManagers, GymMemberships, Membership, Session, User };
