@@ -1,3 +1,3 @@
-DELETE http://localhost:3000/api/gyms/59097e29-d862-40cd-b716-cd089727d164
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxNWNmNmJmLWE4NmMtNDUyZS04MjcwLTk5MjI1ZWY5YWYyMiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzA5Njg2MzR9.6Ltd-hLQSdd2Q5yoKjNOkStFYeXyCyWdEC3ui0jNwts
+DELETE http://localhost:3000/api/gyms/24c63afd-e5b1-4fa1-8748-0a0d02c8b729
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4MDJlMmE5LWE3YWUtNDZmMS04OTFjLTdkNWIwNDhjYTRmNiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzEzMzcwMzh9.Zda-9ajN6zNSn7uWg-JJEYYSK_gK3YNExFVB-wUwBbk
 // admins only

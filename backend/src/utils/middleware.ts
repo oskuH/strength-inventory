@@ -18,6 +18,7 @@ import {
 } from '../models/index.ts';
 
 import {
+  type Gym as FullGym,
   LoginRequestSchema,
   PasswordSchema,
   UserNamesSchema,
@@ -398,6 +399,29 @@ const targetGymManagerExtractor = async (req: Request<{ id: string; }>, res: Res
   next();
 };
 
+const adjustUserRole = async (userId: string, emptyLength: number): Promise<void> => {
+  const user = await User.findByPk(userId);
+  if (!user) {
+    throw new Error(`User with ID ${userId} not found.`);
+  }
+
+  if (user.role === 'ADMIN' || user.role === 'SUPERUSER') {
+    return;
+  } else {
+    const gyms: FullGym[] = await user.getGyms();
+    if (gyms.length === emptyLength) {
+      await user.update({
+        role: 'GYM-GOER'
+      });
+    } else {
+      await user.update({
+        role: 'MANAGER'
+      });
+    }
+    return;
+  }
+};
+
 
 // gymmemberhsips
 
@@ -443,5 +467,6 @@ export {
   loginParser,
   targetGymEquipmentExtractor,
   targetGymManagerExtractor,
+  adjustUserRole,
   targetGymMembershipExtractor
 };

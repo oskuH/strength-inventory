@@ -1,0 +1,9 @@
+POST http://localhost:3000/api/gymmanagers
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4MDJlMmE5LWE3YWUtNDZmMS04OTFjLTdkNWIwNDhjYTRmNiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzEzMzYzODl9.r_BBfO31OEvNibI6aULjMFmC-wKKC43sz_H66CVCKc8
+// admins only
+
+{
+  "userId": "2802e2a9-a7ae-46f1-891c-7d5b048ca4f6",
+  "gymId": "24c63afd-e5b1-4fa1-8748-0a0d02c8b729"
+}

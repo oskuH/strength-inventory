@@ -1,5 +1,7 @@
 POST http://localhost:3000/api/gyms
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4MDJlMmE5LWE3YWUtNDZmMS04OTFjLTdkNWIwNDhjYTRmNiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzEzMzYzODl9.r_BBfO31OEvNibI6aULjMFmC-wKKC43sz_H66CVCKc8
+// admins only
 
 {
       "name": "Mayor's Gym",

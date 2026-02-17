@@ -1,8 +1,17 @@
-import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
+import {
+  type BelongsToManyGetAssociationsMixin,
+  type CreationOptional,
+  DataTypes,
+  type InferAttributes,
+  type InferCreationAttributes,
+  Model
+} from 'sequelize';
 
 import type { UserRole } from '../utils/schemas.ts';
 
 import { sequelize } from '../utils/db.js';
+
+import Gym from './gym.ts';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<string>;
@@ -14,6 +23,8 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare role: CreationOptional<UserRole>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+
+  declare getGyms: BelongsToManyGetAssociationsMixin<Gym>;
 };
 
 User.init({

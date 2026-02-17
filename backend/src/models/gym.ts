@@ -1,8 +1,19 @@
-import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
+import {
+  type BelongsToManyGetAssociationsMixin,
+  type CreationOptional,
+  DataTypes,
+  type InferAttributes,
+  type InferCreationAttributes,
+  Model
+} from 'sequelize';
+
+import { adjustUserRole } from '../utils/middleware.ts';
 
 import { type Hours } from '../utils/schemas.ts';
 
 import { sequelize } from '../utils/db.js';
+
+import User from './user.ts';
 
 class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare id: CreationOptional<string>;
@@ -16,6 +27,8 @@ class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare notes: string | null | undefined;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+
+  declare getUsers: BelongsToManyGetAssociationsMixin<User>;
 };
 
 Gym.init({
@@ -57,6 +70,14 @@ Gym.init({
   createdAt: DataTypes.DATE,
   updatedAt: DataTypes.DATE
 }, {
+  hooks: {
+    beforeDestroy: async (gym) => {  // Turn gym-less managers into gym-goers.
+      const managers = await gym.getUsers();
+      for (const manager of managers) {
+        await adjustUserRole(manager.id, 1);  // emptyLength = 1 because this is run before .destroy() and its CASCADE
+      }
+    }
+  },
   sequelize,
   underscored: true,
   modelName: 'gym'

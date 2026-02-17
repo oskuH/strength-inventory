@@ -1,6 +1,10 @@
 import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
 
+import { adjustUserRole } from '../utils/middleware.ts';
+
 import { sequelize } from '../utils/db.js';
+
+import User from './user.ts';
 
 class GymManagers extends Model<InferAttributes<GymManagers>, InferCreationAttributes<GymManagers>> {
   declare id: CreationOptional<string>;
@@ -19,16 +23,33 @@ GymManagers.init({
   userId: {
     type: DataTypes.UUID,
     allowNull: false,
-    references: { model: 'users', key: 'id' }
+    references: { model: 'users', key: 'id' },
+    onDelete: 'CASCADE'
   },
   gymId: {
     type: DataTypes.UUID,
     allowNull: false,
-    references: { model: 'gyms', key: 'id' }
+    references: { model: 'gyms', key: 'id' },
+    onDelete: 'CASCADE'
   },
   createdAt: DataTypes.DATE,
   updatedAt: DataTypes.DATE
 }, {
+  hooks: {
+    afterCreate: async (gymmanager) => {  // Turn gym-goers into managers.
+      const manager = await User.findByPk(gymmanager.userId);
+      if (manager) {
+        if (manager.role !== 'ADMIN' && manager.role !== 'SUPERUSER') {
+          await manager.update({
+            role: 'MANAGER'
+          });
+        }
+      }
+    },
+    afterDestroy: async (gymmanager) => {  // Turn gym-less managers into gym-goers.
+      await adjustUserRole(gymmanager.userId, 0);
+    }
+  },
   sequelize,
   underscored: true,
   modelName: 'gymmanagers'

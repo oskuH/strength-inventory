@@ -14,6 +14,7 @@ let token: string;
 
 beforeEach(async () => {
   await User.truncate({ cascade: true });
+
   let passwordHash: string;
   const salt = genSaltSync(10);
 
