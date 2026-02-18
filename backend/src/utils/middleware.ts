@@ -26,7 +26,7 @@ import {
   UserPutSchema,
   UserSchema,
   type UserTokenPayload
-} from '../utils/schemas.ts';
+} from '@strength-inventory/schemas';
 
 const unknownEndpoint = (_req: Request, res: Response) => {
   res.status(404).send({ error: 'unknown endpoint' });

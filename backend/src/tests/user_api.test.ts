@@ -7,7 +7,7 @@ import app from '../index.ts';
 
 import { User } from '../models/index.ts';
 
-import { type User as FullUser, type LoginResponse } from '../utils/schemas.ts';
+import { type User as FullUser, type LoginResponse } from '@strength-inventory/schemas';
 
 const initialUserCount = 3;  // The number of users created in the topmost beforeEach
 let token: string;

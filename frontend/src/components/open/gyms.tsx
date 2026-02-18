@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getGyms } from '../../utils/api';
 
-import { type Gym } from '../../utils/types';
+import { type Gym } from '@strength-inventory/schemas';
 
 import Footer from '../../components/root/footer';
 

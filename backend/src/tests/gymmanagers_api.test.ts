@@ -7,7 +7,7 @@ import app from '../index.ts';
 
 import { Gym, GymManagers, User } from '../models/index.ts';
 
-import { type GymManager as FullGymManager, type LoginResponse } from '../utils/schemas.ts';
+import { type GymManager as FullGymManager, type LoginResponse } from '@strength-inventory/schemas';
 
 const initialGymManagersCount = 1;  // The number of junctions created in the topmost beforeEach
 let token: string;

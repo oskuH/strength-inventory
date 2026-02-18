@@ -9,7 +9,7 @@ import {
 
 import { adjustUserRole } from '../utils/middleware.ts';
 
-import { type Hours } from '../utils/schemas.ts';
+import { type Hours } from '@strength-inventory/schemas';
 
 import { sequelize } from '../utils/db.js';
 

@@ -1,5 +1,3 @@
-// TODO: these tests are currently broken
-
 import { assert, beforeEach, describe, expect, test } from 'vitest';
 import request from 'supertest';
 
@@ -9,7 +7,7 @@ import app from '../index.js';
 
 import { Gym, User } from '../models/index.ts';
 
-import { type Gym as FullGym, type LoginResponse } from '../utils/schemas.ts';
+import { type Gym as FullGym, type LoginResponse } from '@strength-inventory/schemas';
 
 const initialGymCount = 2;  // The number of gyms created in beforeEach
 let token: string;

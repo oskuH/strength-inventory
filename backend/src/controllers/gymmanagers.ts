@@ -4,7 +4,7 @@ import { isAdmin, targetGymManagerExtractor } from '../utils/middleware.ts';
 
 import { GymManagers } from '../models/index.ts';
 
-import type { GymManager as FullGymManager, GymManagerPost } from '../utils/schemas.ts';
+import type { GymManager as FullGymManager, GymManagerPost } from '@strength-inventory/schemas';
 
 const gymManagersRouter = Express.Router();
 

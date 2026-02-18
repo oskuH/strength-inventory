@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { GymSchema } from './schemas';
+import { GymSchema } from '@strength-inventory/schemas';
 
 const baseUrl = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api';
 

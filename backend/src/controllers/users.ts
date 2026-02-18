@@ -17,7 +17,7 @@ import {
 
 import { User } from '../models/index.js';
 
-import type { User as FullUser, UserPost, UserPut, UserRole } from '../utils/schemas.ts';
+import type { User as FullUser, UserPost, UserPut, UserRole } from '@strength-inventory/schemas';
 
 const usersRouter = Express.Router();
 

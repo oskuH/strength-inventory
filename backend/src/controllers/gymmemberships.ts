@@ -4,7 +4,7 @@ import { isAdminOrManager, targetGymExtractor, targetGymMembershipExtractor } fr
 
 import { GymMemberships } from '../models/index.ts';
 
-import type { GymMembership as FullGymMembership, GymMembershipPost } from '../utils/schemas.ts';
+import type { GymMembership as FullGymMembership, GymMembershipPost } from '@strength-inventory/schemas';
 
 const gymMembershipsRouter = Express.Router();
 

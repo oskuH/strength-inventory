@@ -4,7 +4,7 @@ import { isAdmin, targetMembershipExtractor } from '../utils/middleware.ts';
 
 import { Membership } from '../models/index.ts';
 
-import type { Membership as FullMembership, MembershipPostAndPut } from '../utils/schemas.ts';
+import type { Membership as FullMembership, MembershipPostAndPut } from '@strength-inventory/schemas';
 
 const membershipsRouter = Express.Router();
 

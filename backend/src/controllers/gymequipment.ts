@@ -4,7 +4,7 @@ import { isAdminOrManager, targetGymEquipmentExtractor, targetGymExtractor } fro
 
 import { GymEquipment } from '../models/index.ts';
 
-import type { GymEquipment as FullGymEquipment, GymEquipmentPost } from '../utils/schemas.ts';
+import type { GymEquipment as FullGymEquipment, GymEquipmentPost } from '@strength-inventory/schemas';
 
 const gymEquipmentRouter = Express.Router();
 

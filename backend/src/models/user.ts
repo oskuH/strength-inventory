@@ -7,7 +7,7 @@ import {
   Model
 } from 'sequelize';
 
-import type { UserRole } from '../utils/schemas.ts';
+import type { UserRole } from '@strength-inventory/schemas';
 
 import { sequelize } from '../utils/db.js';
 

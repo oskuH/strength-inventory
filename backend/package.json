@@ -17,7 +17,8 @@
     "migration:down": "npm run migration:down_dev && npm run migration:down_test"
   },
   "devDependencies": {
-    "@eslint/js": "^9.34.0",
+    "@strength-inventory/schemas": "*",
+    "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.7.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",

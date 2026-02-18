@@ -1,6 +1,6 @@
 import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
 
-import type { MembershipAvailability, MembershipTimeUnit } from '../utils/schemas.ts';
+import type { MembershipAvailability, MembershipTimeUnit } from '@strength-inventory/schemas';
 
 import { sequelize } from '../utils/db.js';
 

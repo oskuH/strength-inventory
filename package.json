@@ -1,0 +1,9 @@
+{
+  "name": "strength-inventory",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "packages/*"
+  ]
+}

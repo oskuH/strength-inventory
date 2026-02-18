@@ -9,7 +9,7 @@ import {
 
 import { Gym } from '../models/index.ts';
 
-import type { Gym as FullGym, GymPatch, GymPost, Hours } from '../utils/schemas.ts';
+import type { Gym as FullGym, GymPatch, GymPost, Hours } from '@strength-inventory/schemas';
 
 const gymsRouter = Express.Router();
 

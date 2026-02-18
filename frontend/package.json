@@ -8,9 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "json-server --routes ./src/tests/json-server/routes.json --watch ./src/tests/json-server/db.json"
+    "server": "json-server ./src/tests/json-server/db.cjs --routes ./src/tests/json-server/routes.json --watch ./src/tests/json-server/db.json"
   },
   "dependencies": {
+    "@strength-inventory/schemas": "*",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-query-devtools": "^5.91.3",

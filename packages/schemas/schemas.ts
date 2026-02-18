@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
 
+/* All timestamps have .coerce to enable using json-server for frontend development.
+Although using .coerce is not optimal in terms of strictness and only required for json-server,
+it should not cause any issues as long as timestamps can only be modified by Sequelize in production.  */
+
 const TimeSchema = z.array(z.number().min(0).max(24)).length(2).nullish();
 
 export const HoursSchema = z.object({
@@ -34,8 +38,8 @@ export const UserSchema = z.object({
   passwordHash: z.string(),
   name: z.string().max(100),
   role: UserRoleEnum,
-  createdAt: z.date(),
-  updatedAt: z.date()
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
 });
 export type User = z.infer<typeof UserSchema>;
 
@@ -83,8 +87,8 @@ export const GymSchema = z.object({
   openingHours: HoursSchema,
   url: z.url().nullish(),
   notes: z.string().nullish(),
-  createdAt: z.date(),
-  updatedAt: z.date()
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
 });
 export type Gym = z.infer<typeof GymSchema>;
 
@@ -133,8 +137,8 @@ export const EquipmentSchema = z.object({
   maximumWeight: z.float32().nullish(),
   url: z.url().nullish(),
   notes: z.string().nullish(),
-  createdAt: z.date(),
-  updatedAt: z.date()
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
 });
 export type Equipment = z.infer<typeof EquipmentSchema>;
 
@@ -175,8 +179,8 @@ export const MembershipSchema = z.object({
   availability: MembershipAvailabilitySchema,
   url: z.url().nullish(),
   notes: z.string().nullish(),
-  createdAt: z.date(),
-  updatedAt: z.date()
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
 });
 export type Membership = z.infer<typeof MembershipSchema>;
 
@@ -217,8 +221,8 @@ export const GymEquipmentSchema = z.object({
   id: z.uuidv4(),
   gymId: z.uuidv4(),
   equipmentId: z.uuidv4(),
-  createdAt: z.date(),
-  updatedAt: z.date()
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
 });
 export type GymEquipment = z.infer<typeof GymEquipmentSchema>;
 
@@ -234,8 +238,8 @@ export const GymManagerSchema = z.object({
   id: z.uuidv4(),
   userId: z.uuidv4(),
   gymId: z.uuidv4(),
-  createdAt: z.date(),
-  updatedAt: z.date()
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
 });
 export type GymManager = z.infer<typeof GymManagerSchema>;
 
@@ -252,8 +256,8 @@ export const GymMembershipSchema = z.object({
   id: z.uuidv4(),
   gymId: z.uuidv4(),
   membershipId: z.uuidv4(),
-  createdAt: z.date(),
-  updatedAt: z.date()
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
 });
 export type GymMembership = z.infer<typeof GymMembershipSchema>;
 

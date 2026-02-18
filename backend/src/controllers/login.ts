@@ -9,7 +9,7 @@ import { loginParser } from '../utils/middleware.ts';
 
 import { Session, User } from '../models/index.ts';
 
-import type { LoginRequest, LoginResponse, UserTokenPayload } from '../utils/schemas.ts';
+import type { LoginRequest, LoginResponse, UserTokenPayload } from '@strength-inventory/schemas';
 
 const loginRouter = Express.Router();
 

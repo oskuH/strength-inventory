@@ -19,12 +19,14 @@ GymEquipment.init({
   gymId: {
     type: DataTypes.UUID,
     allowNull: false,
-    references: { model: 'gyms', key: 'id' }
+    references: { model: 'gyms', key: 'id' },
+    onDelete: 'CASCADE'
   },
   equipmentId: {
     type: DataTypes.UUID,
     allowNull: false,
-    references: { model: 'equipment', key: 'id' }
+    references: { model: 'equipment', key: 'id' },
+    onDelete: 'CASCADE'
   },
   createdAt: DataTypes.DATE,
   updatedAt: DataTypes.DATE
