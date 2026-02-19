@@ -21,6 +21,7 @@ class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare chain: string | null | undefined;
   declare street: string;
   declare streetNumber: string;
+  declare district: string;
   declare city: string;
   declare openingHours: CreationOptional<Hours>;
   declare url: string | null | undefined;
@@ -49,6 +50,10 @@ Gym.init({
     allowNull: false
   },
   streetNumber: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  district: {
     type: DataTypes.STRING,
     allowNull: false
   },

@@ -43,6 +43,7 @@ beforeEach(async () => {
     chain: 'Fitness24Seven',
     street: 'Albertinkatu',
     streetNumber: '29',
+    district: 'Punavuori',
     city: 'Helsinki'
   });
 
@@ -51,6 +52,7 @@ beforeEach(async () => {
     chain: 'ELIXIA',
     street: 'Fredrikinkatu',
     streetNumber: '48',
+    district: 'Kamppi',
     city: 'Helsinki',
     notes: 'A lot of natural light',
     openingHours: { MO: [6, 22], TU: [6, 22], WE: [6, 22], TH: [6, 22], FR: [6, 21], SA: [8, 20], SU: [8, 20] }
@@ -83,6 +85,7 @@ describe('POST a new gym', () => {
         name: 'Mayors Gym',
         street: 'Porkkalankatu',
         streetNumber: '13',
+        district: 'Ruoholahti',
         city: 'Helsinki'
       };
 
@@ -102,6 +105,7 @@ describe('POST a new gym', () => {
       const newGym = {
         street: 'Porkkalankatu',
         streetNumber: '13',
+        district: 'Ruoholahti',
         city: 'Helsinki'
       };
 
@@ -116,6 +120,7 @@ describe('POST a new gym', () => {
       const newGym = {
         name: 'Mayors Gym',
         streetNumber: '13',
+        district: 'Ruoholahti',
         city: 'Helsinki'
       };
 
@@ -130,6 +135,22 @@ describe('POST a new gym', () => {
       const newGym = {
         name: 'Mayors Gym',
         street: 'Porkkalankatu',
+        district: 'Ruoholahti',
+        city: 'Helsinki'
+      };
+
+      await request(app)
+        .post('/api/gyms')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newGym)
+        .expect(400);
+    });
+
+    test('fails if "district" is null', async () => {
+      const newGym = {
+        name: 'Mayors Gym',
+        street: 'Porkkalankatu',
+        streetNumber: '13',
         city: 'Helsinki'
       };
 

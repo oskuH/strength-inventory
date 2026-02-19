@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 
 export default function SidebarRight() {
   return (
-    <div className='flex w-24 flex-col items-end bg-red-500'>
+    <div className='absolute right-0 h-full flex w-24 flex-col items-end bg-red-500'>
       <Link
         to='/lists'
         className='m-1'

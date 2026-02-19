@@ -83,6 +83,7 @@ export const GymSchema = z.object({
   chain: z.string().nullish(),
   street: z.string(),
   streetNumber: z.string(),
+  district: z.string(),
   city: z.string(),
   openingHours: HoursSchema,
   url: z.url().nullish(),
@@ -97,6 +98,7 @@ export const GymPostSchema = GymSchema.pick({
   chain: true,
   street: true,
   streetNumber: true,
+  district: true,
   city: true,
   openingHours: true,
   url: true,
@@ -109,6 +111,7 @@ export const GymPatchSchema = GymSchema.pick({
   chain: true,
   street: true,
   streetNumber: true,
+  district: true,
   city: true,
   url: true,
   notes: true

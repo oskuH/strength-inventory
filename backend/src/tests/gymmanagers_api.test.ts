@@ -66,6 +66,7 @@ beforeEach(async () => {
     name: 'Mayor\'s gym',
     street: 'Porkkalankatu',
     streetNumber: '13N',
+    district: 'Ruoholahti',
     city: 'Helsinki'
   });
 
@@ -75,6 +76,7 @@ beforeEach(async () => {
     chain: 'Elixia',
     street: 'Kaivokatu',
     streetNumber: '8',
+    district: 'Kluuvi',
     city: 'Helsinki'
   });
 

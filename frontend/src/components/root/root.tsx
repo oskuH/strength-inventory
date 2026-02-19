@@ -6,18 +6,20 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import Header from './header';
 import SidebarLeft from './sidebar-left';
 import SidebarRight from './sidebar-right';
+import Footer from './footer';
 
 export default function Root() {
   return (
     <>
       <div className='flex min-h-svh flex-col'>
         <Header />
-        <div className='flex flex-1 flex-row'>
+        <div className='flex grow flex-col relative'>
           <SidebarLeft />
-          <div className='flex flex-1'>
+          <SidebarRight />
+          <div className='flex grow flex-col'>
             <Outlet />
           </div>
-          <SidebarRight />
+          <Footer />
         </div>
       </div>
       <ReactQueryDevtools />

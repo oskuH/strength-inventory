@@ -2,18 +2,17 @@ import { Link } from '@tanstack/react-router';
 
 export default function SidebarLeft() {
   return (
-    <div className='flex w-24 flex-col bg-blue-500'>
+    <div className='absolute left-0 h-full flex p-1 w-24 flex-col bg-blue-500'>
+      <h2 className='font-bold'>Find</h2>
       <Link
         to='/gyms'
-        className='m-1'
       >
-        Gym search
+        Gyms
       </Link>
       <Link
         to='/equipment'
-        className='m-1'
       >
-        Equipment search
+        Equipment
       </Link>
     </div>
   );

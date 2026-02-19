@@ -39,6 +39,7 @@
       "name": "Mayor's Gym",
       "street": "Porkkalankatu",
       "streetNumber": "13N",
+      "district": "Ruoholahti",
       "city": "Helsinki",
       "openingHours": {
         "MO": [
@@ -79,6 +80,7 @@
       "chain": "Elixia",
       "street": "Kaivokatu",
       "streetNumber": "8",
+      "district": "Kluuvi",
       "city": "Helsinki",
       "openingHours": {
         "MO": [
