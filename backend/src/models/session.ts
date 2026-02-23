@@ -1,14 +1,23 @@
-import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
+/* eslint-disable @stylistic/lines-between-class-members */
+import {
+  type CreationOptional,
+  DataTypes,
+  type InferAttributes,
+  type InferCreationAttributes,
+  Model
+} from 'sequelize';
 
 import { sequelize } from '../utils/db.ts';
 
-class Session extends Model<InferAttributes<Session>, InferCreationAttributes<Session>> {
+class Session extends Model<
+  InferAttributes<Session>, InferCreationAttributes<Session>
+> {
   declare id: CreationOptional<string>;
   declare userId: string;
   declare token: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-};
+}
 
 Session.init({
   id: {

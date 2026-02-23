@@ -3,15 +3,15 @@ const app = express();
 
 import cors from 'cors';
 
-import { connectToDatabase } from './utils/db.js';
 import { errorHandler, unknownEndpoint } from './utils/middleware.js';
+import { connectToDatabase } from './utils/db.js';
 import { PORT } from './utils/config.js';
 
 import equipmentRouter from './controllers/equipment.js';
-import gymsRouter from './controllers/gyms.js';
 import gymEquipmentRouter from './controllers/gymequipment.ts';
 import gymManagersRouter from './controllers/gymmanagers.ts';
 import gymMembershipsRouter from './controllers/gymmemberships.ts';
+import gymsRouter from './controllers/gyms.js';
 import loginRouter from './controllers/login.ts';
 import logoutRouter from './controllers/logout.ts';
 import membershipsRouter from './controllers/memberships.ts';

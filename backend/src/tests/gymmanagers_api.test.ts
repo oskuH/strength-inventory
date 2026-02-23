@@ -7,9 +7,13 @@ import app from '../index.ts';
 
 import { Gym, GymManagers, User } from '../models/index.ts';
 
-import { type GymManager as FullGymManager, type LoginResponse } from '@strength-inventory/schemas';
+import {
+  type GymManager as FullGymManager,
+  type LoginResponse
+} from '@strength-inventory/schemas';
 
-const initialGymManagersCount = 1;  // The number of junctions created in the topmost beforeEach
+// The number of junctions created in the topmost beforeEach
+const initialGymManagersCount = 1;
 let token: string;
 
 const adminId = '54419ee4-2880-4e96-82d7-69dfc1238584';  // User
@@ -88,7 +92,10 @@ beforeEach(async () => {
 
   const response: request.Response = await request(app)
     .post('/api/login')
-    .send({ username: 'TheAdmin', password: 'ThereIsOnlyWeightAndThoseTooWeakToLiftIt' })
+    .send({
+      username: 'TheAdmin',
+      password: 'ThereIsOnlyWeightAndThoseTooWeakToLiftIt'
+    })
     .expect(200);
 
   const body = response.body as LoginResponse;
@@ -104,74 +111,86 @@ test('GET all gymmanagers correctly returns a json', async () => {
   expect(response.body).toHaveLength(initialGymManagersCount);
 });
 
-test('Giving a gym-goer their first manager rights succeeds and changes their role to "MANAGER"', async () => {
-  await request(app)
-    .post('/api/gymmanagers')
-    .set('Authorization', `Bearer ${token}`)
-    .send({ userId: lashaId, gymId: mayorId })
-    .expect(201);
-
-  const lasha = await User.findByPk(lashaId);
-  assert.isNotNull(lasha);
-  expect(lasha.role).toBe('MANAGER');
-});
-
-describe('Removing manager rights from a user', () => {
-  test('changes their role to "GYM-GOER" if they have no remaining manager rights', async () => {
-    await request(app)
-      .delete(`/api/gymmanagers/${goldMayorId}`)
-      .set('Authorization', `Bearer ${token}`)
-      .expect(204);
-
-    const gold = await User.findByPk(goldId);
-    assert.isNotNull(gold);
-    expect(gold.role).toBe('GYM-GOER');
-  });
-
-  test('does not affect their role if they have other manager rights', async () => {
+test(
+  'Giving gym-goer first manager rights succeeds and changes role to "MANAGER"',
+  async () => {
     await request(app)
       .post('/api/gymmanagers')
       .set('Authorization', `Bearer ${token}`)
-      .send({ userId: goldId, gymId: elixiaId })
+      .send({ userId: lashaId, gymId: mayorId })
       .expect(201);
 
-    await request(app)
-      .delete(`/api/gymmanagers/${goldMayorId}`)
-      .set('Authorization', `Bearer ${token}`)
-      .expect(204);
+    const lasha = await User.findByPk(lashaId);
+    assert.isNotNull(lasha);
+    expect(lasha.role).toBe('MANAGER');
+  }
+);
 
-    const gold = await User.findByPk(goldId);
-    assert.isNotNull(gold);
-    expect(gold.role).toBe('MANAGER');
-  });
+describe('Removing manager rights from a user', () => {
+  test(
+    'changes their role to "GYM-GOER" if they have no remaining manager rights',
+    async () => {
+      await request(app)
+        .delete(`/api/gymmanagers/${goldMayorId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(204);
+
+      const gold = await User.findByPk(goldId);
+      assert.isNotNull(gold);
+      expect(gold.role).toBe('GYM-GOER');
+    }
+  );
+
+  test(
+    'does not affect their role if they have other manager rights',
+    async () => {
+      await request(app)
+        .post('/api/gymmanagers')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ userId: goldId, gymId: elixiaId })
+        .expect(201);
+
+      await request(app)
+        .delete(`/api/gymmanagers/${goldMayorId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(204);
+
+      const gold = await User.findByPk(goldId);
+      assert.isNotNull(gold);
+      expect(gold.role).toBe('MANAGER');
+    }
+  );
 });
 
 describe('Being an admin', () => {
-  test('means that your role is not affected by the addition or removal of manager rights', async () => {
-    let admin: User | null;
+  test(
+    'means that your role is not affected by changes in manager rights',
+    async () => {
+      let admin: User | null;
 
-    const response: request.Response = await request(app)
-      .post('/api/gymmanagers')
-      .set('Authorization', `Bearer ${token}`)
-      .send({ userId: adminId, gymId: mayorId })
-      .expect(201);
+      const response: request.Response = await request(app)
+        .post('/api/gymmanagers')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ userId: adminId, gymId: mayorId })
+        .expect(201);
 
-    admin = await User.findByPk(adminId);
-    assert.isNotNull(admin);
-    expect(admin.role).toBe('ADMIN');
+      admin = await User.findByPk(adminId);
+      assert.isNotNull(admin);
+      expect(admin.role).toBe('ADMIN');
 
-    const body = response.body as FullGymManager;
-    const adminMayor = body.id;
+      const body = response.body as FullGymManager;
+      const adminMayor = body.id;
 
-    await request(app)
-      .delete(`/api/gymmanagers/${adminMayor}`)
-      .set('Authorization', `Bearer ${token}`)
-      .expect(204);
+      await request(app)
+        .delete(`/api/gymmanagers/${adminMayor}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(204);
 
-    admin = await User.findByPk(adminId);
-    assert.isNotNull(admin);
-    expect(admin.role).toBe('ADMIN');
-  });
+      admin = await User.findByPk(adminId);
+      assert.isNotNull(admin);
+      expect(admin.role).toBe('ADMIN');
+    }
+  );
 
   test('is required to POST or DELETE manager rights', async () => {
     const response: request.Response = await request(app)
@@ -195,29 +214,32 @@ describe('Being an admin', () => {
   });
 });
 
-test('When a gym is deleted, managers have their role switched to "GYM-GOER" if they have no remaining manager rights', async () => {
-  await request(app)
-    .post('/api/gymmanagers')
-    .set('Authorization', `Bearer ${token}`)
-    .send({ userId: goldId, gymId: elixiaId })
-    .expect(201);
+test(
+  'When a gym is deleted, a gymless "MANAGER" becomes a "GYM-GOER"',
+  async () => {
+    await request(app)
+      .post('/api/gymmanagers')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ userId: goldId, gymId: elixiaId })
+      .expect(201);
 
-  await request(app)
-    .post('/api/gymmanagers')
-    .set('Authorization', `Bearer ${token}`)
-    .send({ userId: lashaId, gymId: mayorId })
-    .expect(201);
+    await request(app)
+      .post('/api/gymmanagers')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ userId: lashaId, gymId: mayorId })
+      .expect(201);
 
-  await request(app)
-    .delete(`/api/gyms/${mayorId}`)
-    .set('Authorization', `Bearer ${token}`)
-    .expect(204);
+    await request(app)
+      .delete(`/api/gyms/${mayorId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204);
 
-  const gold = await User.findByPk(goldId);
-  assert.isNotNull(gold);
-  expect(gold.role).toBe('MANAGER');
+    const gold = await User.findByPk(goldId);
+    assert.isNotNull(gold);
+    expect(gold.role).toBe('MANAGER');
 
-  const lasha = await User.findByPk(lashaId);
-  assert.isNotNull(lasha);
-  expect(lasha.role).toBe('GYM-GOER');
-});
+    const lasha = await User.findByPk(lashaId);
+    assert.isNotNull(lasha);
+    expect(lasha.role).toBe('GYM-GOER');
+  }
+);

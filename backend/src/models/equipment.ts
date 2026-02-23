@@ -1,10 +1,22 @@
-import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
+/* eslint-disable @stylistic/lines-between-class-members */
+import {
+  type CreationOptional,
+  DataTypes,
+  type InferAttributes,
+  type InferCreationAttributes,
+  Model
+} from 'sequelize';
 
-import type { EquipmentCategory, EquipmentWeightUnit } from '@strength-inventory/schemas';
+import type {
+  EquipmentCategory,
+  EquipmentWeightUnit
+} from '@strength-inventory/schemas';
 
 import { sequelize } from '../utils/db.js';
 
-class Equipment extends Model<InferAttributes<Equipment>, InferCreationAttributes<Equipment>> {
+class Equipment extends Model<
+  InferAttributes<Equipment>, InferCreationAttributes<Equipment>
+> {
   declare id: CreationOptional<string>;
   declare name: string;
   declare category: EquipmentCategory;
@@ -19,7 +31,7 @@ class Equipment extends Model<InferAttributes<Equipment>, InferCreationAttribute
   declare notes: string | null | undefined;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-};
+}
 
 Equipment.init({
   id: {
@@ -32,7 +44,8 @@ Equipment.init({
     allowNull: false
   },
   category: {
-    type: DataTypes.ENUM('attachment', 'cardio', 'freeWeight', 'strengthMachine', 'tool'),
+    type: DataTypes
+      .ENUM('attachment', 'cardio', 'freeWeight', 'strengthMachine', 'tool'),
     allowNull: false
   },
   manufacturer: {
@@ -75,9 +88,19 @@ Equipment.init({
   underscored: true,
   modelName: 'equipment',
   validate: {
-    customValidator() {
-      if (this['weightUnit'] === null && (this['weight'] !== null || this['startingWeight'] !== null || this['availableWeights'] !== null || this['maximumWeight'] !== null)) {
-        throw new Error('weight unit must be selected if other weight data is used');
+    customValidator () {
+      if (
+        this['weightUnit'] === null
+        && (
+          this['weight'] !== null
+          || this['startingWeight'] !== null
+          || this['availableWeights'] !== null
+          || this['maximumWeight'] !== null
+        )
+      ) {
+        throw new Error(
+          'weight unit must be selected if other weight data is used'
+        );
       }
     }
   }

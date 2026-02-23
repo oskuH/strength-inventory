@@ -1,13 +1,21 @@
 import { DataTypes } from 'sequelize';
-import { type Migration } from '../utils/db.ts';  // .ts instead of .js to accommodate Vitest
+import {
+  type Migration
+} from '../utils/db.ts';  // .ts instead of .js to accommodate Vitest
 
 const up: Migration = async ({ context: queryInterface }) => {
-  await queryInterface.removeConstraint('gymmanagers', 'gymmanagers_user_id_fkey');
-  await queryInterface.removeConstraint('gymmanagers', 'gymmanagers_gym_id_fkey');
-  await queryInterface.removeConstraint('gymequipment', 'gymequipment_gym_id_fkey');
-  await queryInterface.removeConstraint('gymequipment', 'gymequipment_equipment_id_fkey');
-  await queryInterface.removeConstraint('gymmemberships', 'gymmemberships_gym_id_fkey');
-  await queryInterface.removeConstraint('gymmemberships', 'gymmemberships_membership_id_fkey');
+  await queryInterface
+    .removeConstraint('gymmanagers', 'gymmanagers_user_id_fkey');
+  await queryInterface
+    .removeConstraint('gymmanagers', 'gymmanagers_gym_id_fkey');
+  await queryInterface
+    .removeConstraint('gymequipment', 'gymequipment_gym_id_fkey');
+  await queryInterface
+    .removeConstraint('gymequipment', 'gymequipment_equipment_id_fkey');
+  await queryInterface
+    .removeConstraint('gymmemberships', 'gymmemberships_gym_id_fkey');
+  await queryInterface
+    .removeConstraint('gymmemberships', 'gymmemberships_membership_id_fkey');
 
   await queryInterface.changeColumn('gymmanagers', 'user_id', {
     type: DataTypes.UUID,
@@ -53,12 +61,18 @@ const up: Migration = async ({ context: queryInterface }) => {
 };
 
 const down: Migration = async ({ context: queryInterface }) => {
-  await queryInterface.removeConstraint('gymmanagers', 'gymmanagers_gym_id_fkey');
-  await queryInterface.removeConstraint('gymmanagers', 'gymmanagers_user_id_fkey');
-  await queryInterface.removeConstraint('gymequipment', 'gymequipment_gym_id_fkey');
-  await queryInterface.removeConstraint('gymequipment', 'gymequipment_equipment_id_fkey');
-  await queryInterface.removeConstraint('gymmemberships', 'gymmemberships_gym_id_fkey');
-  await queryInterface.removeConstraint('gymmemberships', 'gymmemberships_membership_id_fkey');
+  await queryInterface
+    .removeConstraint('gymmanagers', 'gymmanagers_gym_id_fkey');
+  await queryInterface
+    .removeConstraint('gymmanagers', 'gymmanagers_user_id_fkey');
+  await queryInterface
+    .removeConstraint('gymequipment', 'gymequipment_gym_id_fkey');
+  await queryInterface
+    .removeConstraint('gymequipment', 'gymequipment_equipment_id_fkey');
+  await queryInterface
+    .removeConstraint('gymmemberships', 'gymmemberships_gym_id_fkey');
+  await queryInterface
+    .removeConstraint('gymmemberships', 'gymmemberships_membership_id_fkey');
 
   await queryInterface.changeColumn('gymmanagers', 'user_id', {
     type: DataTypes.UUID,

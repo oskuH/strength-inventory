@@ -1,10 +1,22 @@
-import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
+/* eslint-disable @stylistic/lines-between-class-members */
+import {
+  type CreationOptional,
+  DataTypes,
+  type InferAttributes,
+  type InferCreationAttributes,
+  Model
+} from 'sequelize';
 
-import type { MembershipAvailability, MembershipTimeUnit } from '@strength-inventory/schemas';
+import type {
+  MembershipAvailability,
+  MembershipTimeUnit
+} from '@strength-inventory/schemas';
 
 import { sequelize } from '../utils/db.js';
 
-class Membership extends Model<InferAttributes<Membership>, InferCreationAttributes<Membership>> {
+class Membership extends Model<
+  InferAttributes<Membership>, InferCreationAttributes<Membership>
+> {
   declare id: CreationOptional<string>;
   declare chain: string | null | undefined;
   declare name: string;
@@ -19,7 +31,7 @@ class Membership extends Model<InferAttributes<Membership>, InferCreationAttribu
   declare notes: string | null | undefined;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-};
+}
 
 Membership.init({
   id: {
@@ -75,9 +87,11 @@ Membership.init({
   underscored: true,
   modelName: 'membership',
   validate: {
-    customValidator() {
+    customValidator () {
       if (this['commitmentUnit'] === null && this['commitment'] !== null) {
-        throw new Error('commitment unit must be selected if there is commitment');
+        throw new Error(
+          'commitment unit must be selected if there is commitment'
+        );
       }
     }
   }

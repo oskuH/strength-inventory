@@ -1,10 +1,16 @@
 import { DataTypes } from 'sequelize';
 import { type Migration } from '../utils/db.ts';
-//.ts instead of .js to accommodate Vitest
+// .ts instead of .js to accommodate Vitest
 
 const up: Migration = async ({ context: queryInterface }) => {
   await queryInterface.addColumn('equipment', 'category', {
-    type: DataTypes.ENUM('attachment', 'cardio', 'freeWeight', 'strengthMachine', 'tool'),
+    type: DataTypes.ENUM(
+      'attachment',
+      'cardio',
+      'freeWeight',
+      'strengthMachine',
+      'tool'
+    ),
     allowNull: false
   });
   await queryInterface.addColumn('equipment', 'maximum_weight', {

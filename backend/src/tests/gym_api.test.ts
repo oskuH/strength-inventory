@@ -7,7 +7,10 @@ import app from '../index.js';
 
 import { Gym, User } from '../models/index.ts';
 
-import { type Gym as FullGym, type LoginResponse } from '@strength-inventory/schemas';
+import {
+  type Gym as FullGym,
+  type LoginResponse
+} from '@strength-inventory/schemas';
 
 const initialGymCount = 2;  // The number of gyms created in beforeEach
 let token: string;
@@ -55,7 +58,15 @@ beforeEach(async () => {
     district: 'Kamppi',
     city: 'Helsinki',
     notes: 'A lot of natural light',
-    openingHours: { MO: [6, 22], TU: [6, 22], WE: [6, 22], TH: [6, 22], FR: [6, 21], SA: [8, 20], SU: [8, 20] }
+    openingHours: {
+      MO: [6, 22],
+      TU: [6, 22],
+      WE: [6, 22],
+      TH: [6, 22],
+      FR: [6, 21],
+      SA: [8, 20],
+      SU: [8, 20]
+    }
   });
 });
 
@@ -73,7 +84,10 @@ describe('POST a new gym', () => {
     beforeEach(async () => {
       const response: request.Response = await request(app)
         .post('/api/login')
-        .send({ username: 'TheAdmin', password: 'ThereIsOnlyWeightAndThoseTooWeakToLiftIt' })
+        .send({
+          username: 'TheAdmin',
+          password: 'ThereIsOnlyWeightAndThoseTooWeakToLiftIt'
+        })
         .expect(200);
 
       const body = response.body as LoginResponse;
@@ -182,7 +196,10 @@ describe('PATCH gym\'s service hours', () => {
     beforeEach(async () => {
       const response: request.Response = await request(app)
         .post('/api/login')
-        .send({ username: 'TheAdmin', password: 'ThereIsOnlyWeightAndThoseTooWeakToLiftIt' })
+        .send({
+          username: 'TheAdmin',
+          password: 'ThereIsOnlyWeightAndThoseTooWeakToLiftIt'
+        })
         .expect(200);
 
       const body = response.body as LoginResponse;
@@ -193,7 +210,15 @@ describe('PATCH gym\'s service hours', () => {
 
     test('succeeds with both sets of hours', async () => {
       assert.isNotNull(gymToPatch);
-      const newOpeningHours = { MO: [7, 21], TU: [7, 21], WE: [7, 21], TH: [7, 21], FR: [7, 21], SA: [8, 20], SU: [8, 20] };
+      const newOpeningHours = {
+        MO: [7, 21],
+        TU: [7, 21],
+        WE: [7, 21],
+        TH: [7, 21],
+        FR: [7, 21],
+        SA: [8, 20],
+        SU: [8, 20]
+      };
 
       await request(app)
         .patch(`/api/gyms/${gymToPatch.id}`)
@@ -209,7 +234,10 @@ describe('DELETE a gym', () => {
     beforeEach(async () => {
       const response: request.Response = await request(app)
         .post('/api/login')
-        .send({ username: 'TheAdmin', password: 'ThereIsOnlyWeightAndThoseTooWeakToLiftIt' })
+        .send({
+          username: 'TheAdmin',
+          password: 'ThereIsOnlyWeightAndThoseTooWeakToLiftIt'
+        })
         .expect(200);
 
       const body = response.body as LoginResponse;
@@ -222,7 +250,9 @@ describe('DELETE a gym', () => {
 
       expect(startResponse.body).toHaveLength(initialGymCount);
 
-      const gymToDelete: FullGym | null = await Gym.findOne({ where: { name: 'Fitness24Seven Helsinki Punavuori' } });
+      const gymToDelete: FullGym | null = await Gym.findOne({
+        where: { name: 'Fitness24Seven Helsinki Punavuori' }
+      });
       assert.isNotNull(gymToDelete);
 
       await request(app)

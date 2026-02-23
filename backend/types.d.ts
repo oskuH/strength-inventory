@@ -1,4 +1,12 @@
-import type { Equipment, Gym, GymEquipment, GymManagers, GymMemberships, Membership, User } from './src/models/index.ts';
+import type {
+  Equipment,
+  Gym,
+  GymEquipment,
+  GymManagers,
+  GymMemberships,
+  Membership,
+  User
+} from './src/models/index.ts';
 
 declare global {
   namespace Express {

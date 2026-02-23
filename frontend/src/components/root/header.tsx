@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
-export default function Header() {
+export default function Header () {
   return (
     <div className='flex justify-center bg-yellow-300'>
       <Link

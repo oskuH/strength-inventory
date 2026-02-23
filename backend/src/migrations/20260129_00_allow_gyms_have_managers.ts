@@ -1,10 +1,12 @@
 import { DataTypes } from 'sequelize';
 import { type Migration } from '../utils/db.ts';
-//.ts instead of .js to accommodate Vitest
+// .ts instead of .js to accommodate Vitest
 
 const up: Migration = async ({ context: queryInterface }) => {
-  // eslint-disable-next-line @stylistic/quotes
-  await queryInterface.sequelize.query("ALTER TYPE enum_users_role RENAME VALUE 'GYM-OWNER' TO 'MANAGER'");
+  await queryInterface.sequelize.query(
+    // eslint-disable-next-line @stylistic/quotes
+    "ALTER TYPE enum_users_role RENAME VALUE 'GYM-OWNER' TO 'MANAGER'"
+  );
 
   await queryInterface.createTable('gymmanagers', {
     id: {
@@ -36,8 +38,10 @@ const up: Migration = async ({ context: queryInterface }) => {
 };
 
 const down: Migration = async ({ context: queryInterface }) => {
-  // eslint-disable-next-line @stylistic/quotes
-  await queryInterface.sequelize.query("ALTER TYPE enum_users_role RENAME VALUE 'MANAGER' TO 'GYM-OWNER'");
+  await queryInterface.sequelize.query(
+    // eslint-disable-next-line @stylistic/quotes
+    "ALTER TYPE enum_users_role RENAME VALUE 'MANAGER' TO 'GYM-OWNER'"
+  );
 
   await queryInterface.dropTable('gymmanagers');
 

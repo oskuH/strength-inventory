@@ -7,9 +7,13 @@ import app from '../index.ts';
 
 import { User } from '../models/index.ts';
 
-import { type User as FullUser, type LoginResponse } from '@strength-inventory/schemas';
+import {
+  type User as FullUser,
+  type LoginResponse
+} from '@strength-inventory/schemas';
 
-const initialUserCount = 3;  // The number of users created in the topmost beforeEach
+// The number of users created in the topmost beforeEach
+const initialUserCount = 3;
 let token: string;
 
 beforeEach(async () => {
@@ -155,6 +159,7 @@ describe('POST a new user', () => {
       username: 'HeatherConnor',
       email: 'heather@connor.us',
       password: 'TheBodyAchievesWhatTheMindBelieves',
+      // eslint-disable-next-line @stylistic/max-len
       name: 'Heatheeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeer'
     };
 
@@ -177,7 +182,9 @@ describe('PATCH username and name', () => {
   });
 
   test('succeeds on yourself with valid input', async () => {
-    const userToPatch: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
+    const userToPatch: FullUser | null = await User.findOne({
+      where: { username: 'LashaTalakhadze' }
+    });
     assert.isNotNull(userToPatch);
 
     await request(app)
@@ -188,7 +195,9 @@ describe('PATCH username and name', () => {
   });
 
   test('fails on yourself with missing username', async () => {
-    const userToPatch: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
+    const userToPatch: FullUser | null = await User.findOne({
+      where: { username: 'LashaTalakhadze' }
+    });
     assert.isNotNull(userToPatch);
 
     await request(app)
@@ -199,7 +208,9 @@ describe('PATCH username and name', () => {
   });
 
   test('fails on yourself with missing name', async () => {
-    const userToPatch: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
+    const userToPatch: FullUser | null = await User.findOne({
+      where: { username: 'LashaTalakhadze' }
+    });
     assert.isNotNull(userToPatch);
 
     await request(app)
@@ -210,7 +221,9 @@ describe('PATCH username and name', () => {
   });
 
   test('fails on other users with valid input', async () => {
-    const userToPatch: FullUser | null = await User.findOne({ where: { username: 'WenwenLi' } });
+    const userToPatch: FullUser | null = await User.findOne({
+      where: { username: 'WenwenLi' }
+    });
     assert.isNotNull(userToPatch);
 
     await request(app)
@@ -233,7 +246,9 @@ describe('PATCH email', () => {
   });
 
   test('succeeds on yourself with valid input', async () => {
-    const userToPatch: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
+    const userToPatch: FullUser | null = await User.findOne({
+      where: { username: 'LashaTalakhadze' }
+    });
     assert.isNotNull(userToPatch);
 
     await request(app)
@@ -243,8 +258,10 @@ describe('PATCH email', () => {
       .expect(200);
   });
 
-  test('fails on yourself with input that is not an email address', async () => {
-    const userToPatch: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
+  test('fails on yourself with a non-email input', async () => {
+    const userToPatch: FullUser | null = await User.findOne({
+      where: { username: 'LashaTalakhadze' }
+    });
     assert.isNotNull(userToPatch);
 
     await request(app)
@@ -255,7 +272,9 @@ describe('PATCH email', () => {
   });
 
   test('fails on other users with valid input', async () => {
-    const userToPatch: FullUser | null = await User.findOne({ where: { username: 'WenwenLi' } });
+    const userToPatch: FullUser | null = await User.findOne({
+      where: { username: 'WenwenLi' }
+    });
     assert.isNotNull(userToPatch);
 
     await request(app)
@@ -278,7 +297,9 @@ describe('PATCH password', () => {
   });
 
   test('succeeds on yourself with valid input', async () => {
-    const userToPatch: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
+    const userToPatch: FullUser | null = await User.findOne({
+      where: { username: 'LashaTalakhadze' }
+    });
     assert.isNotNull(userToPatch);
 
     await request(app)
@@ -288,8 +309,10 @@ describe('PATCH password', () => {
       .expect(200);
   });
 
-  test('fails on yourself when trying to set it shorter than 15 characters', async () => {
-    const userToPatch: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
+  test('fails on yourself if shorter than 15 characters', async () => {
+    const userToPatch: FullUser | null = await User.findOne({
+      where: { username: 'LashaTalakhadze' }
+    });
     assert.isNotNull(userToPatch);
 
     await request(app)
@@ -300,7 +323,9 @@ describe('PATCH password', () => {
   });
 
   test('fails on other users with correct input', async () => {
-    const userToPatch: FullUser | null = await User.findOne({ where: { username: 'WenwenLi' } });
+    const userToPatch: FullUser | null = await User.findOne({
+      where: { username: 'WenwenLi' }
+    });
     assert.isNotNull(userToPatch);
 
     await request(app)
@@ -316,7 +341,10 @@ describe('PATCH user\'s role', () => {
     beforeEach(async () => {
       const response: request.Response = await request(app)
         .post('/api/login')
-        .send({ username: 'TheAdmin', password: 'ThereIsOnlyWeightAndThoseTooWeakToLiftIt' })
+        .send({
+          username: 'TheAdmin',
+          password: 'ThereIsOnlyWeightAndThoseTooWeakToLiftIt'
+        })
         .expect(200);
 
       const body = response.body as LoginResponse;
@@ -324,7 +352,9 @@ describe('PATCH user\'s role', () => {
     });
 
     test('succeeds with a valid role', async () => {
-      const userToPatch: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
+      const userToPatch: FullUser | null = await User.findOne({
+        where: { username: 'LashaTalakhadze' }
+      });
       assert.isNotNull(userToPatch);
 
       await request(app)
@@ -335,7 +365,9 @@ describe('PATCH user\'s role', () => {
     });
 
     test('fails with an invalid role', async () => {
-      const userToPatch: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
+      const userToPatch: FullUser | null = await User.findOne({
+        where: { username: 'LashaTalakhadze' }
+      });
       assert.isNotNull(userToPatch);
 
       await request(app)
@@ -358,7 +390,9 @@ describe('PATCH user\'s role', () => {
     });
 
     test('fails on yourself with a valid role', async () => {
-      const userToPatch: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
+      const userToPatch: FullUser | null = await User.findOne({
+        where: { username: 'LashaTalakhadze' }
+      });
       assert.isNotNull(userToPatch);
 
       await request(app)
@@ -375,7 +409,10 @@ describe('DELETE a user', () => {
     beforeEach(async () => {
       const response: request.Response = await request(app)
         .post('/api/login')
-        .send({ username: 'TheAdmin', password: 'ThereIsOnlyWeightAndThoseTooWeakToLiftIt' })
+        .send({
+          username: 'TheAdmin',
+          password: 'ThereIsOnlyWeightAndThoseTooWeakToLiftIt'
+        })
         .expect(200);
 
       const body = response.body as LoginResponse;
@@ -388,7 +425,9 @@ describe('DELETE a user', () => {
 
       expect(startResponse.body).toHaveLength(initialUserCount);
 
-      const userToDelete: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
+      const userToDelete: FullUser | null = await User.findOne({
+        where: { username: 'LashaTalakhadze' }
+      });
       assert.isNotNull(userToDelete);
 
       await request(app)
@@ -427,7 +466,9 @@ describe('DELETE a user', () => {
 
       expect(startResponse.body).toHaveLength(initialUserCount);
 
-      const userToDelete: FullUser | null = await User.findOne({ where: { username: 'LashaTalakhadze' } });
+      const userToDelete: FullUser | null = await User.findOne({
+        where: { username: 'LashaTalakhadze' }
+      });
       assert.isNotNull(userToDelete);
 
       await request(app)
@@ -442,7 +483,9 @@ describe('DELETE a user', () => {
     });
 
     test('fails on other users', async () => {
-      const userToDelete: FullUser | null = await User.findOne({ where: { username: 'WenwenLi' } });
+      const userToDelete: FullUser | null = await User.findOne({
+        where: { username: 'WenwenLi' }
+      });
       assert.isNotNull(userToDelete);
 
       await request(app)

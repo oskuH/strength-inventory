@@ -3,12 +3,12 @@ import { Outlet } from '@tanstack/react-router';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
+import Footer from './footer';
 import Header from './header';
 import SidebarLeft from './sidebar-left';
 import SidebarRight from './sidebar-right';
-import Footer from './footer';
 
-export default function Root() {
+export default function Root () {
   return (
     <>
       <div className='flex min-h-svh flex-col'>

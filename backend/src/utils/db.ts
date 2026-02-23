@@ -1,9 +1,11 @@
-import 'ts-node/register';  // Required by Node.js to read .ts migration files for Umzug
+import 'ts-node/register';  // Required by Node.js to read .ts migration files.
 
-import { Sequelize } from 'sequelize';
 import { SequelizeStorage, Umzug } from 'umzug';
+import { Sequelize } from 'sequelize';
 
-import { DB_URI } from './config.ts';  //.ts instead of .js to accommodate Vitest
+import {
+  DB_URI
+} from './config.ts';  // .ts instead of .js to accommodate Vitest
 
 const sequelize = new Sequelize(DB_URI);
 

@@ -1,3 +1,4 @@
+/* eslint-disable @stylistic/lines-between-class-members */
 import {
   type BelongsToManyGetAssociationsMixin,
   type CreationOptional,
@@ -30,7 +31,7 @@ class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare updatedAt: CreationOptional<Date>;
 
   declare getUsers: BelongsToManyGetAssociationsMixin<User>;
-};
+}
 
 Gym.init({
   id: {
@@ -79,7 +80,10 @@ Gym.init({
     beforeDestroy: async (gym) => {  // Turn gym-less managers into gym-goers.
       const managers = await gym.getUsers();
       for (const manager of managers) {
-        await adjustUserRole(manager.id, 1);  // emptyLength = 1 because this is run before .destroy() and its CASCADE
+        await adjustUserRole(
+          manager.id,
+          1  // emptyLength = 1 because this is run before .destroy()
+        );
       }
     }
   },

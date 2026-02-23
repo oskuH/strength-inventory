@@ -1,3 +1,3 @@
-export default function Equipment() {
+export default function Equipment () {
   return <div>Equipment search</div>;
 }

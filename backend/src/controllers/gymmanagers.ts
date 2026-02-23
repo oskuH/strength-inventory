@@ -4,7 +4,10 @@ import { isAdmin, targetGymManagerExtractor } from '../utils/middleware.ts';
 
 import { GymManagers } from '../models/index.ts';
 
-import type { GymManager as FullGymManager, GymManagerPost } from '@strength-inventory/schemas';
+import type {
+  GymManager as FullGymManager,
+  GymManagerPost
+} from '@strength-inventory/schemas';
 
 const gymManagersRouter = Express.Router();
 
@@ -15,22 +18,36 @@ gymManagersRouter.get('/', async (_req, res) => {
 });
 
 // POST for admins to create a new junction
-gymManagersRouter.post('/', ...isAdmin, async (req: Request<unknown, unknown, GymManagerPost>, res: Response<FullGymManager>) => {
-  const { userId, gymId } = req.body;
+gymManagersRouter.post(
+  '/',
+  ...isAdmin,
+  async (
+    req: Request<unknown, unknown, GymManagerPost>,
+    res: Response<FullGymManager>
+  ) => {
+    const { userId, gymId } = req.body;
 
-  const junction = await GymManagers.create({ userId, gymId });
+    const junction = await GymManagers.create({ userId, gymId });
 
-  return res.status(201).json(junction);
-});
+    return res.status(201).json(junction);
+  }
+);
 
 // DELETE for admins to delete a junction
-gymManagersRouter.delete('/:id', ...isAdmin, targetGymManagerExtractor, async (req, res) => {
-  if (!req.targetGymManager) { throw new Error('Association missing from request.'); }  // Should never trigger after middleware.
+gymManagersRouter.delete(
+  '/:id',
+  ...isAdmin,
+  targetGymManagerExtractor,
+  async (req, res) => {
+    if (!req.targetGymManager) {
+      throw new Error('Association missing from request.');
+    }  // Should never trigger after middleware.
 
-  const junction = req.targetGymManager;
-  await junction.destroy();
+    const junction = req.targetGymManager;
+    await junction.destroy();
 
-  return res.status(204).end();
-});
+    return res.status(204).end();
+  }
+);
 
 export default gymManagersRouter;

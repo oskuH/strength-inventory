@@ -1,3 +1,4 @@
+/* eslint-disable @stylistic/lines-between-class-members */
 import {
   type BelongsToManyGetAssociationsMixin,
   type CreationOptional,
@@ -25,7 +26,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare updatedAt: CreationOptional<Date>;
 
   declare getGyms: BelongsToManyGetAssociationsMixin<Gym>;
-};
+}
 
 User.init({
   id: {

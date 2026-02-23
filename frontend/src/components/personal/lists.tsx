@@ -1,3 +1,3 @@
-export default function Lists() {
+export default function Lists () {
   return <div>Lists</div>;
 }

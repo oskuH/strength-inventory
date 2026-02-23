@@ -1,4 +1,11 @@
-import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
+/* eslint-disable @stylistic/lines-between-class-members */
+import {
+  type CreationOptional,
+  DataTypes,
+  type InferAttributes,
+  type InferCreationAttributes,
+  Model
+} from 'sequelize';
 
 import { adjustUserRole } from '../utils/middleware.ts';
 
@@ -6,13 +13,15 @@ import { sequelize } from '../utils/db.js';
 
 import User from './user.ts';
 
-class GymManagers extends Model<InferAttributes<GymManagers>, InferCreationAttributes<GymManagers>> {
+class GymManagers extends Model<
+  InferAttributes<GymManagers>, InferCreationAttributes<GymManagers>
+> {
   declare id: CreationOptional<string>;
   declare userId: string;
   declare gymId: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-};
+}
 
 GymManagers.init({
   id: {
@@ -46,9 +55,9 @@ GymManagers.init({
         }
       }
     },
-    afterDestroy: async (gymmanager) => {  // Turn gym-less managers into gym-goers.
+    afterDestroy: async (gymmanager) => {
       await adjustUserRole(gymmanager.userId, 0);
-    }
+    }  // Turn gym-less managers into gym-goers.
   },
   sequelize,
   underscored: true,

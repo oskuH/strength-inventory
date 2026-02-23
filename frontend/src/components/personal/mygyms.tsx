@@ -1,3 +1,3 @@
-export default function MyGyms() {
+export default function MyGyms () {
   return <div>My gyms</div>;
 }

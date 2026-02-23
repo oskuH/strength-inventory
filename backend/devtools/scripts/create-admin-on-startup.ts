@@ -11,7 +11,10 @@ const seedAdmin = async () => {
 
     if (!admin) {
       const salt = genSaltSync(10);
-      const passwordHash = hashSync('ThereIsOnlyWeightAndThoseTooWeakToLiftIt', salt);
+      const passwordHash = hashSync(
+        'ThereIsOnlyWeightAndThoseTooWeakToLiftIt',
+        salt
+      );
 
       await User.create({
         username: 'TheAdmin',
@@ -21,7 +24,7 @@ const seedAdmin = async () => {
         name: 'The Admin',
         role: 'ADMIN'
       });
-    };
+    }
 
     console.log('Admin user available in the database.');
     await sequelize.close();

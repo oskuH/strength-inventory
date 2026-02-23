@@ -1,14 +1,23 @@
-import { type CreationOptional, DataTypes, type InferAttributes, type InferCreationAttributes, Model } from 'sequelize';
+/* eslint-disable @stylistic/lines-between-class-members */
+import {
+  type CreationOptional,
+  DataTypes,
+  type InferAttributes,
+  type InferCreationAttributes,
+  Model
+} from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
 
-class GymEquipment extends Model<InferAttributes<GymEquipment>, InferCreationAttributes<GymEquipment>> {
+class GymEquipment extends Model<
+  InferAttributes<GymEquipment>, InferCreationAttributes<GymEquipment>
+> {
   declare id: CreationOptional<string>;
   declare gymId: string;
   declare equipmentId: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-};
+}
 
 GymEquipment.init({
   id: {

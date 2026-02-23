@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { type Migration } from '../utils/db.ts';
-//.ts instead of .js to accommodate Vitest
+// .ts instead of .js to accommodate Vitest
 
 const up: Migration = async ({ context: queryInterface }) => {
   await queryInterface.createTable('memberships', {
@@ -81,14 +81,19 @@ const up: Migration = async ({ context: queryInterface }) => {
   await queryInterface.renameColumn('gymmanagers', 'gymId', 'gym_id');
   await queryInterface.renameColumn('gymmanagers', 'createdAt', 'created_at');
   await queryInterface.renameColumn('gymmanagers', 'updatedAt', 'updated_at');
-  await queryInterface.removeConstraint('gymmanagers', 'gymmanagers_userId_fkey');
-  await queryInterface.removeConstraint('gymmanagers', 'gymmanagers_gymId_fkey');
+  await queryInterface
+    .removeConstraint('gymmanagers', 'gymmanagers_userId_fkey');
+  await queryInterface
+    .removeConstraint('gymmanagers', 'gymmanagers_gymId_fkey');
   await queryInterface.renameColumn('gymequipment', 'gymId', 'gym_id');
-  await queryInterface.renameColumn('gymequipment', 'equipmentId', 'equipment_id');
+  await queryInterface
+    .renameColumn('gymequipment', 'equipmentId', 'equipment_id');
   await queryInterface.renameColumn('gymequipment', 'createdAt', 'created_at');
   await queryInterface.renameColumn('gymequipment', 'updatedAt', 'updated_at');
-  await queryInterface.removeConstraint('gymequipment', 'gymequipment_gymId_fkey');
-  await queryInterface.removeConstraint('gymequipment', 'gymmequipment_equipmentId_fkey');
+  await queryInterface
+    .removeConstraint('gymequipment', 'gymequipment_gymId_fkey');
+  await queryInterface
+    .removeConstraint('gymequipment', 'gymmequipment_equipmentId_fkey');
 
   await queryInterface.changeColumn('gymmanagers', 'user_id', {
     type: DataTypes.UUID,
@@ -127,14 +132,19 @@ const down: Migration = async ({ context: queryInterface }) => {
   await queryInterface.renameColumn('gymmanagers', 'gym_id', 'gymId');
   await queryInterface.renameColumn('gymmanagers', 'created_at', 'createdAt');
   await queryInterface.renameColumn('gymmanagers', 'updated_at', 'updatedAt');
-  await queryInterface.removeConstraint('gymmanagers', 'gymmanagers_user_id_fkey');
-  await queryInterface.removeConstraint('gymmanagers', 'gymmanagers_gym_id_fkey');
+  await queryInterface
+    .removeConstraint('gymmanagers', 'gymmanagers_user_id_fkey');
+  await queryInterface
+    .removeConstraint('gymmanagers', 'gymmanagers_gym_id_fkey');
   await queryInterface.renameColumn('gymequipment', 'gym_id', 'gymId');
-  await queryInterface.renameColumn('gymequipment', 'equipment_id', 'equipmentId');
+  await queryInterface
+    .renameColumn('gymequipment', 'equipment_id', 'equipmentId');
   await queryInterface.renameColumn('gymequipment', 'created_at', 'createdAt');
   await queryInterface.renameColumn('gymequipment', 'updated_at', 'updatedAt');
-  await queryInterface.removeConstraint('gymequipment', 'gymequipment_gym_id_fkey');
-  await queryInterface.removeConstraint('gymequipment', 'gymmequipment_equipment_id_fkey');
+  await queryInterface
+    .removeConstraint('gymequipment', 'gymequipment_gym_id_fkey');
+  await queryInterface
+    .removeConstraint('gymequipment', 'gymmequipment_equipment_id_fkey');
 
   await queryInterface.changeColumn('gymmanagers', 'userId', {
     type: DataTypes.UUID,

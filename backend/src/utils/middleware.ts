@@ -1,10 +1,10 @@
-import type { Request, Response, NextFunction } from 'express';
-import { z } from 'zod';
-import { ValidationError } from 'sequelize';
-
 import jwt from 'jsonwebtoken';
+import { ValidationError } from 'sequelize';
+import { z } from 'zod';
 
 import { JWT_SECRET } from './config.ts';
+
+import type { NextFunction, Request, Response } from 'express';
 
 import {
   Equipment,
@@ -33,10 +33,15 @@ const unknownEndpoint = (_req: Request, res: Response) => {
   return;
 };
 
-const errorHandler = (err: unknown, _req: Request, res: Response, next: NextFunction): void => {
+const errorHandler = (
+  err: unknown,
+  _req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   if (err instanceof z.ZodError) {
     console.error(err.name);
-    const messages = err.issues.map(issue => issue.message);
+    const messages = err.issues.map((issue) => issue.message);
     res.status(400).json({ errors: messages });
     return;
   } else if (err instanceof ValidationError) {
@@ -53,18 +58,26 @@ const errorHandler = (err: unknown, _req: Request, res: Response, next: NextFunc
   }
 };
 
-const tokenExtractor = (req: Request, res: Response, next: NextFunction): void => {
+const tokenExtractor = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   const authorization = req.get('authorization');
   if (authorization?.toLowerCase().startsWith('bearer ')) {
     req.token = authorization.replace(/bearer /gi, '');
   } else {
     res.status(401).json({ error: 'Token missing.' });
     return;
-  };
+  }
   next();
 };
 
-const userExtractor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const userExtractor = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   if (req.token) {
     const decodedToken = jwt.verify(req.token, JWT_SECRET) as UserTokenPayload;
     const activeToken = await Session.findOne({ where: { token: req.token } });
@@ -77,7 +90,9 @@ const userExtractor = async (req: Request, res: Response, next: NextFunction): P
       if (foundUser) {
         req.user = foundUser;
       } else {
-        res.status(401).json({ error: 'User corresponding to the token not found.' });
+        res.status(401).json({
+          error: 'User corresponding to the token not found.'
+        });
         return;
       }
     } else {
@@ -106,7 +121,11 @@ const isUserAdmin = (req: Request, res: Response, next: NextFunction): void => {
 
 const isAdmin = [tokenExtractor, userExtractor, isUserAdmin];
 
-const isUserManager = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const isUserManager = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   if (!req.user) {
     res.status(401).json({ error: 'User missing from request.' });
     return;
@@ -144,15 +163,24 @@ const isUserManager = async (req: Request, res: Response, next: NextFunction): P
   next();
 };
 
-const isManager = [tokenExtractor, userExtractor, isUserManager];  // Will throw an error if there is no preceding target extractor.
+// Will throw an error if there is no preceding target extractor.
+const isManager = [tokenExtractor, userExtractor, isUserManager];
 
-const isUserAdminOrManager = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const isUserAdminOrManager = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   if (!req.user) {
     res.status(401).json({ error: 'User missing from request.' });
     return;
   }
 
-  if (req.user.role !== 'ADMIN' && req.user.role !== 'SUPERUSER' && req.user.role !== 'MANAGER') {
+  if (
+    req.user.role !== 'ADMIN'
+    && req.user.role !== 'SUPERUSER'
+    && req.user.role !== 'MANAGER'
+  ) {
     res.status(403).json({ error: 'Admin or manager rights required.' });
     return;
   } else {
@@ -186,12 +214,17 @@ const isUserAdminOrManager = async (req: Request, res: Response, next: NextFunct
   next();
 };
 
-const isAdminOrManager = [tokenExtractor, userExtractor, isUserAdminOrManager];  // Will throw an error for managers if there is no preceding target extractor.
+// Will throw an error for managers if there is no preceding target extractor.
+const isAdminOrManager = [tokenExtractor, userExtractor, isUserAdminOrManager];
 
 
 // user
 
-const targetUserExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
+const targetUserExtractor = async (
+  req: Request<{ id: string; }>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { id } = req.params;
 
   if (!id) {
@@ -237,7 +270,11 @@ const newEmailParser = (req: Request, _res: Response, next: NextFunction) => {
   }
 };
 
-const newPasswordParser = (req: Request<{ id: string; }, unknown, { password: string; }>, _res: Response, next: NextFunction) => {
+const newPasswordParser = (
+  req: Request<{ id: string; }, unknown, { password: string; }>,
+  _res: Response,
+  next: NextFunction
+) => {
   try {
     PasswordSchema.parse(req.body.password);
     next();
@@ -272,8 +309,18 @@ const isUserSelf = (req: Request, res: Response, next: NextFunction): void => {
   next();
 };
 
-const isUserSelfOrAdmin = (req: Request, res: Response, next: NextFunction): void => {
-  if (!req.user || ((req.user.id !== req.params['id']) && (req.user.role !== 'ADMIN' && req.user.role !== 'SUPERUSER'))) {
+const isUserSelfOrAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  if (
+    !req.user
+    || (
+      (req.user.id !== req.params['id'])
+      && (req.user.role !== 'ADMIN' && req.user.role !== 'SUPERUSER')
+    )
+  ) {
     res.status(403).json({ error: 'You can only modify your own data.' });
   }
   next();
@@ -285,7 +332,11 @@ const isSelfOrAdmin = [tokenExtractor, userExtractor, isUserSelfOrAdmin];
 
 // gym
 
-const targetGymExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
+const targetGymExtractor = async (
+  req: Request<{ id: string; }>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { id } = req.params;
 
   if (!id) {
@@ -306,7 +357,11 @@ const targetGymExtractor = async (req: Request<{ id: string; }>, res: Response, 
 
 // membership
 
-const targetEquipmentExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
+const targetEquipmentExtractor = async (
+  req: Request<{ id: string; }>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { id } = req.params;
 
   if (!id) {
@@ -327,7 +382,11 @@ const targetEquipmentExtractor = async (req: Request<{ id: string; }>, res: Resp
 
 // membership
 
-const targetMembershipExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
+const targetMembershipExtractor = async (
+  req: Request<{ id: string; }>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { id } = req.params;
 
   if (!id) {
@@ -360,7 +419,11 @@ const loginParser = (req: Request, _res: Response, next: NextFunction) => {
 
 // gymequipment
 
-const targetGymEquipmentExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
+const targetGymEquipmentExtractor = async (
+  req: Request<{ id: string; }>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { id } = req.params;
 
   if (!id) {
@@ -381,7 +444,11 @@ const targetGymEquipmentExtractor = async (req: Request<{ id: string; }>, res: R
 
 // gymmanagers
 
-const targetGymManagerExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
+const targetGymManagerExtractor = async (
+  req: Request<{ id: string; }>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { id } = req.params;
 
   if (!id) {
@@ -399,7 +466,10 @@ const targetGymManagerExtractor = async (req: Request<{ id: string; }>, res: Res
   next();
 };
 
-const adjustUserRole = async (userId: string, emptyLength: number): Promise<void> => {
+const adjustUserRole = async (
+  userId: string,
+  emptyLength: number
+): Promise<void> => {
   const user = await User.findByPk(userId);
   if (!user) {
     throw new Error(`User with ID ${userId} not found.`);
@@ -425,7 +495,11 @@ const adjustUserRole = async (userId: string, emptyLength: number): Promise<void
 
 // gymmemberhsips
 
-const targetGymMembershipExtractor = async (req: Request<{ id: string; }>, res: Response, next: NextFunction): Promise<void> => {
+const targetGymMembershipExtractor = async (
+  req: Request<{ id: string; }>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { id } = req.params;
 
   if (!id) {

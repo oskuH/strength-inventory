@@ -7,12 +7,17 @@ import Session from '../models/session.ts';
 const logoutRouter = Express.Router();
 
 // DELETE for users to log out
-logoutRouter.delete('/', tokenExtractor, async (req: Request, res: Response) => {
-  const session = await Session.findOne({ where: { token: req.token } });
-  if (session) {
-    await session.destroy();
+logoutRouter.delete(
+  '/',
+  tokenExtractor,
+  async (req: Request, res: Response) => {
+    const session = await Session.findOne({ where: { token: req.token } });
+
+    if (session) {
+      await session.destroy();
+    }
+    return res.status(204).end();
   }
-  return res.status(204).end();
-});
+);
 
 export default logoutRouter;
