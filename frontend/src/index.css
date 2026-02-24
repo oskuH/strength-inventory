@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary: var(--color-orange-300);
+  --color-primary-dark: var(--color-olive-950);
+  --color-secondary: var(--color-orange-200);
+  --color-secondary-dark: var(--color-olive-900);
+  --color-tertiary: var(--color-orange-100);
+  --color-tertiary-dark: var(--color-olive-800);
+  --color-primary-text: var(--color-gray-900);
+  --color-primary-text-dark: var(--color-gray-100);
+}
+
+/* Toggle dark mode based on 'dark' class */
+@custom-variant dark (&:where(.dark, .dark *))

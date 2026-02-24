@@ -4,7 +4,9 @@ export default function SidebarRight () {
   return (
     <div
       className='
-      absolute right-0 h-full flex w-24 flex-col items-end bg-red-500'
+      absolute right-0 h-full flex w-24 flex-col items-end
+      bg-secondary text-primary-text
+      dark:bg-secondary-dark dark:text-primary-text-dark'
     >
       <Link
         to='/lists'
