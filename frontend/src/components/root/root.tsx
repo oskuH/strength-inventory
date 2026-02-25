@@ -5,12 +5,23 @@ import { Outlet } from '@tanstack/react-router';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
+import { IconContext } from '../../utils/contexts';
+
 import Footer from './footer';
 import Header from './header';
 import SidebarLeft from './sidebar-left';
 import SidebarRight from './sidebar-right';
 
 export default function Root () {
+  const [iconMode, setIconMode] = useState(() => {
+    const savedVisuals = localStorage.getItem('visuals');
+    if (savedVisuals === 'icons') {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
   const [darkMode, setDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -40,13 +51,22 @@ export default function Root () {
   }, [darkMode]);
 
   return (
-    <>
+    <IconContext value={iconMode}>
       <div className='flex min-h-svh flex-col'>
         <Header />
         <div className='flex grow flex-col relative'>
-          <SidebarLeft darkMode={darkMode} setDarkMode={setDarkMode} />
+          <SidebarLeft
+            iconMode={iconMode}
+            setIconMode={setIconMode}
+            darkMode={darkMode}
+            setDarkMode={setDarkMode}
+          />
           <SidebarRight />
-          <div className='flex grow flex-col bg-orange-50 dark:bg-olive-700'>
+          <div
+            className='
+            flex grow flex-col bg-orange-50 dark:bg-olive-700
+            transition'
+          >
             <Outlet />
           </div>
           <Footer />
@@ -54,6 +74,6 @@ export default function Root () {
       </div>
       <ReactQueryDevtools />
       <TanStackRouterDevtools />
-    </>
+    </IconContext >
   );
 }
