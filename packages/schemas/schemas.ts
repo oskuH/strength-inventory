@@ -5,16 +5,16 @@ import { z } from 'zod';
 Although using .coerce is not optimal in terms of strictness and only required for json-server,
 it should not cause any issues as long as timestamps can only be modified by Sequelize in production.  */
 
-const TimeSchema = z.array(z.number().min(0).max(24)).length(2).nullish();
+const TimeSchema = z.array(z.number().min(0).max(24)).length(2);
 
 export const HoursSchema = z.object({
-  MO: TimeSchema,
-  TU: TimeSchema,
-  WE: TimeSchema,
-  TH: TimeSchema,
-  FR: TimeSchema,
-  SA: TimeSchema,
-  SU: TimeSchema
+  MO: TimeSchema.nullish(),
+  TU: TimeSchema.nullish(),
+  WE: TimeSchema.nullish(),
+  TH: TimeSchema.nullish(),
+  FR: TimeSchema.nullish(),
+  SA: TimeSchema.nullish(),
+  SU: TimeSchema.nullish()
 });
 export type Hours = z.infer<typeof HoursSchema>;  // Used in gym and membership
 
@@ -77,6 +77,17 @@ export const UserNamesSchema = UserSchema.pick({
 
 // gym
 
+export const OpeningHoursExceptionSchema = z.object({
+  date: z.date(),
+  hours: TimeSchema,
+  reason: z.string(),
+  concernsMembers: z.boolean()
+})
+
+export const HoursExceptionsSchema
+  = z.array(OpeningHoursExceptionSchema)
+export type HoursExceptions = z.infer<typeof HoursExceptionsSchema>;
+
 export const GymSchema = z.object({
   id: z.uuidv4(),
   name: z.string(),
@@ -85,7 +96,9 @@ export const GymSchema = z.object({
   streetNumber: z.string(),
   district: z.string(),
   city: z.string(),
-  openingHours: HoursSchema,
+  openingHoursEveryone: HoursSchema,
+  openingHoursMembers: HoursSchema,
+  openingHoursExceptions: HoursExceptionsSchema,
   url: z.url().nullish(),
   notes: z.string().nullish(),
   createdAt: z.coerce.date(),
@@ -100,11 +113,20 @@ export const GymPostSchema = GymSchema.pick({
   streetNumber: true,
   district: true,
   city: true,
-  openingHours: true,
+  openingHoursEveryone: true,
+  openingHoursMembers: true,
+  openingHoursExceptions: true,
   url: true,
   notes: true
 });
 export type GymPost = z.infer<typeof GymPostSchema>;
+
+export const GymPatchHoursSchema = GymSchema.pick({
+  openingHoursEveryone: true,
+  openingHoursMembers: true,
+  openingHoursExceptions: true
+})
+export type GymPatchHours = z.infer<typeof GymPatchHoursSchema>;
 
 export const GymPatchSchema = GymSchema.pick({
   name: true,
@@ -121,7 +143,7 @@ export type GymPatch = z.infer<typeof GymPatchSchema>;
 
 // equipment
 
-export const EquipmentCategoryEnum = z.enum(['attachment', 'cardio', 'freeWeight', 'strengthMachine', 'tool']);
+export const EquipmentCategoryEnum = z.enum(['accessoryOrTool', 'cardio', 'freeWeight', 'handleAttachment', 'strengthMachine', 'system']);
 export type EquipmentCategory = z.infer<typeof EquipmentCategoryEnum>;
 
 export const EquipmentWeightUnitEnum = z.enum(['kg', 'lbs']).nullish();
@@ -165,8 +187,12 @@ export const EquipmentPostAndPutSchema = EquipmentSchema.pick({
 export const MembershipTimeUnitEnum = z.enum(['year', 'month', 'week', 'day', 'hour']);
 export type MembershipTimeUnit = z.infer<typeof MembershipTimeUnitEnum>;
 
-export const MembershipAvailabilityEntrySchema = z.tuple([z.string(), HoursSchema]);
-export const MembershipAvailabilitySchema = z.array(MembershipAvailabilityEntrySchema);
+export const MembershipAvailabilitySchema = z.object({
+  Desk: z.boolean(),
+  Web: z.boolean(),
+  App: z.boolean(),
+  Other: z.boolean()
+})
 export type MembershipAvailability = z.infer<typeof MembershipAvailabilitySchema>;
 
 export const MembershipSchema = z.object({

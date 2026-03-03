@@ -45,7 +45,14 @@ Equipment.init({
   },
   category: {
     type: DataTypes
-      .ENUM('attachment', 'cardio', 'freeWeight', 'strengthMachine', 'tool'),
+      .ENUM(
+        'accessoryOrTool',
+        'cardio',
+        'freeWeight',
+        'handleAttachment',
+        'strengthMachine',
+        'system'
+      ),
     allowNull: false
   },
   manufacturer: {

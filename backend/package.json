@@ -18,8 +18,8 @@
     "migration:down": "npm run migration:down_dev && npm run migration:down_test"
   },
   "devDependencies": {
-    "@strength-inventory/schemas": "*",
     "@eslint/js": "^10.0.1",
+    "@strength-inventory/schemas": "*",
     "@stylistic/eslint-plugin": "^5.7.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
@@ -27,7 +27,7 @@
     "@types/node": "^24.10.9",
     "@types/pg": "^8.16.0",
     "@types/sequelize": "^4.28.20",
-    "@types/supertest": "^6.0.3",
+    "@types/supertest": "^7.2.0",
     "eslint": "^10.0.0",
     "sequelize-cli": "^6.6.5",
     "supertest": "^7.2.2",

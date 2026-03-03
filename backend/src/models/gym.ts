@@ -10,7 +10,10 @@ import {
 
 import { adjustUserRole } from '../utils/middleware.ts';
 
-import { type Hours } from '@strength-inventory/schemas';
+import type {
+  Hours,
+  HoursExceptions
+} from '@strength-inventory/schemas';
 
 import { sequelize } from '../utils/db.js';
 
@@ -24,7 +27,9 @@ class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare streetNumber: string;
   declare district: string;
   declare city: string;
-  declare openingHours: CreationOptional<Hours>;
+  declare openingHoursEveryone: CreationOptional<Hours>;
+  declare openingHoursMembers: CreationOptional<Hours>;
+  declare openingHoursExceptions: CreationOptional<HoursExceptions>;
   declare url: string | null | undefined;
   declare notes: string | null | undefined;
   declare createdAt: CreationOptional<Date>;
@@ -62,7 +67,17 @@ Gym.init({
     type: DataTypes.STRING,
     allowNull: false
   },
-  openingHours: {
+  openingHoursEveryone: {
+    type: DataTypes.JSON,
+    allowNull: false,
+    defaultValue: {}
+  },
+  openingHoursMembers: {
+    type: DataTypes.JSON,
+    allowNull: false,
+    defaultValue: {}
+  },
+  openingHoursExceptions: {
     type: DataTypes.JSON,
     allowNull: false,
     defaultValue: {}

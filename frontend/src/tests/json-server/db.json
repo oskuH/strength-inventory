@@ -41,7 +41,7 @@
       "streetNumber": "13N",
       "district": "Ruoholahti",
       "city": "Helsinki",
-      "openingHours": {
+      "openingHoursMembers": {
         "MO": [
           0,
           24
@@ -82,7 +82,7 @@
       "streetNumber": "8",
       "district": "Kluuvi",
       "city": "Helsinki",
-      "openingHours": {
+      "openingHoursMembers": {
         "MO": [
           6,
           22
@@ -131,7 +131,7 @@
     {
       "id": "3029ed7c-138a-4207-93c1-cae29c3961ad",
       "name": "Eleiko Adjustable Bench Black/PUR",
-      "category": "tool",
+      "category": "system",
       "manufacturer": "Eleiko",
       "code": "BD-1-278",
       "url": "https://eleiko.com/en-fi/equipment/benches/workoutbenches/3062962-03-eleiko-adjustable-bench-black-pur",
@@ -146,6 +146,30 @@
       "weightUnit": "kg",
       "weight": 10,
       "url": "https://www.technogym.com/en-INT/product/dumbbell_A0001-UDB.html?weight=10kg&pid=A0001191"
+    },
+    {
+      "id": "362d58f4-fe30-4501-82f1-0c86b28fb2c0",
+      "name": "Bodytone Mat",
+      "category": "accessoryOrTool",
+      "manufacturer": "Bodytone",
+      "code": "MAT",
+      "url": "https://pro.bodytone.eu/en/products/mats?variant=51591329677654"
+    },
+    {
+      "id": "79a0da77-d9dd-4deb-b032-b8a377ed7d39",
+      "name": "Matrix Virtual Training Cycle",
+      "category": "cardio",
+      "manufacturer": "Matrix",
+      "code": "CXV",
+      "url": "https://world.matrixfitness.com/eng/cardio/virtual-training/cycle"
+    },
+    {
+      "id": "1cc9e2bb-33e5-4458-81c1-2a8a17864aac",
+      "name": "AllFreeWeight Special biceps/triceps handle",
+      "category": "handleAttachment",
+      "manufacturer": "Etenon Fitness",
+      "code": "105452",
+      "url": "https://etenonfitness.com/en/p/105452-special-biceps-triceps-handle/"
     }
   ]
 }

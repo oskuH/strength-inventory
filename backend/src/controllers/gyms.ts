@@ -12,8 +12,8 @@ import { Gym } from '../models/index.ts';
 import type {
   Gym as FullGym,
   GymPatch,
-  GymPost,
-  Hours
+  GymPatchHours,
+  GymPost
 } from '@strength-inventory/schemas';
 
 const gymsRouter = Express.Router();
@@ -39,7 +39,9 @@ gymsRouter.post(
       streetNumber,
       district,
       city,
-      openingHours,
+      openingHoursEveryone,
+      openingHoursMembers,
+      openingHoursExceptions,
       url,
       notes
     } = req.body;
@@ -51,7 +53,9 @@ gymsRouter.post(
       streetNumber,
       district,
       city,
-      openingHours,
+      openingHoursEveryone,
+      openingHoursMembers,
+      openingHoursExceptions,
       url,
       notes
     });
@@ -81,7 +85,9 @@ gymsRouter.put(
       streetNumber,
       district,
       city,
-      openingHours,
+      openingHoursEveryone,
+      openingHoursMembers,
+      openingHoursExceptions,
       url,
       notes
     } = req.body;
@@ -93,7 +99,9 @@ gymsRouter.put(
       streetNumber: streetNumber,
       district: district,
       city: city,
-      openingHours: openingHours,
+      openingHoursEveryone: openingHoursEveryone,
+      openingHoursMembers: openingHoursMembers,
+      openingHoursExceptions: openingHoursExceptions,
       url: url,
       notes: notes
     });
@@ -109,7 +117,7 @@ gymsRouter.patch(
   targetGymExtractor,
   ...isAdminOrManager,
   async (
-    req: Request<{ id: string; }, unknown, { openingHours: Hours; }>,
+    req: Request<{ id: string; }, unknown, GymPatchHours>,
     res: Response<FullGym>
   ) => {
     if (!req.targetGym) {
@@ -117,9 +125,17 @@ gymsRouter.patch(
     }  // Should never trigger after middleware.
 
     const gym = req.targetGym;
-    const { openingHours } = req.body;
+    const {
+      openingHoursEveryone,
+      openingHoursMembers,
+      openingHoursExceptions
+    } = req.body;
 
-    await gym.update({ openingHours: openingHours });
+    await gym.update({
+      openingHoursEveryone: openingHoursEveryone,
+      openingHoursMembers: openingHoursMembers,
+      openingHoursExceptions: openingHoursExceptions
+    });
     await gym.save();
 
     return res.status(200).json(gym);

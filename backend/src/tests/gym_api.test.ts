@@ -1,4 +1,12 @@
-import { assert, beforeEach, describe, expect, test } from 'vitest';
+import {
+  afterAll,
+  assert,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  test
+} from 'vitest';
 import request from 'supertest';
 
 import { genSaltSync, hashSync } from 'bcrypt-ts';
@@ -16,7 +24,7 @@ const initialGymCount = 2;  // The number of gyms created in beforeEach
 let token: string;
 let gymToPatch: FullGym | null;
 
-beforeEach(async () => {
+beforeAll(async () => {
   await User.truncate({ cascade: true });
   let passwordHash: string;
   const salt = genSaltSync(10);
@@ -38,7 +46,9 @@ beforeEach(async () => {
     name: 'The Gym Owner',
     role: 'MANAGER'
   });
+});
 
+beforeEach(async () => {
   await Gym.truncate({ cascade: true });
 
   await Gym.create({
@@ -58,7 +68,7 @@ beforeEach(async () => {
     district: 'Kamppi',
     city: 'Helsinki',
     notes: 'A lot of natural light',
-    openingHours: {
+    openingHoursMembers: {
       MO: [6, 22],
       TU: [6, 22],
       WE: [6, 22],
@@ -68,6 +78,11 @@ beforeEach(async () => {
       SU: [8, 20]
     }
   });
+});
+
+afterAll(async () => {
+  await User.truncate({ cascade: true });
+  await Gym.truncate({ cascade: true });
 });
 
 test('GET all gyms correctly returns a json', async () => {
@@ -112,7 +127,7 @@ describe('POST a new gym', () => {
 
       const body = response.body as FullGym;
 
-      expect(body.openingHours).toEqual({});
+      expect(body.openingHoursMembers).toEqual({});
     });
 
     test('fails if "name" is null', async () => {
@@ -208,9 +223,9 @@ describe('PATCH gym\'s service hours', () => {
       gymToPatch = await Gym.findOne({ where: { name: 'ELIXIA Kamppi' } });
     });
 
-    test('succeeds with both sets of hours', async () => {
+    test('succeeds with a full set of hours', async () => {
       assert.isNotNull(gymToPatch);
-      const newOpeningHours = {
+      const newOpeningHoursMembers = {
         MO: [7, 21],
         TU: [7, 21],
         WE: [7, 21],
@@ -223,7 +238,7 @@ describe('PATCH gym\'s service hours', () => {
       await request(app)
         .patch(`/api/gyms/${gymToPatch.id}`)
         .set('Authorization', `Bearer ${token}`)
-        .send({ openingHours: newOpeningHours })
+        .send({ openingHoursMembers: newOpeningHoursMembers })
         .expect(200);
     });
   });

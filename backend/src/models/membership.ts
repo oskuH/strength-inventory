@@ -26,7 +26,7 @@ class Membership extends Model<
   declare validityUnit: MembershipTimeUnit;
   declare commitment: number | null | undefined;
   declare commitmentUnit: MembershipTimeUnit | null | undefined;
-  declare availability: CreationOptional<MembershipAvailability>;
+  declare availability: MembershipAvailability;
   declare url: string | null | undefined;
   declare notes: string | null | undefined;
   declare createdAt: CreationOptional<Date>;
@@ -71,8 +71,7 @@ Membership.init({
   },
   availability: {
     type: DataTypes.JSON,
-    allowNull: false,
-    defaultValue: {}
+    allowNull: false
   },
   url: {
     type: DataTypes.STRING

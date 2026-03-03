@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, expect, test } from 'vitest';
+import { afterAll, assert, beforeEach, describe, expect, test } from 'vitest';
 import request from 'supertest';
 
 import { genSaltSync, hashSync } from 'bcrypt-ts';
@@ -100,6 +100,11 @@ beforeEach(async () => {
 
   const body = response.body as LoginResponse;
   token = body.token;
+});
+
+afterAll(async () => {
+  await User.truncate({ cascade: true });
+  await Gym.truncate({ cascade: true });
 });
 
 test('GET all gymmanagers correctly returns a json', async () => {
