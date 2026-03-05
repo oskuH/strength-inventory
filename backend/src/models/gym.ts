@@ -17,7 +17,7 @@ import type {
 
 import { sequelize } from '../utils/db.js';
 
-import User from './user.ts';
+import { Equipment, Membership, User } from './index.ts';
 
 class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare id: CreationOptional<string>;
@@ -35,7 +35,9 @@ class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
-  declare getUsers: BelongsToManyGetAssociationsMixin<User>;
+  declare getManagers: BelongsToManyGetAssociationsMixin<User>;
+  declare getEquipment: BelongsToManyGetAssociationsMixin<Equipment>;
+  declare getMemberships: BelongsToManyGetAssociationsMixin<Membership>;
 }
 
 Gym.init({
@@ -93,7 +95,7 @@ Gym.init({
 }, {
   hooks: {
     beforeDestroy: async (gym) => {  // Turn gym-less managers into gym-goers.
-      const managers = await gym.getUsers();
+      const managers = await gym.getManagers();
       for (const manager of managers) {
         await adjustUserRole(
           manager.id,

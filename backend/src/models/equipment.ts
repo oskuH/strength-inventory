@@ -1,5 +1,6 @@
 /* eslint-disable @stylistic/lines-between-class-members */
 import {
+  type BelongsToManyGetAssociationsMixin,
   type CreationOptional,
   DataTypes,
   type InferAttributes,
@@ -13,6 +14,8 @@ import type {
 } from '@strength-inventory/schemas';
 
 import { sequelize } from '../utils/db.js';
+
+import { Gym } from './index.ts';
 
 class Equipment extends Model<
   InferAttributes<Equipment>, InferCreationAttributes<Equipment>
@@ -31,6 +34,8 @@ class Equipment extends Model<
   declare notes: string | null | undefined;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+
+  declare getGyms: BelongsToManyGetAssociationsMixin<Gym>;
 }
 
 Equipment.init({

@@ -7,7 +7,7 @@ import {
   targetGymExtractor
 } from '../utils/middleware.ts';
 
-import { Gym } from '../models/index.ts';
+import { Equipment, Gym, Membership, User } from '../models/index.ts';
 
 import type {
   Gym as FullGym,
@@ -20,8 +20,33 @@ const gymsRouter = Express.Router();
 
 // GET all gyms
 gymsRouter.get('/', async (_req, res) => {
-  const gyms = await Gym.findAll();
+  const gyms = await Gym.findAll({
+    include: [{
+      model: User,
+      as: 'managers',
+      attributes: [
+        'id', 'username', 'email', 'name'
+      ]
+    },
+    {
+      model: Membership,
+      attributes: { exclude: ['createdAt', 'updatedAt'] }
+    },
+    {
+      model: Equipment,
+      attributes: { exclude: ['createdAt', 'updatedAt'] }
+    }]
+  });
   return res.json(gyms);
+});
+
+gymsRouter.get('/:id', targetGymExtractor, (req, res) => {
+  if (!req.targetGym) {
+    throw new Error('Gym missing from request.');
+  }  // Should never trigger after middleware.
+
+  const gym = req.targetGym;
+  return res.json(gym);
 });
 
 // POST a new gym

@@ -1,0 +1,58 @@
+POST http://localhost:3000/api/gyms
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4MDJlMmE5LWE3YWUtNDZmMS04OTFjLTdkNWIwNDhjYTRmNiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzI3MDUzNjV9.97jPhIX4ypCTao1HZV4ZwRWUflgTKhOsEGbwLVJ-9J8
+// admins only
+
+{
+  "name": "Liikku Helsinki Töölö",
+  "chain": "Liikku",
+  "street": "Mechelininkatu",
+  "streetNumber": "3C",
+  "district": "Etelä-Töölö",
+  "city": "Helsinki",
+  "openingHoursMembers": {
+    "MO": [
+      5,
+      23
+    ],
+    "TU": [
+      5,
+      23
+    ],
+    "WE": [
+      5,
+      23
+    ],
+    "TH": [
+      5,
+      23
+    ],
+    "FR": [
+      5,
+      23
+    ],
+    "SA": [
+      5,
+      23
+    ],
+    "SU": [
+      5,
+      23
+    ]
+  },
+  "openingHoursEveryone": {
+    "MO": [
+      16,
+      19
+    ],
+    "TU": [
+      16,
+      19
+    ],
+    "WE": [
+      16,
+      19
+    ]
+  },
+  "url": "https://www.liikku.fi/kuntosali/helsinki-toolo/"
+}

@@ -1,0 +1,19 @@
+POST http://localhost:3000/api/memberships/
+Content-Type: application/json
+
+{
+  "chain": "Liikku",
+  "name": "Monthly",
+  "price": 30.0,
+  "priceCurrency": "euro",
+  "validity": 1,
+  "validityUnit": "month",
+  "availability": {
+    "Desk": true,
+    "Web": true,
+    "App": false,
+    "Other": false
+  },
+  "url": "https://www.liikku.fi/kuntosali/helsinki-toolo/",
+  "notes": "some text here"
+}

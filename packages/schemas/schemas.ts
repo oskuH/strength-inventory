@@ -19,6 +19,71 @@ export const HoursSchema = z.object({
 export type Hours = z.infer<typeof HoursSchema>;  // Used in gym and membership
 
 
+// membership
+
+export const MembershipTimeUnitEnum = z.enum(['year', 'month', 'week', 'day', 'hour']);
+export type MembershipTimeUnit = z.infer<typeof MembershipTimeUnitEnum>;
+
+export const MembershipAvailabilitySchema = z.object({
+  Desk: z.boolean(),
+  Web: z.boolean(),
+  App: z.boolean(),
+  Other: z.boolean()
+})
+export type MembershipAvailability = z.infer<typeof MembershipAvailabilitySchema>;
+
+export const MembershipSchema = z.object({
+  id: z.uuidv4(),
+  chain: z.string().nullish(),
+  name: z.string(),
+  price: z.float32(),
+  priceCurrency: z.string(),
+  validity: z.int(),
+  validityUnit: MembershipTimeUnitEnum,
+  commitment: z.int().nullish(),
+  commitmentUnit: MembershipTimeUnitEnum.nullish(),  // TODO: custom validator
+  availability: MembershipAvailabilitySchema,
+  url: z.url().nullish(),
+  notes: z.string().nullish(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
+});
+export type Membership = z.infer<typeof MembershipSchema>;
+
+export const MembershipPostAndPutSchema = MembershipSchema.pick({
+  chain: true,
+  name: true,
+  price: true,
+  priceCurrency: true,
+  validity: true,
+  validityUnit: true,
+  commitment: true,
+  commitmentUnit: true,
+  availability: true,
+  url: true,
+  notes: true
+});
+export type MembershipPostAndPut = z.infer<typeof MembershipPostAndPutSchema>;
+
+
+// gymmanagers
+
+export const GymManagerSchema = z.object({
+  id: z.uuidv4(),
+  userId: z.uuidv4(),
+  gymId: z.uuidv4(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
+});
+export type GymManager = z.infer<typeof GymManagerSchema>;
+
+export const GymManagerPostSchema = GymManagerSchema.pick({
+  userId: true,
+  gymId: true
+});
+export type GymManagerPost = z.infer<typeof GymManagerPostSchema>;
+
+
 // user
 
 // TODO: ADD FURTHER REQUIREMENTS
@@ -75,72 +140,6 @@ export const UserNamesSchema = UserSchema.pick({
 });
 
 
-// gym
-
-export const OpeningHoursExceptionSchema = z.object({
-  date: z.date(),
-  hours: TimeSchema,
-  reason: z.string(),
-  concernsMembers: z.boolean()
-})
-
-export const HoursExceptionsSchema
-  = z.array(OpeningHoursExceptionSchema)
-export type HoursExceptions = z.infer<typeof HoursExceptionsSchema>;
-
-export const GymSchema = z.object({
-  id: z.uuidv4(),
-  name: z.string(),
-  chain: z.string().nullish(),
-  street: z.string(),
-  streetNumber: z.string(),
-  district: z.string(),
-  city: z.string(),
-  openingHoursEveryone: HoursSchema,
-  openingHoursMembers: HoursSchema,
-  openingHoursExceptions: HoursExceptionsSchema,
-  url: z.url().nullish(),
-  notes: z.string().nullish(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date()
-});
-export type Gym = z.infer<typeof GymSchema>;
-
-export const GymPostSchema = GymSchema.pick({
-  name: true,
-  chain: true,
-  street: true,
-  streetNumber: true,
-  district: true,
-  city: true,
-  openingHoursEveryone: true,
-  openingHoursMembers: true,
-  openingHoursExceptions: true,
-  url: true,
-  notes: true
-});
-export type GymPost = z.infer<typeof GymPostSchema>;
-
-export const GymPatchHoursSchema = GymSchema.pick({
-  openingHoursEveryone: true,
-  openingHoursMembers: true,
-  openingHoursExceptions: true
-})
-export type GymPatchHours = z.infer<typeof GymPatchHoursSchema>;
-
-export const GymPatchSchema = GymSchema.pick({
-  name: true,
-  chain: true,
-  street: true,
-  streetNumber: true,
-  district: true,
-  city: true,
-  url: true,
-  notes: true
-});
-export type GymPatch = z.infer<typeof GymPatchSchema>;
-
-
 // equipment
 
 export const EquipmentCategoryEnum = z.enum(['accessoryOrTool', 'cardio', 'freeWeight', 'handleAttachment', 'strengthMachine', 'system']);
@@ -182,51 +181,90 @@ export const EquipmentPostAndPutSchema = EquipmentSchema.pick({
 }); export type EquipmentPostAndPut = z.infer<typeof EquipmentPostAndPutSchema>;
 
 
-// membership
+// gym
 
-export const MembershipTimeUnitEnum = z.enum(['year', 'month', 'week', 'day', 'hour']);
-export type MembershipTimeUnit = z.infer<typeof MembershipTimeUnitEnum>;
-
-export const MembershipAvailabilitySchema = z.object({
-  Desk: z.boolean(),
-  Web: z.boolean(),
-  App: z.boolean(),
-  Other: z.boolean()
+export const OpeningHoursExceptionSchema = z.object({
+  date: z.date(),
+  hours: TimeSchema,
+  reason: z.string(),
+  concernsMembers: z.boolean()
 })
-export type MembershipAvailability = z.infer<typeof MembershipAvailabilitySchema>;
 
-export const MembershipSchema = z.object({
+export const HoursExceptionsSchema = z.object({
+    data: z.array(OpeningHoursExceptionSchema).nullish()
+  })
+export type HoursExceptions = z.infer<typeof HoursExceptionsSchema>;
+
+export const GymSchema = z.object({
   id: z.uuidv4(),
-  chain: z.string().nullish(),
   name: z.string(),
-  price: z.float32(),
-  priceCurrency: z.string(),
-  validity: z.int(),
-  validityUnit: MembershipTimeUnitEnum,
-  commitment: z.int().nullish(),
-  commitmentUnit: MembershipTimeUnitEnum.nullish(),  // TODO: custom validator
-  availability: MembershipAvailabilitySchema,
+  chain: z.string().nullish(),
+  street: z.string(),
+  streetNumber: z.string(),
+  district: z.string(),
+  city: z.string(),
+  openingHoursEveryone: HoursSchema,
+  openingHoursMembers: HoursSchema,
+  openingHoursExceptions: HoursExceptionsSchema,
   url: z.url().nullish(),
   notes: z.string().nullish(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date()
 });
-export type Membership = z.infer<typeof MembershipSchema>;
+export type Gym = z.infer<typeof GymSchema>;
 
-export const MembershipPostAndPutSchema = MembershipSchema.pick({
-  chain: true,
+export const GymGetSchema = GymSchema.extend({
+  managers: z.array(UserSchema.pick({
+    id: true,
+    username: true,
+    email: true,
+    name: true
+  }).extend({
+    gymmanagers: z.array(GymManagerSchema)
+  })),
+  memberships: z.array(MembershipSchema.omit({
+    createdAt: true,
+    updatedAt: true
+  })),
+  equipment: z.array(EquipmentSchema.omit({
+    createdAt: true,
+    updatedAt: true
+  }))
+})
+
+export const GymPostSchema = GymSchema.pick({
   name: true,
-  price: true,
-  priceCurrency: true,
-  validity: true,
-  validityUnit: true,
-  commitment: true,
-  commitmentUnit: true,
-  availability: true,
+  chain: true,
+  street: true,
+  streetNumber: true,
+  district: true,
+  city: true,
+  openingHoursEveryone: true,
+  openingHoursMembers: true,
+  openingHoursExceptions: true,
   url: true,
   notes: true
 });
-export type MembershipPostAndPut = z.infer<typeof MembershipPostAndPutSchema>;
+export type GymPost = z.infer<typeof GymPostSchema>;
+
+export const GymPatchHoursSchema = GymSchema.pick({
+  openingHoursEveryone: true,
+  openingHoursMembers: true,
+  openingHoursExceptions: true
+})
+export type GymPatchHours = z.infer<typeof GymPatchHoursSchema>;
+
+export const GymPatchSchema = GymSchema.pick({
+  name: true,
+  chain: true,
+  street: true,
+  streetNumber: true,
+  district: true,
+  city: true,
+  url: true,
+  notes: true
+});
+export type GymPatch = z.infer<typeof GymPatchSchema>;
 
 
 // login
@@ -259,24 +297,6 @@ export const GymEquipmentPostSchema = GymEquipmentSchema.pick({
   equipmentId: true
 });
 export type GymEquipmentPost = z.infer<typeof GymEquipmentPostSchema>;
-
-
-// gymmanagers
-
-export const GymManagerSchema = z.object({
-  id: z.uuidv4(),
-  userId: z.uuidv4(),
-  gymId: z.uuidv4(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date()
-});
-export type GymManager = z.infer<typeof GymManagerSchema>;
-
-export const GymManagerPostSchema = GymManagerSchema.pick({
-  userId: true,
-  gymId: true
-});
-export type GymManagerPost = z.infer<typeof GymManagerPostSchema>;
 
 
 // gymmemberships

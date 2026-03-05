@@ -12,7 +12,7 @@ import type { UserRole } from '@strength-inventory/schemas';
 
 import { sequelize } from '../utils/db.js';
 
-import Gym from './gym.ts';
+import { Gym } from './index.ts';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<string>;

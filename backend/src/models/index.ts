@@ -16,7 +16,7 @@ Session.belongsTo(User);
 // Many-To-Many
 // Users can manage several gyms and gyms can have several managers.
 User.belongsToMany(Gym, { through: GymManagers });
-Gym.belongsToMany(User, { through: GymManagers });
+Gym.belongsToMany(User, { as: 'managers', through: GymManagers });
 
 // Many-To-Many
 // Gyms have many equipment and eqipment are typically not unique.

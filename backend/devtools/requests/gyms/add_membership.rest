@@ -1,0 +1,8 @@
+POST http://localhost:3000/api/gymmemberships/7678833e-76af-45a8-b631-e0369436cfdd
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4MDJlMmE5LWE3YWUtNDZmMS04OTFjLTdkNWIwNDhjYTRmNiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzI3MDc5NDJ9.ryKEDGy6eD9qLbx_MBwTN_t1SpC2VSHLcYQ89r_iKDs
+// admins and managers only
+
+{
+  "membershipId": "025a7acc-c51d-4447-911d-8d9cd6641658"
+}

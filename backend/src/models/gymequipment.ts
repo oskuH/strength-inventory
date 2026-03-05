@@ -42,7 +42,8 @@ GymEquipment.init({
 }, {
   sequelize,
   underscored: true,
-  modelName: 'gymequipment'
+  modelName: 'gymequipment',
+  tableName: 'gymequipment'
 });
 
 export default GymEquipment;

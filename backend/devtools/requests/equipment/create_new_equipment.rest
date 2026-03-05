@@ -1,0 +1,15 @@
+POST http://localhost:3000/api/equipment
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4MDJlMmE5LWE3YWUtNDZmMS04OTFjLTdkNWIwNDhjYTRmNiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzI3MDc5NDJ9.ryKEDGy6eD9qLbx_MBwTN_t1SpC2VSHLcYQ89r_iKDs
+// admins only
+
+{
+  "name": "PURE KRAFT Hack Squat",
+  "category": "strengthMachine",
+  "manufacturer": "gym80",
+  "code": "4159N",
+  "weightUnit": "kg",
+  "maximumWeight": 200,
+  "url": "https://gym80.de/en/product/plate-loaded-en/pure-kraft-en/4159n-pure-kraft-hack-squat/",
+  "notes": "Maximum weight = maximum load. Starting weight unknown, but can be too heavy for beginners."
+}

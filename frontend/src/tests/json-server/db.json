@@ -114,6 +114,60 @@
       },
       "url": "https://www.elixia.fi/kuntosali/helsinki/citycenter",
       "notes": "3rd floor"
+    },
+    {
+      "id": "0c7fa4bf-0ab1-40b9-b7c8-10cd28a1f185",
+      "name": "Liikku Helsinki Töölö",
+      "chain": "Liikku",
+      "street": "Mechelininkatu",
+      "streetNumber": "3C",
+      "district": "Etelä-Töölö",
+      "city": "Helsinki",
+      "openingHoursMembers": {
+        "MO": [
+          5,
+          23
+        ],
+        "TU": [
+          5,
+          23
+        ],
+        "WE": [
+          5,
+          23
+        ],
+        "TH": [
+          5,
+          23
+        ],
+        "FR": [
+          5,
+          23
+        ],
+        "SA": [
+          5,
+          23
+        ],
+        "SU": [
+          5,
+          23
+        ]
+      },
+      "openingHoursEveryone": {
+        "MO": [
+          16,
+          19
+        ],
+        "TU": [
+          16,
+          19
+        ],
+        "WE": [
+          16,
+          19
+        ]
+      },
+      "url": "https://www.liikku.fi/kuntosali/helsinki-toolo/"
     }
   ],
   "equipment": [
@@ -170,6 +224,73 @@
       "manufacturer": "Etenon Fitness",
       "code": "105452",
       "url": "https://etenonfitness.com/en/p/105452-special-biceps-triceps-handle/"
+    },
+    {
+      "id": "16cdc32a-baab-4a8a-9ce9-3b1a50931005",
+      "name": "Wrange Kettlebell 4 kg",
+      "category": "freeWeight",
+      "manufacturer": "Wrange",
+      "code": "WR3019",
+      "weightUnit": "kg",
+      "weight": 4,
+      "url": "https://shop.fysioline.fi/tuote/wrange-kahvakuula/"
+    },
+    {
+      "id": "ee0775eb-e657-440b-8a63-70fe703d9c7e",
+      "name": "Wrange Kettlebell 6 kg",
+      "category": "freeWeight",
+      "manufacturer": "Wrange",
+      "code": "WR3029",
+      "weightUnit": "kg",
+      "weight": 6,
+      "url": "https://shop.fysioline.fi/tuote/wrange-kahvakuula/"
+    },
+    {
+      "id": "92395af6-85e1-49ee-87e4-7a907c043357",
+      "name": "Wrange Kettlebell 8 kg",
+      "category": "freeWeight",
+      "manufacturer": "Wrange",
+      "code": "WR3023",
+      "weightUnit": "kg",
+      "weight": 8,
+      "url": "https://shop.fysioline.fi/tuote/wrange-kahvakuula/"
+    },
+    {
+      "id": "b5b198aa-6bfc-4001-b70c-c06b50a5ed40",
+      "name": "Wrange Kettlebell 10 kg",
+      "category": "freeWeight",
+      "manufacturer": "Wrange",
+      "code": "WR3031",
+      "weightUnit": "kg",
+      "weight": 10,
+      "url": "https://shop.fysioline.fi/tuote/wrange-kahvakuula/"
+    },
+    {
+      "id": "a31bc916-8a76-4093-99f4-3fd211df6662",
+      "name": "Eleiko Neutral Grip Low Row Handle",
+      "category": "handleAttachment",
+      "manufacturer": "Eleiko",
+      "code": "3085870",
+      "url": "https://eleiko.com/en-fi/equipment/strengthmachines/handleattachments/3085870-eleiko-neutral-grip-low-row-handle"
+    }
+  ],
+  "memberships": [
+    {
+      "id": "96dbb436-f9f2-4667-bded-41335355e0b6",
+      "chain": "Liikku",
+      "name": "Monthly",
+      "price": 30.0,
+      "priceCurrency": "euro",
+      "validity": 1,
+      "validityUnit": "month",
+      "availability": {
+        "Desk": true,
+        "Web": true,
+        "App": false,
+        "Other": false
+      },
+      "url": "https://www.liikku.fi/kuntosali/helsinki-toolo/",
+      "notes": "some text here"
     }
   ]
 }

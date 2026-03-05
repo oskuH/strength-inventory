@@ -185,7 +185,7 @@ usersRouter.put(
   }
 );
 
-// DELETE for everyone to delete a user
+// DELETE for admins and users themselves to delete a user
 usersRouter.delete(
   '/:id',
   ...isSelfOrAdmin,
