@@ -21,21 +21,23 @@ const gymsRouter = Express.Router();
 // GET all gyms
 gymsRouter.get('/', async (_req, res) => {
   const gyms = await Gym.findAll({
-    include: [{
-      model: User,
-      as: 'managers',
-      attributes: [
-        'id', 'username', 'email', 'name'
-      ]
-    },
-    {
-      model: Membership,
-      attributes: { exclude: ['createdAt', 'updatedAt'] }
-    },
-    {
-      model: Equipment,
-      attributes: { exclude: ['createdAt', 'updatedAt'] }
-    }]
+    include: [
+      {
+        model: User,
+        as: 'managers',
+        attributes: [
+          'id', 'username', 'email', 'name'
+        ]
+      },
+      {
+        model: Membership,
+        attributes: { exclude: ['createdAt', 'updatedAt'] }
+      },
+      {
+        model: Equipment,
+        attributes: { exclude: ['createdAt', 'updatedAt'] }
+      }
+    ]
   });
   return res.json(gyms);
 });

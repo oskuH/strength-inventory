@@ -19,7 +19,7 @@ export default defineConfig({
   },
   rules: {
     'sort-imports': ['error', { 'ignoreCase': true, 'allowSeparatedGroups': true }],
-    '@stylistic/array-bracket-newline': ['error', { 'minItems': 4 }],
+    '@stylistic/array-bracket-newline': ['error', { 'multiline': true, 'minItems': 4 }],
     '@stylistic/array-bracket-spacing': ['error'],
     '@stylistic/array-element-newline': ['error', 'consistent'],
     '@stylistic/arrow-parens': ['error'],
