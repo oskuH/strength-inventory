@@ -1,17 +1,17 @@
 import { useState } from 'react';
 
-import GymEntryButton from './GymEntryButton';
-import GymEntryExtension from './GymEntryExtension';
+import GymButton from './GymButton';
+import GymExtension from './GymExtension';
 
 import { type Gym } from '@strength-inventory/schemas';
 
-export default function GymEntry ({ gym }: { gym: Gym; }) {
+export default function Gym ({ gym }: { gym: Gym; }) {
   const [activeExtension, setActiveExtension] = useState<string | null>(null);
 
-  function handleToggle (id: string) {
-    setActiveExtension(activeExtension === id
+  function handleToggle (title: string) {
+    setActiveExtension(activeExtension === title
       ? null
-      : id);
+      : title);
   }
 
   return (
@@ -37,17 +37,17 @@ export default function GymEntry ({ gym }: { gym: Gym; }) {
           flex grow min-h-18
           bg-secondary dark:bg-secondary-dark'
         >
-          <GymEntryButton
+          <GymButton
             activeExtension={activeExtension}
             handleToggle={handleToggle}
             title='equipment'
           />
-          <GymEntryButton
+          <GymButton
             activeExtension={activeExtension}
             handleToggle={handleToggle}
             title='memberships'
           />
-          <GymEntryButton
+          <GymButton
             activeExtension={activeExtension}
             handleToggle={handleToggle}
             title='opening hours'
@@ -56,7 +56,7 @@ export default function GymEntry ({ gym }: { gym: Gym; }) {
       </div>
 
       <div className='bg-tertiary dark:bg-tertiary-dark'>
-        <GymEntryExtension activeExtension={activeExtension} gym={gym} />
+        <GymExtension activeExtension={activeExtension} gym={gym} />
       </div>
     </div>
   );

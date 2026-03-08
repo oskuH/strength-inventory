@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { getGyms } from '../../../utils/api';
 
-import GymEntry from './GymEntry';
+import GymEntry from './Gym';
 
 export default function Gyms () {
   const { isPending, isError, data, error } = useQuery({

@@ -31,7 +31,7 @@ interface GymEntryButtonProps {
   title: string
 }
 
-export default function GymEntryButton (
+export default function GymButton (
   { activeExtension, handleToggle, title }: GymEntryButtonProps
 ) {
   const iconMode = use(IconContext);
