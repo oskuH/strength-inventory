@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import GymButton from './GymButton';
 import GymExtension from './GymExtension';
+import GymExtensionButton from './GymExtensionButton';
 
 import { type Gym } from '@strength-inventory/schemas';
 
@@ -37,17 +37,17 @@ export default function Gym ({ gym }: { gym: Gym; }) {
           flex grow min-h-18
           bg-secondary dark:bg-secondary-dark'
         >
-          <GymButton
+          <GymExtensionButton
             activeExtension={activeExtension}
             handleToggle={handleToggle}
             title='equipment'
           />
-          <GymButton
+          <GymExtensionButton
             activeExtension={activeExtension}
             handleToggle={handleToggle}
             title='memberships'
           />
-          <GymButton
+          <GymExtensionButton
             activeExtension={activeExtension}
             handleToggle={handleToggle}
             title='opening hours'

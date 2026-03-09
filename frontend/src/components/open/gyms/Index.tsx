@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { getGyms } from '../../../utils/api';
 
-import GymEntry from './Gym';
+import Gym from './Gym';
 
 export default function Gyms () {
   const { isPending, isError, data, error } = useQuery({
@@ -22,7 +22,7 @@ export default function Gyms () {
     <div className='flex flex-col'>
       <ol className='flex p-3 flex-col items-center'>
         {data.map((gym) =>
-          <li key={gym.id}><GymEntry gym={gym} /></li>)}
+          <li key={gym.id}><Gym gym={gym} /></li>)}
       </ol>
     </div>
   );

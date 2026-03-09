@@ -1,7 +1,8 @@
 import { use } from 'react';
 
-import { TbClock, TbContract } from 'react-icons/tb';
 import { CgGym } from 'react-icons/cg';
+import { FaRegAddressCard } from 'react-icons/fa';
+import { TbClock } from 'react-icons/tb';
 
 import { IconContext } from '../../../utils/contexts';
 
@@ -14,7 +15,7 @@ function ButtonIcon ({ title }: { title: string }) {
 
   if (title === 'memberships') {
     return (
-      <TbContract className='text-4xl' />
+      <FaRegAddressCard className='text-4xl' />
     );
   }
 
