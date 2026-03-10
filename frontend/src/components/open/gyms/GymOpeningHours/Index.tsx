@@ -8,11 +8,11 @@ import { FaAddressCard, FaRegAddressCard } from 'react-icons/fa6';
 import ModeButton from './ModeButton';
 import OpeningHours from './OpeningHours';
 
-import type { Gym } from '@strength-inventory/schemas';
+import type { GymGet } from '@strength-inventory/schemas';
 
 import { IconContext } from '../../../../utils/contexts';
 
-export default function GymOpeningHours ({ gym }: { gym: Gym }) {
+export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
   const [hoursMode, setHoursMode] = useState('regular');
   const [membersOnly, setMembersOnly] = useState(
     () => {
@@ -46,7 +46,7 @@ export default function GymOpeningHours ({ gym }: { gym: Gym }) {
 
   return (
     <div
-      className='flex p-3 flex-col outline'
+      className='flex p-3 flex-col min-h-50 outline'
     >
       <div className='flex pb-3'>
         <OpeningHours
@@ -115,7 +115,10 @@ export default function GymOpeningHours ({ gym }: { gym: Gym }) {
           className='
           order-1 flex flex-1 justify-end pr-3
           font-bold peer-checked:font-normal
-          peer-checked:peer-disabled:text-red-500
+          text-secondary-dark peer-checked:text-current
+          dark:text-secondary dark:peer-checked:text-current
+          peer-checked:peer-disabled:text-primary
+          dark:peer-checked:peer-disabled:text-primary-dark
           peer-checked:peer-disabled:line-through'
         >
           {iconMode
@@ -127,16 +130,13 @@ export default function GymOpeningHours ({ gym }: { gym: Gym }) {
         </div>
         <div
           className='
-          absolute inset-0 right-45 flex items-center justify-end
-          invisible peer-checked:peer-disabled:visible'
-        >
-          <div className='w-4 h-px bg-red-500 rounded-full' />
-        </div>
-        <div
-          className='
-          order-4 flex flex-1 pl-3 peer-checked:font-bold
-          peer-checked:peer-disabled:text-current
-          peer-disabled:text-red-500
+          order-4 flex flex-1 pl-3
+          peer-checked:font-bold
+          peer-checked:text-secondary-dark dark:peer-checked:text-secondary
+          peer-checked:peer-disabled:text-secondary-dark
+          dark:peer-checked:peer-disabled:text-secondary
+          peer-disabled:text-primary
+          dark:peer-disabled:text-primary-dark
           peer-checked:peer-disabled:no-underline
           peer-disabled:line-through'
         >
@@ -145,13 +145,6 @@ export default function GymOpeningHours ({ gym }: { gym: Gym }) {
               ? <FaAddressCard />
               : <FaRegAddressCard />
             : <p className='text-xs md:text-sm'>members</p>}
-        </div>
-        <div
-          className='
-          absolute inset-x-45 right-20 flex items-center justify-end
-          peer-enabled:hidden peer-checked:hidden'
-        >
-          <div className='w-4 h-px bg-red-500 rounded-full' />
         </div>
       </div>
     </div>

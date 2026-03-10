@@ -7,10 +7,10 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
 import { IconContext } from '../../utils/contexts';
 
-import Footer from './footer';
-import Header from './header';
-import SidebarLeft from './sidebar-left';
-import SidebarRight from './sidebar-right';
+import Footer from './Footer';
+import Header from './Header';
+import SidebarLeft from './SidebarLeft';
+import SidebarRight from './SidebarRight';
 
 export default function Root () {
   const [iconMode, setIconMode] = useState(() => {

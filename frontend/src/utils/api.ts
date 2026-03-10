@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { GymSchema } from '@strength-inventory/schemas';
+import { GymGetSchema } from '@strength-inventory/schemas';
 
 const baseUrl
   = import.meta.env.VITE_API_URL
@@ -15,7 +15,7 @@ export const getGyms = async () => {
 
   const data: unknown = await res.json();
 
-  const validatedData = z.array(GymSchema).parse(data);
+  const validatedData = z.array(GymGetSchema).parse(data);
 
   return validatedData;
 };

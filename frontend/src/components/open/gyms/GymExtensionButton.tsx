@@ -46,6 +46,7 @@ export default function GymButton (
       p-3
       justify-center
       items-center
+      cursor-pointer
       outline
       aria-pressed:bg-secondary-dark
       dark:aria-pressed:bg-secondary'

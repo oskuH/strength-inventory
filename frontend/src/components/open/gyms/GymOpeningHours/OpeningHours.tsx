@@ -1,7 +1,7 @@
-import type { Gym } from '@strength-inventory/schemas';
+import type { GymGet } from '@strength-inventory/schemas';
 
 interface OpeningHoursProps {
-  gym: Gym
+  gym: GymGet
   hoursMode: string
   membersOnly: boolean
 }

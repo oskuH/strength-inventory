@@ -220,17 +220,12 @@ export const GymGetSchema = GymSchema.extend({
     email: true,
     name: true
   }).extend({
-    gymmanagers: z.array(GymManagerSchema)
+    gymmanagers: GymManagerSchema
   })),
-  memberships: z.array(MembershipSchema.omit({
-    createdAt: true,
-    updatedAt: true
-  })),
-  equipment: z.array(EquipmentSchema.omit({
-    createdAt: true,
-    updatedAt: true
-  }))
+  memberships: z.array(MembershipSchema),
+  equipment: z.array(EquipmentSchema)
 })
+export type GymGet = z.infer<typeof GymGetSchema>;
 
 export const GymPostSchema = GymSchema.pick({
   name: true,

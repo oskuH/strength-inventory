@@ -3,9 +3,9 @@ import { useState } from 'react';
 import GymExtension from './GymExtension';
 import GymExtensionButton from './GymExtensionButton';
 
-import { type Gym } from '@strength-inventory/schemas';
+import { type GymGet } from '@strength-inventory/schemas';
 
-export default function Gym ({ gym }: { gym: Gym; }) {
+export default function GymGet ({ gym }: { gym: GymGet; }) {
   const [activeExtension, setActiveExtension] = useState<string | null>(null);
 
   function handleToggle (title: string) {

@@ -30,12 +30,10 @@ gymsRouter.get('/', async (_req, res) => {
         ]
       },
       {
-        model: Membership,
-        attributes: { exclude: ['createdAt', 'updatedAt'] }
+        model: Membership
       },
       {
-        model: Equipment,
-        attributes: { exclude: ['createdAt', 'updatedAt'] }
+        model: Equipment
       }
     ]
   });

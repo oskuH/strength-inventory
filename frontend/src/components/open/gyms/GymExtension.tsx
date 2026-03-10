@@ -1,12 +1,13 @@
 // work in progress, Equipment and Memberships components missing
 
+import GymMemberships from './GymMemberships';
 import GymOpeningHours from './GymOpeningHours/Index';
 
-import type { Gym } from '@strength-inventory/schemas';
+import type { GymGet } from '@strength-inventory/schemas';
 
 interface GymEntryExtensionProps {
   activeExtension: string | null
-  gym: Gym
+  gym: GymGet
 }
 
 export default function GymExtension (
@@ -28,11 +29,7 @@ export default function GymExtension (
 
   if (activeExtension === 'memberships') {
     return (
-      <div
-        className='flex p-3 outline'
-      >
-        memberships
-      </div>
+      <GymMemberships gym={gym} />
     );
   }
 

@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
+import { MdDarkMode, MdLightMode } from 'react-icons/md';
 import { TbClock, TbContract } from 'react-icons/tb';
 import { CgGym } from 'react-icons/cg';
 
@@ -9,6 +10,7 @@ interface IconToggleProps {
 }
 
 interface ThemeToggleProps {
+  iconMode: boolean;
   darkMode: boolean;
   handleChange: () => void;
 }
@@ -49,17 +51,33 @@ function IconToggle ({ iconMode, handleChange }: IconToggleProps) {
   );
 }
 
-function ThemeToggle ({ darkMode, handleChange }: ThemeToggleProps) {
+function ThemeToggle ({ iconMode, darkMode, handleChange }: ThemeToggleProps) {
   return (
     <div
       className='
-      flex relative rounded-md p-1
+      flex relative rounded-md py-1 pr-1
       bg-secondary-dark text-primary-text-dark
       dark:bg-secondary dark:text-primary-text'
     >
-      <div className='flex flex-1 flex-col justify-between text-sm'>
-        <p>light</p>
-        <p>dark</p>
+      <div
+        className='
+        flex flex-1 flex-col justify-between items-center text-sm'
+      >
+        {iconMode
+          ? (
+            <div
+              className='flex flex-1 flex-col py-0.5 justify-between text-xl'
+            >
+              <MdLightMode />
+              <MdDarkMode />
+            </div>
+          )
+          : (
+            <>
+              <p>light</p>
+              <p>dark</p>
+            </>
+          )}
       </div>
       <input
         type='checkbox'
@@ -113,6 +131,7 @@ export default function SidebarLeft (
           }}
         />
         <ThemeToggle
+          iconMode={iconMode}
           darkMode={darkMode}
           handleChange={() => {
             setDarkMode(!darkMode);
