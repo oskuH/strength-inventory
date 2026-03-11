@@ -53,7 +53,9 @@ export default function ModeButton (
       justify-center
       items-center
       cursor-pointer
-      outline
+      hover:bg-primary
+      dark:hover:bg-background-dark
+      active:inset-ring
       aria-pressed:bg-secondary-dark
       dark:aria-pressed:bg-secondary'
       aria-pressed={hoursMode === title}

@@ -44,6 +44,7 @@ function IconToggle ({ iconMode, handleChange }: IconToggleProps) {
         dark:before:bg-red-800 dark:peer-checked:before:bg-green-700
         after:content-[""] after:h-3 after:w-3 after:rounded-md
         after:bg-primary-dark dark:after:bg-primary
+        peer-hover:after:scale-120
         after:absolute after:right-7
         peer-checked:after:translate-x-5'
       />
@@ -94,6 +95,7 @@ function ThemeToggle ({ iconMode, darkMode, handleChange }: ThemeToggleProps) {
         before:bg-tertiary dark:before:bg-tertiary-dark
         after:content-[""] after:h-4 after:w-8 after:rounded-md
         after:bg-primary-dark dark:after:bg-primary
+        peer-hover:after:scale-110
         after:absolute after:right-2 after:top-2
         peer-checked:after:translate-y-8'
       />

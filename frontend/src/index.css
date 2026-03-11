@@ -9,6 +9,8 @@
   --color-tertiary-dark: var(--color-olive-800);
   --color-primary-text: var(--color-gray-900);
   --color-primary-text-dark: var(--color-gray-200);
+  --color-background: var(--color-orange-50);
+  --color-background-dark: var(--color-olive-700);
 }
 
 @layer base {

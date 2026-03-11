@@ -64,7 +64,7 @@ export default function Root () {
           <SidebarRight />
           <div
             className='
-            flex grow flex-col bg-orange-50 dark:bg-olive-700
+            flex grow flex-col bg-background dark:bg-background-dark
             transition'
           >
             <Outlet />

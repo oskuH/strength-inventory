@@ -46,7 +46,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
 
   return (
     <div
-      className='flex p-3 flex-col min-h-50 outline'
+      className='flex p-3 flex-col min-h-48 border-x border-b'
     >
       <div className='flex pb-3'>
         <OpeningHours
@@ -60,7 +60,8 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
         <div
           className='
           flex basis-full min-h-12
-          bg-secondary dark:bg-secondary-dark'
+          bg-secondary dark:bg-secondary-dark
+          divide-x border'
         >
           <ModeButton
             hoursMode={hoursMode}
@@ -107,6 +108,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
           dark:peer-enabled:before:bg-secondary
           dark:peer-disabled:before:bg-secondary-dark
           after:content-[""] after:h-3 after:w-3 after:rounded-md
+          peer-hover:peer-enabled:after:scale-120
           after:bg-primary dark:after:bg-primary-dark
           after:absolute after:left-28 after:md:left-58
           peer-checked:after:translate-x-10'

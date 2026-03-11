@@ -17,17 +17,18 @@ export default function GymGet ({ gym }: { gym: GymGet; }) {
   return (
     <div
       className='
-      flex mb-3 w-75 md:w-135 outline rounded-sm flex-col
-       text-primary-text dark:text-primary-text-dark'
+      flex mb-3 w-75 md:w-135 rounded-sm flex-col
+      text-primary-text dark:text-primary-text-dark'
     >
       <div
         className='
-        flex outline rounded-sm flex-col md:flex-row bg-red-900'
+        flex rounded-sm flex-col md:flex-row'
       >
         <div
           className='
-          flex p-3 outline flex-col w-75 md:w-60 min-h-18
-          bg-primary dark:bg-primary-dark'
+          flex p-3 flex-col w-75 md:w-60 min-h-18
+          bg-primary dark:bg-primary-dark
+          border-x border-t md:border-x-0 md:border-l md:border-y'
         >
           <p className='font-bold'>{gym.name}</p>
           <p className='text-sm'>{gym.street} {gym.streetNumber}, {gym.city}</p>
@@ -35,7 +36,7 @@ export default function GymGet ({ gym }: { gym: GymGet; }) {
         <div
           className='
           flex grow min-h-18
-          bg-secondary dark:bg-secondary-dark'
+          bg-secondary dark:bg-secondary-dark divide-x border'
         >
           <GymExtensionButton
             activeExtension={activeExtension}
