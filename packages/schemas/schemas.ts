@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 /* All timestamps have .coerce to enable using json-server for frontend development.
 Although using .coerce is not optimal in terms of strictness and only required for json-server,
-it should not cause any issues as long as timestamps can only be modified by Sequelize in production.  */
+it should not cause any issues as long as in production timestamps can only be modified by Sequelize.  */
 
 const TimeSchema = z.array(z.number().min(0).max(24)).length(2);
 
@@ -36,12 +36,13 @@ export const MembershipSchema = z.object({
   id: z.uuidv4(),
   chain: z.string().nullish(),
   name: z.string(),
-  price: z.float32(),
-  priceCurrency: z.string(),
+  feeCurrency: z.string(),
+  membershipFee: z.number(),
   validity: z.int(),
   validityUnit: MembershipTimeUnitEnum,
   commitment: z.int().nullish(),
   commitmentUnit: MembershipTimeUnitEnum.nullish(),  // TODO: custom validator
+  initiationFee: z.number().nullish(),
   availability: MembershipAvailabilitySchema,
   url: z.url().nullish(),
   notes: z.string().nullish(),
@@ -50,15 +51,34 @@ export const MembershipSchema = z.object({
 });
 export type Membership = z.infer<typeof MembershipSchema>;
 
-export const MembershipPostAndPutSchema = MembershipSchema.pick({
+export const MembershipGetSchema = MembershipSchema.pick({
   chain: true,
   name: true,
-  price: true,
-  priceCurrency: true,
+  feeCurrency: true,
   validity: true,
   validityUnit: true,
   commitment: true,
   commitmentUnit: true,
+  initiationFee: true,
+  availability: true,
+  url: true,
+  notes: true
+}).extend({
+  membershipFee: z.string(),
+  initiationFee: z.string().nullish()
+})
+export type MembershipGet = z.infer<typeof MembershipGetSchema>;
+
+export const MembershipPostAndPutSchema = MembershipSchema.pick({
+  chain: true,
+  name: true,
+  feeCurrency: true,
+  membershipFee: true,
+  validity: true,
+  validityUnit: true,
+  commitment: true,
+  commitmentUnit: true,
+  initiationFee: true,
   availability: true,
   url: true,
   notes: true
@@ -222,7 +242,7 @@ export const GymGetSchema = GymSchema.extend({
   }).extend({
     gymmanagers: GymManagerSchema
   })),
-  memberships: z.array(MembershipSchema),
+  memberships: z.array(MembershipGetSchema),
   equipment: z.array(EquipmentSchema)
 })
 export type GymGet = z.infer<typeof GymGetSchema>;

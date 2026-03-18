@@ -1,5 +1,7 @@
-POST http://localhost:3000/api/memberships/
+PUT http://localhost:3000/api/memberships/025a7acc-c51d-4447-911d-8d9cd6641658
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4MDJlMmE5LWE3YWUtNDZmMS04OTFjLTdkNWIwNDhjYTRmNiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzM4MjgzNjh9.WzbXTA9Oe0pBL3jmaGbv2d05UFKfEte-npGE6wtaydo
+// admins only
 
 {
   "chain": "Liikku",

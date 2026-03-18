@@ -1,6 +1,6 @@
-// work in progress, Equipment and Memberships components missing
+// work in progress, Equipment component missing
 
-import GymMemberships from './GymMemberships';
+import GymMemberships from './GymMemberships/Index';
 import GymOpeningHours from './GymOpeningHours/Index';
 
 import type { GymGet } from '@strength-inventory/schemas';

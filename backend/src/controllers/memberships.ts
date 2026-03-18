@@ -27,12 +27,13 @@ membershipsRouter.post(
     const {
       chain,
       name,
-      price,
-      priceCurrency,
+      feeCurrency,
+      membershipFee,
       validity,
       validityUnit,
       commitment,
       commitmentUnit,
+      initiationFee,
       availability,
       url,
       notes
@@ -41,12 +42,13 @@ membershipsRouter.post(
     const membership = await Membership.create({
       chain,
       name,
-      price,
-      priceCurrency,
+      feeCurrency,
+      membershipFee,
       validity,
       validityUnit,
       commitment,
       commitmentUnit,
+      initiationFee,
       availability,
       url,
       notes
@@ -58,7 +60,7 @@ membershipsRouter.post(
 
 // PUT for admins to modify everything except id and timestamps
 membershipsRouter.put(
-  ':id',
+  '/:id',
   ...isAdmin,
   targetMembershipExtractor,
   async (
@@ -73,12 +75,13 @@ membershipsRouter.put(
     const {
       chain,
       name,
-      price,
-      priceCurrency,
+      feeCurrency,
+      membershipFee,
       validity,
       validityUnit,
       commitment,
       commitmentUnit,
+      initiationFee,
       availability,
       url,
       notes
@@ -87,12 +90,13 @@ membershipsRouter.put(
     await membership.update({
       chain: chain,
       name: name,
-      price: price,
-      priceCurrency: priceCurrency,
+      feeCurrency: feeCurrency,
+      membershipFee: membershipFee,
       validity: validity,
       validityUnit: validityUnit,
       commitment: commitment,
       commitmentUnit: commitmentUnit,
+      initiationFee: initiationFee,
       availability: availability,
       url: url,
       notes: notes
