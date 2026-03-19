@@ -1,23 +1,24 @@
-PUT http://localhost:3000/api/memberships/025a7acc-c51d-4447-911d-8d9cd6641658
+PUT http://localhost:3000/api/memberships/083e3402-e966-4dce-a09a-d4ffe8ac9b84
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4MDJlMmE5LWE3YWUtNDZmMS04OTFjLTdkNWIwNDhjYTRmNiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzM4MjgzNjh9.WzbXTA9Oe0pBL3jmaGbv2d05UFKfEte-npGE6wtaydo
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4MDJlMmE5LWE3YWUtNDZmMS04OTFjLTdkNWIwNDhjYTRmNiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzM4MzQ3NDJ9.ReyA2jsBJ7FOTRPsGxW_SD_fdbDb1hwdPSPvy5ga5pw
 // admins only
 
 {
-  "chain": "Liikku",
-  "name": "Järki-Liikku",
-  "feeCurrency": "euro",
-  "membershipFee": 34.90,
-  "validity": 1,
-  "validityUnit": "month",
-  "commitment": 12,
-  "CommitmentUnit": "month",
-  "initiationFee": 29.90,
-  "availability": {
-    "Desk": true,
-    "Web": true,
-    "App": false,
-    "Other": false
-  },
-  "notes": "Turns into Jousto-Liikku after commitment."
-}
+    "chain": "Liikku",
+    "name": "Reilu-Liikku (one location)",
+    "feeCurrency": "euro",
+    "membershipFee": 348.00,
+    "validity": 1,
+    "validityUnit": "year",
+    "commitment": null,
+    "commitmentUnit": null,
+    "initiationFee": 29.90,
+    "availability": {
+      "Desk": true,
+      "Web": true,
+      "App": false,
+      "Other": false
+    },
+    "url": null,
+    "notes": null
+  }

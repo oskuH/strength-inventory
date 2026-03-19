@@ -1,15 +1,17 @@
 POST http://localhost:3000/api/equipment
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4MDJlMmE5LWE3YWUtNDZmMS04OTFjLTdkNWIwNDhjYTRmNiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzI3MDc5NDJ9.ryKEDGy6eD9qLbx_MBwTN_t1SpC2VSHLcYQ89r_iKDs
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4MDJlMmE5LWE3YWUtNDZmMS04OTFjLTdkNWIwNDhjYTRmNiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzM5MTY1NzB9.r2STEdXL6N7sWTDX_EY9s1evLTdXlh5A3dfOQvCv2vY
 // admins only
 
 {
-  "name": "PURE KRAFT Hack Squat",
+  "name": "Matrix Ultra Rotary Torso",
   "category": "strengthMachine",
-  "manufacturer": "gym80",
-  "code": "4159N",
+  "manufacturer": "Matrix",
+  "code": "G7-S55",
   "weightUnit": "kg",
-  "maximumWeight": 200,
-  "url": "https://gym80.de/en/product/plate-loaded-en/pure-kraft-en/4159n-pure-kraft-hack-squat/",
-  "notes": "Maximum weight = maximum load. Starting weight unknown, but can be too heavy for beginners."
+  "startingWeight": 4.5,
+  "availableWeights": [9.0, 13.5, 18.0, 22.5, 27.0, 31.5, 36.0, 40.5, 45.0, 49.5, 54.0, 58.5, 63.0, 67.5, 72.0, 76.5, 81.0, 85.5, 90.0],
+  "maximumWeight": 93.4,
+  "url": "https://world.matrixfitness.com/eng/strength/single-station/g7-s55-rotary-torso",
+  "notes": "Also available in Ultra Base option G7-S55B."
 }

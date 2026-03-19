@@ -89,6 +89,25 @@ function RightArrow ({
   );
 }
 
+function LastMembership () {
+  return (
+    <div
+      className='
+      flex flex-col p-3 w-63 gap-1
+        bg-secondary dark:bg-secondary-dark
+      text-sm'
+    >
+      <p>Membership missing?</p>
+      <a
+        href=''
+        target='_blank'
+        className='hover:text-blue-600 border text-center'
+      > Send a report!
+      </a>
+    </div>
+  );
+}
+
 export default function GymMemberships ({ gym }: { gym: GymGet }) {
   const memberships = gym.memberships;
   const membershipCount = memberships.length;
@@ -118,6 +137,19 @@ export default function GymMemberships ({ gym }: { gym: GymGet }) {
       </div>
       <div className='flex justify-center gap-3'>
         <Membership membership={memberships[membershipIndex]} />
+        {membershipCount > 1
+          ? membershipIndex + 1 < membershipCount
+            ? (
+              <div className='hidden md:block'>
+                <Membership membership={memberships[membershipIndex + 1]} />
+              </div>
+            )
+            : (
+              <div className='hidden md:block'>
+                <LastMembership />
+              </div>
+            )
+          : null}
       </div>
     </div>
   );

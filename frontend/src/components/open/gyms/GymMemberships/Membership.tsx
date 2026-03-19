@@ -51,7 +51,7 @@ export default function Membership (
   return (
     <div
       className='
-      flex p-3 w-63 gap-1
+      flex p-3 w-63 gap-3
       bg-secondary dark:bg-secondary-dark
       text-sm border'
     >
@@ -61,7 +61,7 @@ export default function Membership (
             <a
               href={notNullUrl}
               target='_blank'
-              className='flex font-bold gap-1 hover:text-blue-600'
+              className='flex items-center font-bold gap-1 hover:text-blue-600'
             >
               {name} <TbWorldWww className='text-xl' />
             </a>

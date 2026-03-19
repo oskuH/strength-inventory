@@ -1,5 +1,4 @@
-// work in progress, Equipment component missing
-
+import GymEquipment from './GymEquipment';
 import GymMemberships from './GymMemberships/Index';
 import GymOpeningHours from './GymOpeningHours/Index';
 
@@ -19,11 +18,7 @@ export default function GymExtension (
 
   if (activeExtension === 'equipment') {
     return (
-      <div
-        className='flex p-3'
-      >
-        equipment
-      </div>
+      <GymEquipment gym={gym} />
     );
   }
 
