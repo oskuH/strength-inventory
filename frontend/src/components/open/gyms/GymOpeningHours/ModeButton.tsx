@@ -46,18 +46,10 @@ export default function ModeButton (
   return (
     <button
       className='
-      group
-      flex
-      basis-1/3
-      p-3
-      justify-center
-      items-center
-      cursor-pointer
-      hover:bg-primary
-      dark:hover:bg-background-dark
+      group flex justify-center items-center p-3 basis-1/3 cursor-pointer
+      hover:bg-primary dark:hover:bg-background-dark
       active:inset-ring
-      aria-pressed:bg-secondary-dark
-      dark:aria-pressed:bg-secondary'
+      aria-pressed:bg-secondary-dark dark:aria-pressed:bg-secondary'
       aria-pressed={hoursMode === title}
       onClick={() => {
         handleHoursModeToggle(title);

@@ -52,9 +52,9 @@ export default function Root () {
 
   return (
     <IconContext value={iconMode}>
-      <div className='flex min-h-svh flex-col'>
+      <div className='flex flex-col min-h-svh'>
         <Header />
-        <div className='flex grow flex-col relative'>
+        <div className='flex relative flex-col flex-1'>
           <SidebarLeft
             iconMode={iconMode}
             setIconMode={setIconMode}
@@ -64,7 +64,7 @@ export default function Root () {
           <SidebarRight />
           <div
             className='
-            flex grow flex-col bg-background dark:bg-background-dark
+            flex flex-col bg-background dark:bg-background-dark flex-1
             transition'
           >
             <Outlet />

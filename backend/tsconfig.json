@@ -3,6 +3,7 @@
   "compilerOptions": {
     // File Layout
     "outDir": "./build",
+    "rewriteRelativeImportExtensions": true,
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
@@ -16,6 +17,7 @@
 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
+    "strictNullChecks": true,
     "exactOptionalPropertyTypes": true,
 
     // Style Options
@@ -27,13 +29,11 @@
     "noPropertyAccessFromIndexSignature": true,
 
     // Recommended Options
-    "strict": true,
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
 
-    "rewriteRelativeImportExtensions": true
+    "types": ["cors", "express", "jsonwebtoken", "node", "pg", "sequelize", "supertest"]
   }
 }

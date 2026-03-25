@@ -96,7 +96,9 @@ Membership.init({
   modelName: 'membership',
   validate: {
     customValidator () {
-      if (this['commitmentUnit'] === null && this['commitment'] !== null) {
+      const instance = this as Membership;
+
+      if (!instance.commitmentUnit && instance.commitment) {
         throw new Error(
           'commitment unit must be selected if there is commitment'
         );

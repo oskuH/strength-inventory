@@ -36,7 +36,7 @@ function Piece ({ equipment, setClickedEquipment }: PieceProps) {
   }
 
   return (
-    <div className='flex basis-full flex-col gap-2'>
+    <div className='flex flex-col gap-2 basis-full'>
       <button
         onClick={() => {
           setClickedEquipment(null);
@@ -51,7 +51,7 @@ function Piece ({ equipment, setClickedEquipment }: PieceProps) {
               href={notNullUrl}
               target='_blank'
               className='
-              flex gap-1 items-center cursor-pointer hover:text-blue-600'
+              flex items-center gap-1 cursor-pointer hover:text-blue-600'
             >
               {name} <TbWorldWww className='text-xl' />
             </a>
@@ -61,7 +61,7 @@ function Piece ({ equipment, setClickedEquipment }: PieceProps) {
       <div className='flex gap-3'>
         <div
           className='
-          flex flex-col grow basis-1/2 gap-1 wrap-break-word'
+          flex flex-col gap-1 grow basis-1/2 wrap-break-word'
         >
           {/* backend does not support images, yet */}
           <p className='hidden'>image</p>
@@ -70,7 +70,7 @@ function Piece ({ equipment, setClickedEquipment }: PieceProps) {
         </div>
         {weightUnit
           ? (
-            <div className='flex flex-col basis-1/2 gap-1'>
+            <div className='flex flex-col gap-1 basis-1/2'>
               {weight
                 ? (
                   <div>
@@ -128,7 +128,7 @@ function Category ({ name, equipment, setClickedEquipment }: CategoryProps) {
           onClick={() => {
             setClickedEquipment(piece);
           }}
-          className='text-left cursor-pointer'
+          className='cursor-pointer text-left'
         >
           {piece.name}
         </button>
@@ -166,7 +166,7 @@ export default function GymEquipment ({ gym }: { gym: GymGet }) {
   );
 
   return (
-    <div className='flex p-3 border-x border-b'>
+    <div className='flex border-x border-b p-3 flex-1'>
       {clickedEquipment
         ? (
           <Piece
@@ -176,7 +176,7 @@ export default function GymEquipment ({ gym }: { gym: GymGet }) {
         )
         : (
           <div className='flex gap-3'>
-            <div className='flex flex-col basis-1/2 gap-2 wrap-break-word'>
+            <div className='flex flex-col gap-2 wrap-break-word basis-1/2'>
               <Category
                 name='systems'
                 equipment={systems}
@@ -193,7 +193,7 @@ export default function GymEquipment ({ gym }: { gym: GymGet }) {
                 setClickedEquipment={setClickedEquipment}
               />
             </div>
-            <div className='flex flex-col basis-1/2 gap-2 wrap-break-word'>
+            <div className='flex flex-col gap-2 wrap-break-word basis-1/2'>
               <Category
                 name='strength machines'
                 equipment={strengthMachines}

@@ -17,10 +17,10 @@ function LeftArrow ({ membershipIndex, setMembershipIndex }: LeftArrowProps) {
       <button
         disabled
         className='
-        flex basis-25 justify-end
-        text-primary dark:text-primary-dark
-        bg-secondary dark:bg-secondary-dark
-        border border-primary dark:border-primary-dark'
+        flex justify-end
+        border border-primary dark:border-primary-dark
+        bg-secondary dark:bg-secondary-dark w-25
+        text-primary dark:text-primary-dark'
       >
         <FaCaretLeft />
       </button>
@@ -33,11 +33,10 @@ function LeftArrow ({ membershipIndex, setMembershipIndex }: LeftArrowProps) {
         setMembershipIndex(membershipIndex - 1);
       }}
       className='
-      flex basis-25 justify-end
-      bg-secondary dark:bg-secondary-dark
-      cursor-pointer border
-      hover:scale-105
-      hover:bg-primary dark:hover:bg-background-dark
+      flex justify-end border
+      bg-secondary dark:bg-secondary-dark w-25
+      cursor-pointer
+      hover:scale-105 hover:bg-primary dark:hover:bg-background-dark
       active:scale-100'
     >
       <FaCaretLeft />
@@ -61,10 +60,10 @@ function RightArrow ({
       <button
         disabled
         className='
-        flex basis-25
-        text-primary dark:text-primary-dark
-        bg-secondary dark:bg-secondary-dark
-        border border-primary dark:border-primary-dark'
+        flex
+        border border-primary dark:border-primary-dark
+        bg-secondary dark:bg-secondary-dark w-25
+        text-primary dark:text-primary-dark'
       >
         <FaCaretRight />
       </button>
@@ -77,11 +76,10 @@ function RightArrow ({
         setMembershipIndex(membershipIndex + 1);
       }}
       className='
-      flex basis-25
-      bg-secondary dark:bg-secondary-dark
-      cursor-pointer border
-      hover:scale-105
-      hover:bg-primary dark:hover:bg-background-dark
+      flex border
+      bg-secondary dark:bg-secondary-dark w-25
+      cursor-pointer
+      hover:bg-primary dark:hover:bg-background-dark hover:scale-105
       active:scale-100'
     >
       <FaCaretRight />
@@ -93,15 +91,14 @@ function LastMembership () {
   return (
     <div
       className='
-      flex flex-col p-3 w-63 gap-1
-        bg-secondary dark:bg-secondary-dark
-      text-sm'
+      flex flex-col gap-1
+      bg-secondary dark:bg-secondary-dark p-3 min-w-63 text-sm'
     >
       <p>Membership missing?</p>
       <a
         href=''
         target='_blank'
-        className='hover:text-blue-600 border text-center'
+        className='border text-center hover:text-blue-600'
       > Send a report!
       </a>
     </div>
@@ -115,14 +112,14 @@ export default function GymMemberships ({ gym }: { gym: GymGet }) {
 
   if (membershipCount === 0) {
     return (
-      <div className='flex p-3 border-x border-b'>
+      <div className='flex border-x border-b p-3'>
         {gym.name} does not have available memberships.
       </div>
     );
   }
 
   return (
-    <div className='flex flex-col p-3 gap-3 border-x border-b'>
+    <div className='flex flex-col border-x border-b gap-3 p-3'>
       <div className='flex justify-center gap-3'>
         <LeftArrow
           membershipIndex={membershipIndex}

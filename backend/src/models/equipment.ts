@@ -101,13 +101,15 @@ Equipment.init({
   modelName: 'equipment',
   validate: {
     customValidator () {
+      const instance = this as Equipment;
+
       if (
-        this['weightUnit'] === null
+        !instance.weightUnit
         && (
-          this['weight'] !== null
-          || this['startingWeight'] !== null
-          || this['availableWeights'] !== null
-          || this['maximumWeight'] !== null
+          instance.weight
+          || instance.startingWeight
+          || instance.availableWeights
+          || instance.maximumWeight
         )
       ) {
         throw new Error(

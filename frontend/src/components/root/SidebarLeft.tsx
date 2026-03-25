@@ -107,11 +107,12 @@ export default function SidebarLeft (
   { iconMode, setIconMode, darkMode, setDarkMode }: SidebarLeftProps
 ) {
   return (
+    // Temporariliy hidden for dev purposes
     <div
       className='
       absolute left-0 h-full flex p-1 pb-12 w-24 flex-col gap-1
       bg-secondary text-primary-text
-      dark:bg-secondary-dark dark:text-primary-text-dark'
+      dark:bg-secondary-dark dark:text-primary-text-dark hidden'
     >
       <h2 className='font-bold'>Find</h2>
       <Link

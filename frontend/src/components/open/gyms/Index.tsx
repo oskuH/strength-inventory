@@ -20,7 +20,11 @@ export default function Gyms () {
 
   return (
     <div className='flex flex-col'>
-      <ol className='flex p-3 flex-col items-center'>
+      <ol
+        className='
+        flex flex-col items-stretch mx-auto p-3
+        w-full min-w-85 md:min-w-135 max-w-250'
+      >
         {data.map((gym) =>
           <li key={gym.id}><Gym gym={gym} /></li>)}
       </ol>

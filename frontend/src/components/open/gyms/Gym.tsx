@@ -5,7 +5,7 @@ import GymExtensionButton from './GymExtensionButton';
 
 import { type GymGet } from '@strength-inventory/schemas';
 
-export default function GymGet ({ gym }: { gym: GymGet; }) {
+export default function Gym ({ gym }: { gym: GymGet; }) {
   const [activeExtension, setActiveExtension] = useState<string | null>(null);
 
   function handleToggle (title: string) {
@@ -17,26 +17,23 @@ export default function GymGet ({ gym }: { gym: GymGet; }) {
   return (
     <div
       className='
-      flex mb-3 w-75 md:w-135 rounded-sm flex-col
+      flex flex-col mb-3
       text-primary-text dark:text-primary-text-dark'
     >
-      <div
-        className='
-        flex rounded-sm flex-col md:flex-row'
-      >
+      {/* Adapt the placement of the extension buttons to the screen size */}
+      <div className='flex flex-col md:flex-row'>
         <div
           className='
-          flex p-3 flex-col w-75 md:w-60 min-h-18
-          bg-primary dark:bg-primary-dark
-          border-x border-t md:border-x-0 md:border-l md:border-y'
+          flex flex-col border-x border-t md:border-x-0 md:border-l md:border-y
+          bg-primary dark:bg-primary-dark p-3 md:w-4/9 min-h-18'
         >
           <p className='font-bold'>{gym.name}</p>
           <p className='text-sm'>{gym.street} {gym.streetNumber}, {gym.city}</p>
         </div>
         <div
           className='
-          flex grow min-h-18
-          bg-secondary dark:bg-secondary-dark divide-x border'
+          flex border divide-x bg-secondary dark:bg-secondary-dark
+          flex-1 min-h-18'
         >
           <GymExtensionButton
             activeExtension={activeExtension}

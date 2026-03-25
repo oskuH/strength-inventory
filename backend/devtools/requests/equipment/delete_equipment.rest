@@ -1,0 +1,3 @@
+DELETE http://localhost:3000/api/equipment/e47d977e-9a14-48df-80a1-b542b802b356
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4MDJlMmE5LWE3YWUtNDZmMS04OTFjLTdkNWIwNDhjYTRmNiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzQ0NDQwNzN9.wl1WK9_f_UazpYLoe2DJI8SShURKAqZs02hxhur9RWg
+// admins only

@@ -46,7 +46,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
 
   return (
     <div
-      className='flex p-3 flex-col border-x border-b'
+      className='flex flex-col border-x border-b p-3'
     >
       <div className='flex pb-3'>
         <OpeningHours
@@ -59,9 +59,9 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
       <div className='flex pb-3'>
         <div
           className='
-          flex basis-full min-h-12
+          flex border divide-x
           bg-secondary dark:bg-secondary-dark
-          divide-x border'
+          basis-full min-h-12'
         >
           <ModeButton
             hoursMode={hoursMode}
@@ -101,21 +101,23 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
         <label
           htmlFor={membersOnlyCheckboxId}
           className='
-          order-3 flex items-center peer-enabled:cursor-pointer
-          before:content-[""] before:h-5 before:w-15 before:rounded-md
+          flex order-3 items-center peer-enabled:cursor-pointer
+          before:rounded-md
           peer-enabled:before:bg-secondary-dark
-          peer-disabled:before:bg-secondary
           dark:peer-enabled:before:bg-secondary
+          peer-disabled:before:bg-secondary
           dark:peer-disabled:before:bg-secondary-dark
-          after:content-[""] after:h-3 after:w-3 after:rounded-md
-          peer-hover:peer-enabled:after:scale-120
+          before:w-15 before:h-5 before:content-[""]
+          after:absolute after:left-1/2 after:-ml-6.5
+          peer-checked:after:translate-x-10
+          after:rounded-md
           after:bg-primary dark:after:bg-primary-dark
-          after:absolute after:left-28 after:md:left-58
-          peer-checked:after:translate-x-10'
+          after:h-3 after:w-3 after:content-[""]
+          peer-hover:peer-enabled:after:scale-120'
         />
         <div
           className='
-          order-1 flex flex-1 justify-end pr-3
+          flex order-1 justify-end pr-3 flex-1
           font-bold peer-checked:font-normal
           text-secondary-dark peer-checked:text-current
           dark:text-secondary dark:peer-checked:text-current
@@ -132,7 +134,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
         </div>
         <div
           className='
-          order-4 flex flex-1 pl-3
+          flex order-4 pl-3 flex-1
           peer-checked:font-bold
           peer-checked:text-secondary-dark dark:peer-checked:text-secondary
           peer-checked:peer-disabled:text-secondary-dark

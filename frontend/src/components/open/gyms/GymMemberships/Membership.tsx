@@ -20,7 +20,7 @@ function AvailabilityItem ({ itemName, availability }: AvailabilityItemProps) {
 
 function CurrencySymbol ({ feeCurrency }: { feeCurrency: string }) {
   if (feeCurrency === 'euro') {
-    return <FaEuroSign className='text-xs -mb-0.5' />;
+    return <FaEuroSign className='-mb-0.5 text-xs' />;
   }
   // TODO: add more
   return <p>{feeCurrency}</p>;
@@ -51,24 +51,23 @@ export default function Membership (
   return (
     <div
       className='
-      flex p-3 w-63 gap-3
-      bg-secondary dark:bg-secondary-dark
-      text-sm border'
+      flex gap-3
+      border bg-secondary dark:bg-secondary-dark p-3 w-63 text-sm'
     >
-      <div className='flex flex-col gap-1 basis-2/3 min-w-0 wrap-break-word'>
+      <div className='flex flex-col gap-1 wrap-break-word basis-2/3 min-w-0'>
         {notNullUrl
           ? (
             <a
               href={notNullUrl}
               target='_blank'
-              className='flex items-center font-bold gap-1 hover:text-blue-600'
+              className='flex items-center gap-1 font-bold hover:text-blue-600'
             >
-              {name} <TbWorldWww className='text-xl' />
+              <h3>{name} <TbWorldWww className='text-xl' /></h3>
             </a>
           )
           : <p className='font-bold'>{name}</p>}
         <div>
-          <p>Availability</p>
+          <h4>Availability</h4>
           <div className='flex text-xs'>
             <AvailabilityItem
               itemName='desk'
@@ -89,7 +88,7 @@ export default function Membership (
           </div>
         </div>
         <div>
-          <p>Notes</p>
+          <h4>Notes</h4>
           <p className='wrap-break-word text-xs'>
             {notes
               ? notes
@@ -102,13 +101,13 @@ export default function Membership (
           {membershipFee} <CurrencySymbol feeCurrency={feeCurrency} />
         </p>
         <div>
-          <p>Valid for:</p>
+          <h4>Valid for:</h4>
           {validity === 1
             ? <p className='text-xs'>{validity} {validityUnit}</p>
             : <p className='text-xs'>{validity} {validityUnit}s</p>}
         </div>
         <div>
-          <p>Commitment:</p>
+          <h4>Commitment:</h4>
           <div className='text-xs'>
             {commitment
               ? commitment === 1
@@ -118,7 +117,7 @@ export default function Membership (
           </div>
         </div>
         <div>
-          <p>Initiation fee:</p>
+          <h4>Initiation fee:</h4>
           <div className='text-xs'>
             {initiationFee
               ? (
