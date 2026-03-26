@@ -1,4 +1,4 @@
-import GymEquipment from './GymEquipment';
+import GymEquipment from './GymEquipment/Index';
 import GymMemberships from './GymMemberships/Index';
 import GymOpeningHours from './GymOpeningHours/Index';
 

@@ -16,6 +16,7 @@ interface ThemeToggleProps {
 }
 
 interface SidebarLeftProps {
+  sidebarLeftVisible: boolean
   iconMode: boolean
   setIconMode: React.Dispatch<React.SetStateAction<boolean>>
   darkMode: boolean
@@ -39,13 +40,13 @@ function IconToggle ({ iconMode, handleChange }: IconToggleProps) {
         htmlFor='icon-mode-checkbox'
         className='
         flex items-center cursor-pointer
-        before:content-[""] before:h-5 before:w-10 before:rounded-md
-        before:bg-red-400 peer-checked:before:bg-green-500
-        dark:before:bg-red-800 dark:peer-checked:before:bg-green-700
-        after:content-[""] after:h-3 after:w-3 after:rounded-md
-        after:bg-primary-dark dark:after:bg-primary
-        peer-hover:after:scale-120
+        before:rounded-md before:bg-red-400 dark:before:bg-red-800
+        peer-checked:before:bg-green-500 dark:peer-checked:before:bg-green-700
+        before:w-10 before:h-5 before:content-[""]
         after:absolute after:right-7
+        after:rounded-md after:bg-primary-dark dark:after:bg-primary
+        after:w-3 after:h-3 after:content-[""]
+        peer-hover:after:scale-120
         peer-checked:after:translate-x-5'
       />
     </div>
@@ -57,8 +58,8 @@ function ThemeToggle ({ iconMode, darkMode, handleChange }: ThemeToggleProps) {
     <div
       className='
       flex relative rounded-md py-1 pr-1
-      bg-secondary-dark text-primary-text-dark
-      dark:bg-secondary dark:text-primary-text'
+      bg-secondary-dark dark:bg-secondary
+      text-primary-text-dark dark:text-primary-text'
     >
       <div
         className='
@@ -67,7 +68,7 @@ function ThemeToggle ({ iconMode, darkMode, handleChange }: ThemeToggleProps) {
         {iconMode
           ? (
             <div
-              className='flex flex-1 flex-col py-0.5 justify-between text-xl'
+              className='flex flex-1 flex-col justify-between py-0.5 text-xl'
             >
               <MdLightMode />
               <MdDarkMode />
@@ -91,12 +92,12 @@ function ThemeToggle ({ iconMode, darkMode, handleChange }: ThemeToggleProps) {
         htmlFor='dark-mode-checkbox'
         className='
         flex items-center cursor-pointer
-        before:content-[""] before:h-14 before:w-10 before:rounded-md
-        before:bg-tertiary dark:before:bg-tertiary-dark
-        after:content-[""] after:h-4 after:w-8 after:rounded-md
-        after:bg-primary-dark dark:after:bg-primary
+        before:rounded-md before:bg-tertiary dark:before:bg-tertiary-dark
+        before:w-10 before:h-14 before:content-[""]
+        after:absolute after:top-2 after:right-2
+        after:rounded-md after:bg-primary-dark dark:after:bg-primary
+        after:w-8 after:h-4 after:content-[""]
         peer-hover:after:scale-110
-        after:absolute after:right-2 after:top-2
         peer-checked:after:translate-y-8'
       />
     </div>
@@ -104,15 +105,18 @@ function ThemeToggle ({ iconMode, darkMode, handleChange }: ThemeToggleProps) {
 }
 
 export default function SidebarLeft (
-  { iconMode, setIconMode, darkMode, setDarkMode }: SidebarLeftProps
+  { sidebarLeftVisible, iconMode, setIconMode, darkMode, setDarkMode }:
+  SidebarLeftProps
 ) {
   return (
-    // Temporariliy hidden for dev purposes
-    <div
-      className='
-      absolute left-0 h-full flex p-1 pb-12 w-24 flex-col gap-1
-      bg-secondary text-primary-text
-      dark:bg-secondary-dark dark:text-primary-text-dark hidden'
+    <nav
+      className={`
+      absolute left-0 md:translate-x-0 flex flex-col gap-1 border-t border-r
+      bg-secondary dark:bg-secondary-dark p-1 pt-3 pb-12 w-24 h-full
+      text-primary-text dark:text-primary-text-dark
+      ${sidebarLeftVisible
+      ? 'translate-x-0'
+      : '-translate-x-full'}`}
     >
       <h2 className='font-bold'>Find</h2>
       <Link
@@ -126,7 +130,7 @@ export default function SidebarLeft (
         Equipment
       </Link>
 
-      <div className='mt-auto flex flex-col gap-1'>
+      <div className='flex flex-col gap-1 mt-auto'>
         <IconToggle
           iconMode={iconMode}
           handleChange={() => {
@@ -141,6 +145,6 @@ export default function SidebarLeft (
           }}
         />
       </div>
-    </div>
+    </nav>
   );
 }

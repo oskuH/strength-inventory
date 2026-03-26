@@ -1,3 +1,3 @@
 export default function Recover () {
-  return <div>Hello from About!</div>;
+  return <div>Upcoming feature!</div>;
 }

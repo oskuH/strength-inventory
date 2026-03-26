@@ -27,7 +27,7 @@ export default function Gym ({ gym }: { gym: GymGet; }) {
           flex flex-col border-x border-t md:border-x-0 md:border-l md:border-y
           bg-primary dark:bg-primary-dark p-3 md:w-4/9 min-h-18'
         >
-          <p className='font-bold'>{gym.name}</p>
+          <h2 className='font-bold'>{gym.name}</h2>
           <p className='text-sm'>{gym.street} {gym.streetNumber}, {gym.city}</p>
         </div>
         <div

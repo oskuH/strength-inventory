@@ -48,15 +48,15 @@ export default function GymButton (
         handleToggle(title);
       }}
     >
-      <div
+      <h3
         className='
         group-aria-pressed:text-primary-text-dark
         dark:group-aria-pressed:text-primary-text'
       >
         {iconMode
           ? <ButtonIcon title={title} />
-          : <p className='text-sm md:text-xs'>{title}</p>}
-      </div>
+          : <span className='text-sm md:text-xs'>{title}</span>}
+      </h3>
     </button>
   );
 }

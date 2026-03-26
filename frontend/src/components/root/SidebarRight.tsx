@@ -1,13 +1,18 @@
 import { Link } from '@tanstack/react-router';
 
-export default function SidebarRight () {
-  // Temporariliy hidden for dev purposes
+export default function SidebarRight (
+  { sidebarRightVisible }: { sidebarRightVisible: boolean }
+) {
   return (
-    <div
-      className='
-      absolute right-0 h-full flex w-24 flex-col items-end
-      bg-secondary text-primary-text
-      dark:bg-secondary-dark dark:text-primary-text-dark hidden'
+    <nav
+      className={`
+      absolute right-0 md:translate-x-0 flex flex-col items-end
+      border-t border-l
+      bg-secondary dark:bg-secondary-dark pt-3 w-24 h-full
+      text-primary-text dark:text-primary-text-dark
+      ${sidebarRightVisible
+      ? 'translate-x-0'
+      : 'translate-x-full'}`}
     >
       <Link
         to='/lists'
@@ -21,6 +26,6 @@ export default function SidebarRight () {
       >
         My gyms
       </Link>
-    </div>
+    </nav>
   );
 }

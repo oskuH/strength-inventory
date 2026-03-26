@@ -2,7 +2,7 @@
 **Web application for comparing gym equipment, memberships, and opening hours.**
 
 ## Status
-Early development with major parts missing.
+Ongoing and advanced pre-alpha development. Frontend is still missing some essential features.
 
 ## Stack
 Frontend: **React** with **TanStack Router** and **TanStack Query**. **Zod** for runtime validation and **Vite** as the build tool.

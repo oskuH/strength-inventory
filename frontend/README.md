@@ -1,4 +1,4 @@
 # Strength Inventory frontend
 
 ## Status
-Very early development.
+Pre-alpha development.

@@ -10,15 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as personalSettingsRouteImport } from './routes/(personal)/settings'
-import { Route as personalReportsRouteImport } from './routes/(personal)/reports'
-import { Route as personalMygymsRouteImport } from './routes/(personal)/mygyms'
-import { Route as personalMessagesRouteImport } from './routes/(personal)/messages'
-import { Route as personalListsRouteImport } from './routes/(personal)/lists'
+import { Route as personalAdminRouteImport } from './routes/(personal)/admin'
 import { Route as openGymsRouteImport } from './routes/(open)/gyms'
 import { Route as openEquipmentRouteImport } from './routes/(open)/equipment'
-import { Route as authRegisterRouteImport } from './routes/(auth)/register'
-import { Route as authRecoverRouteImport } from './routes/(auth)/recover'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 
 const IndexRoute = IndexRouteImport.update({
@@ -26,29 +20,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const personalSettingsRoute = personalSettingsRouteImport.update({
-  id: '/(personal)/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const personalReportsRoute = personalReportsRouteImport.update({
-  id: '/(personal)/reports',
-  path: '/reports',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const personalMygymsRoute = personalMygymsRouteImport.update({
-  id: '/(personal)/mygyms',
-  path: '/mygyms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const personalMessagesRoute = personalMessagesRouteImport.update({
-  id: '/(personal)/messages',
-  path: '/messages',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const personalListsRoute = personalListsRouteImport.update({
-  id: '/(personal)/lists',
-  path: '/lists',
+const personalAdminRoute = personalAdminRouteImport.update({
+  id: '/(personal)/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const openGymsRoute = openGymsRouteImport.update({
@@ -61,16 +35,6 @@ const openEquipmentRoute = openEquipmentRouteImport.update({
   path: '/equipment',
   getParentRoute: () => rootRouteImport,
 } as any)
-const authRegisterRoute = authRegisterRouteImport.update({
-  id: '/(auth)/register',
-  path: '/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const authRecoverRoute = authRecoverRouteImport.update({
-  id: '/(auth)/recover',
-  path: '/recover',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const authLoginRoute = authLoginRouteImport.update({
   id: '/(auth)/login',
   path: '/login',
@@ -80,97 +44,45 @@ const authLoginRoute = authLoginRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
-  '/recover': typeof authRecoverRoute
-  '/register': typeof authRegisterRoute
   '/equipment': typeof openEquipmentRoute
   '/gyms': typeof openGymsRoute
-  '/lists': typeof personalListsRoute
-  '/messages': typeof personalMessagesRoute
-  '/mygyms': typeof personalMygymsRoute
-  '/reports': typeof personalReportsRoute
-  '/settings': typeof personalSettingsRoute
+  '/admin': typeof personalAdminRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
-  '/recover': typeof authRecoverRoute
-  '/register': typeof authRegisterRoute
   '/equipment': typeof openEquipmentRoute
   '/gyms': typeof openGymsRoute
-  '/lists': typeof personalListsRoute
-  '/messages': typeof personalMessagesRoute
-  '/mygyms': typeof personalMygymsRoute
-  '/reports': typeof personalReportsRoute
-  '/settings': typeof personalSettingsRoute
+  '/admin': typeof personalAdminRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/(auth)/login': typeof authLoginRoute
-  '/(auth)/recover': typeof authRecoverRoute
-  '/(auth)/register': typeof authRegisterRoute
   '/(open)/equipment': typeof openEquipmentRoute
   '/(open)/gyms': typeof openGymsRoute
-  '/(personal)/lists': typeof personalListsRoute
-  '/(personal)/messages': typeof personalMessagesRoute
-  '/(personal)/mygyms': typeof personalMygymsRoute
-  '/(personal)/reports': typeof personalReportsRoute
-  '/(personal)/settings': typeof personalSettingsRoute
+  '/(personal)/admin': typeof personalAdminRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/login'
-    | '/recover'
-    | '/register'
-    | '/equipment'
-    | '/gyms'
-    | '/lists'
-    | '/messages'
-    | '/mygyms'
-    | '/reports'
-    | '/settings'
+  fullPaths: '/' | '/login' | '/equipment' | '/gyms' | '/admin'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/login'
-    | '/recover'
-    | '/register'
-    | '/equipment'
-    | '/gyms'
-    | '/lists'
-    | '/messages'
-    | '/mygyms'
-    | '/reports'
-    | '/settings'
+  to: '/' | '/login' | '/equipment' | '/gyms' | '/admin'
   id:
     | '__root__'
     | '/'
     | '/(auth)/login'
-    | '/(auth)/recover'
-    | '/(auth)/register'
     | '/(open)/equipment'
     | '/(open)/gyms'
-    | '/(personal)/lists'
-    | '/(personal)/messages'
-    | '/(personal)/mygyms'
-    | '/(personal)/reports'
-    | '/(personal)/settings'
+    | '/(personal)/admin'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   authLoginRoute: typeof authLoginRoute
-  authRecoverRoute: typeof authRecoverRoute
-  authRegisterRoute: typeof authRegisterRoute
   openEquipmentRoute: typeof openEquipmentRoute
   openGymsRoute: typeof openGymsRoute
-  personalListsRoute: typeof personalListsRoute
-  personalMessagesRoute: typeof personalMessagesRoute
-  personalMygymsRoute: typeof personalMygymsRoute
-  personalReportsRoute: typeof personalReportsRoute
-  personalSettingsRoute: typeof personalSettingsRoute
+  personalAdminRoute: typeof personalAdminRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -182,39 +94,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(personal)/settings': {
-      id: '/(personal)/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof personalSettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(personal)/reports': {
-      id: '/(personal)/reports'
-      path: '/reports'
-      fullPath: '/reports'
-      preLoaderRoute: typeof personalReportsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(personal)/mygyms': {
-      id: '/(personal)/mygyms'
-      path: '/mygyms'
-      fullPath: '/mygyms'
-      preLoaderRoute: typeof personalMygymsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(personal)/messages': {
-      id: '/(personal)/messages'
-      path: '/messages'
-      fullPath: '/messages'
-      preLoaderRoute: typeof personalMessagesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(personal)/lists': {
-      id: '/(personal)/lists'
-      path: '/lists'
-      fullPath: '/lists'
-      preLoaderRoute: typeof personalListsRouteImport
+    '/(personal)/admin': {
+      id: '/(personal)/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof personalAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(open)/gyms': {
@@ -231,20 +115,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof openEquipmentRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(auth)/register': {
-      id: '/(auth)/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof authRegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(auth)/recover': {
-      id: '/(auth)/recover'
-      path: '/recover'
-      fullPath: '/recover'
-      preLoaderRoute: typeof authRecoverRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/(auth)/login': {
       id: '/(auth)/login'
       path: '/login'
@@ -258,15 +128,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   authLoginRoute: authLoginRoute,
-  authRecoverRoute: authRecoverRoute,
-  authRegisterRoute: authRegisterRoute,
   openEquipmentRoute: openEquipmentRoute,
   openGymsRoute: openGymsRoute,
-  personalListsRoute: personalListsRoute,
-  personalMessagesRoute: personalMessagesRoute,
-  personalMygymsRoute: personalMygymsRoute,
-  personalReportsRoute: personalReportsRoute,
-  personalSettingsRoute: personalSettingsRoute,
+  personalAdminRoute: personalAdminRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

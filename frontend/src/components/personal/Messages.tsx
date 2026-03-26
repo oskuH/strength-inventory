@@ -1,3 +1,3 @@
 export default function Messages () {
-  return <div>Messages</div>;
+  return <div>Upcoming feature!</div>;
 }

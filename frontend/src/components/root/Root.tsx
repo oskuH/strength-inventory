@@ -9,6 +9,7 @@ import { IconContext } from '../../utils/contexts';
 
 import Footer from './Footer';
 import Header from './Header';
+import Navbar from './Navbar';
 import SidebarLeft from './SidebarLeft';
 import SidebarRight from './SidebarRight';
 
@@ -50,18 +51,28 @@ export default function Root () {
     }
   }, [darkMode]);
 
+  const [sidebarLeftVisible, setSidebarLeftVisible] = useState(false);
+  const [sidebarRightVisible, setSidebarRightVisible] = useState(false);
+
   return (
     <IconContext value={iconMode}>
       <div className='flex flex-col min-h-svh'>
         <Header />
+        <Navbar
+          sidebarLeftVisible={sidebarLeftVisible}
+          setSidebarLeftVisible={setSidebarLeftVisible}
+          sidebarRightVisible={sidebarRightVisible}
+          setSidebarRightVisible={setSidebarRightVisible}
+        />
         <div className='flex relative flex-col flex-1'>
           <SidebarLeft
+            sidebarLeftVisible={sidebarLeftVisible}
             iconMode={iconMode}
             setIconMode={setIconMode}
             darkMode={darkMode}
             setDarkMode={setDarkMode}
           />
-          <SidebarRight />
+          <SidebarRight sidebarRightVisible={sidebarRightVisible} />
           <div
             className='
             flex flex-col bg-background dark:bg-background-dark flex-1
