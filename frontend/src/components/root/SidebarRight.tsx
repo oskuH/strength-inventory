@@ -1,8 +1,14 @@
+import { use } from 'react';
+
 import { Link } from '@tanstack/react-router';
+
+import { AuthContext } from '../../utils/contexts';
 
 export default function SidebarRight (
   { sidebarRightVisible }: { sidebarRightVisible: boolean }
 ) {
+  const auth = use(AuthContext);
+
   return (
     <nav
       className={`
@@ -14,18 +20,24 @@ export default function SidebarRight (
       ? 'translate-x-0'
       : 'translate-x-full'}`}
     >
-      <Link
-        to='/lists'
-        className='m-1'
-      >
-        Lists
-      </Link>
-      <Link
-        to='/mygyms'
-        className='m-1'
-      >
-        My gyms
-      </Link>
+      {!auth?.isAuthenticated
+        ? (
+          <Link
+            to='/login'
+            search={() => ({ redirect: location.href })}
+            className='m-1'
+          >
+            Login
+          </Link>
+        )
+        : (
+          <Link
+            to='/admin'
+            className='m-1'
+          >
+            Admin
+          </Link>
+        )}
     </nav>
   );
 }

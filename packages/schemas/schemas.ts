@@ -159,6 +159,17 @@ export const UserNamesSchema = UserSchema.pick({
   name: true
 });
 
+export const UserFrontendQuerySchema = UserSchema.pick({
+  id: true,
+  username: true,
+  email: true,
+  emailVerified: true,
+  name: true,
+  role: true
+})
+export const UserFrontendSchema = UserFrontendQuerySchema.nullish()
+export type UserFrontend = z.infer<typeof UserFrontendSchema>
+
 
 // equipment
 
@@ -290,10 +301,16 @@ export const LoginRequestSchema = z.object({
 });
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 
-export const LoginResponseSchema = z.object({
-  token: z.string(),
-  username: z.string()
-});
+export const LoginResponseSchema = UserSchema.pick({
+  id: true,
+  username: true,
+  email: true,
+  emailVerified: true,
+  name: true,
+  role: true,
+}).extend({
+  token: z.string()
+})
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 
 
