@@ -20,14 +20,14 @@ export default function SidebarRight (
       ? 'translate-x-0'
       : 'translate-x-full'}`}
     >
-      {!auth?.isAuthenticated
+      {!auth.isAuthenticated
         ? (
           <Link
             to='/login'
             search={() => ({ redirect: location.href })}
             className='m-1'
           >
-            Login
+            log in
           </Link>
         )
         : (

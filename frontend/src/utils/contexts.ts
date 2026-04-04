@@ -1,4 +1,4 @@
-import { createContext, use } from 'react';
+import { createContext } from 'react';
 
 import { type UserFrontend } from '@strength-inventory/schemas';
 
@@ -9,14 +9,21 @@ interface AuthState {
   logout: () => void
 }
 
-export const AuthContext = createContext<AuthState | undefined>(undefined);
+export const AuthContext = createContext<AuthState>({
+  isAuthenticated: false,
+  user: null,
+  login: async () => {
+    await Promise.resolve();
+  },
+  logout: function () {}
+});
 
 export const IconContext = createContext(false);
 
-export function useAuth () {
+/* export function useAuth () {
   const context = use(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-}
+} */

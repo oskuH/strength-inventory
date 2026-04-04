@@ -30,9 +30,11 @@ export default function Navbar ({
 
   // TODO: add more
   if (pathname === '/gyms') {
-    pageTitle = 'Gyms';
+    pageTitle = 'gyms';
   } else if (pathname === '/equipment') {
-    pageTitle = 'Equipment';
+    pageTitle = 'equipment';
+  } else if (pathname === '/login') {
+    pageTitle = 'log in';
   }
 
   return (

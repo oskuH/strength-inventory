@@ -1,8 +1,11 @@
+import { use } from 'react';
+
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { routeTree } from './routeTree.gen';
 
-import { useAuth } from './utils/contexts';
+import { AuthContext } from './utils/contexts';
+// import { useAuth } from './utils/contexts';
 
 const queryClient = new QueryClient();
 
@@ -11,7 +14,7 @@ const router = createRouter({
   context: {
     queryClient,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    auth: undefined!
+    auth: undefined!  // Set by <AuthProvider> in main.tsx
   },
   defaultPreload: 'intent',
   defaultPreloadStaleTime: 0,
@@ -25,7 +28,7 @@ declare module '@tanstack/react-router' {
 }
 
 export default function InnerApp () {
-  const auth = useAuth();
+  const auth = use(AuthContext);
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} context={{ auth }} />
