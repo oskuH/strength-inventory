@@ -1,36 +1,53 @@
 // work in progress
 
-import { use, useState } from 'react';
-
-import { redirect as tanstackRedirect } from '@tanstack/react-router';
+import { use, useActionState } from 'react';
 
 import { AuthContext } from '../../utils/contexts';
 
 import { Route } from '../../routes/(auth)/login';
 
+import { LoginRequestSchema } from '@strength-inventory/schemas';
+
 export default function Login () {
   const auth = use(AuthContext);
   const { redirect } = Route.useSearch();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const navigate = Route.useNavigate();
 
-  const handleSubmit = async (e: React.SubmitEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
+  const [state, submitAction, isPending] = useActionState(login, {
+    success: false,
+    error: null,
+    enteredUsername: ''
+  });
+
+  interface State {
+    success: boolean
+    error: string | null
+    enteredUsername: string
+  }
+
+  async function login (_previousState: State, formData: FormData) {
+    const req = Object.fromEntries(formData.entries());
 
     try {
-      await auth.login(username, password);
-      tanstackRedirect({ to: redirect });
+      const validatedReq = LoginRequestSchema.parse(req);
+      await auth.login(validatedReq.username, validatedReq.password);
+      return { success: true, error: null, enteredUsername: '' };
     } catch {
-      setError('Invalid username or password');
-    } finally {
-      setIsLoading(false);
+      return {
+        success: false,
+        error: 'Invalid username or password',
+        enteredUsername: formData.get('username') as string
+      };
     }
-  };
+  }
 
+  if (state.success) {
+    navigate({ to: redirect, search: true }).catch((err: unknown) => {
+      console.error('Redirect failed', err);
+    });
+  }
+
+  console.log(redirect);
   return (
     <div
       className='
@@ -44,7 +61,7 @@ export default function Login () {
         bg-secondary dark:bg-secondary-dark p-3'
       >
         <form
-          onSubmit={() => handleSubmit}
+          action={submitAction}
           className='flex flex-col items-center gap-3'
         >
           <div className='flex flex-col items-center'>
@@ -53,12 +70,10 @@ export default function Login () {
             </label>
             <input
               id='username'
+              name='username'
               type='text'
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-              }}
-              className='border'
+              defaultValue={state.enteredUsername}
+              className='border bg-background dark:bg-background-dark'
               required
             />
           </div>
@@ -69,46 +84,41 @@ export default function Login () {
             </label>
             <input
               id='password'
+              name='password'
               type='password'
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-              className='border'
+              className='border bg-background dark:bg-background-dark'
               required
             />
           </div>
 
           <div className='flex flex-col items-center'>
-            {error && (
-              <div>
-                {error}
-              </div>
-            )}
+            <div>
+              {state.error}
+            </div>
 
             <button
               type='submit'
-              disabled={isLoading}
+              disabled={isPending}
               className={`
-                border
-                ${error === ''
+                border bg-primary w-30 cursor-pointer
+                ${!state.error
       ? 'mt-6'
       : ''}`}
             >
-              {isLoading
-                ? 'Logging in...'
-                : 'Log in'}
+              {isPending
+                ? 'logging in...'
+                : 'log in'}
             </button>
           </div>
         </form>
       </div>
 
       <div className='flex flex-col justify-center gap-3 p-3'>
-        <button className='border'>
-          Sign up
+        <button className='border bg-secondary cursor-pointer'>
+          sign up
         </button>
-        <button className='border'>
-          Recover
+        <button className='border bg-secondary cursor-pointer'>
+          recover
         </button>
       </div>
     </div>

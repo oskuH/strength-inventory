@@ -112,25 +112,27 @@ export default function SidebarLeft (
     <nav
       className={`
       absolute left-0 md:translate-x-0 flex flex-col gap-1 border-t border-r
-      bg-secondary dark:bg-secondary-dark p-1 pt-3 pb-12 w-24 h-full
-      text-primary-text dark:text-primary-text-dark
+      bg-secondary dark:bg-secondary-dark pt-3 pb-12 w-24 h-full
+      text-primary-text dark:text-primary-text-dark text-sm
       ${sidebarLeftVisible
       ? 'translate-x-0'
       : '-translate-x-full'}`}
     >
-      <h2 className='font-bold'>Find</h2>
+      <h2 className='pl-2 text-base font-bold'>FIND</h2>
       <Link
         to='/gyms'
+        className='pl-2 hover:bg-primary dark:hover:bg-background-dark'
       >
-        Gyms
+        gyms
       </Link>
       <Link
         to='/equipment'
+        className='pl-2 hover:bg-primary dark:hover:bg-background-dark'
       >
-        Equipment
+        equipment
       </Link>
 
-      <div className='flex flex-col gap-1 mt-auto'>
+      <div className='flex flex-col gap-1 mt-auto p-1'>
         <IconToggle
           iconMode={iconMode}
           handleChange={() => {

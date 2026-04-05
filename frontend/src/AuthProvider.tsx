@@ -68,10 +68,18 @@ export default function AuthProvider (
       } catch {
         throw new Error('Authentication failed.');
       }
+    } else {
+      throw new Error('Authentication failed.');
     }
   }
 
-  function logout () {
+  async function logout () {
+    if (token) {
+      await fetch(`${baseUrl}/logout`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+    }
     setUser(null);
     setIsAuthenticated(false);
     localStorage.removeItem('auth-token');

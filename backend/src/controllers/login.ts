@@ -25,7 +25,7 @@ loginRouter.get(
   '/',
   tokenExtractor,
   userExtractor,
-  (req, res: Response<UserFrontend>) => {
+  (req: Request, res: Response<UserFrontend>) => {
     if (!req.user) {
       throw new Error('User missing from request.');
     }  // Should never trigger after middleware.

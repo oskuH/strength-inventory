@@ -6,7 +6,7 @@ interface AuthState {
   isAuthenticated: boolean
   user: UserFrontend
   login: (username: string, password: string) => Promise<void>
-  logout: () => void
+  logout: () => Promise<void>
 }
 
 export const AuthContext = createContext<AuthState>({
@@ -15,7 +15,9 @@ export const AuthContext = createContext<AuthState>({
   login: async () => {
     await Promise.resolve();
   },
-  logout: function () {}
+  logout: async () => {
+    await Promise.resolve();
+  }
 });
 
 export const IconContext = createContext(false);
