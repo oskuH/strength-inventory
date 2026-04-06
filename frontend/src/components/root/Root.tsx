@@ -63,6 +63,7 @@ export default function Root () {
           setSidebarLeftVisible={setSidebarLeftVisible}
           sidebarRightVisible={sidebarRightVisible}
           setSidebarRightVisible={setSidebarRightVisible}
+          iconMode={iconMode}
         />
         <div className='flex relative flex-col flex-1'>
           <SidebarLeft
@@ -72,7 +73,10 @@ export default function Root () {
             darkMode={darkMode}
             setDarkMode={setDarkMode}
           />
-          <SidebarRight sidebarRightVisible={sidebarRightVisible} />
+          <SidebarRight
+            sidebarRightVisible={sidebarRightVisible}
+            iconMode={iconMode}
+          />
           <div
             className='
             flex flex-col bg-background dark:bg-background-dark flex-1

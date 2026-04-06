@@ -41,8 +41,9 @@ export default function GymButton (
     <button
       className='
       group flex justify-center items-center p-3 basis-1/3 cursor-pointer
-      hover:bg-primary dark:hover:bg-background-dark active:inset-ring
-      aria-pressed:bg-secondary-dark dark:aria-pressed:bg-secondary'
+      hover:inset-ring active:font-semibold
+      aria-pressed:bg-secondary-dark dark:aria-pressed:bg-secondary
+      aria-pressed:font-semibold'
       aria-pressed={activeExtension === title}
       onClick={() => {
         handleToggle(title);

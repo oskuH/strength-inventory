@@ -1,8 +1,9 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useLocation } from '@tanstack/react-router';
 
-import { MdDarkMode, MdLightMode } from 'react-icons/md';
+import { MdDarkMode, MdLightMode, MdOutlineLocationOn } from 'react-icons/md';
 import { TbClock, TbContract } from 'react-icons/tb';
 import { CgGym } from 'react-icons/cg';
+import { FaSearch } from 'react-icons/fa';
 
 interface IconToggleProps {
   iconMode: boolean;
@@ -108,6 +109,10 @@ export default function SidebarLeft (
   { sidebarLeftVisible, iconMode, setIconMode, darkMode, setDarkMode }:
   SidebarLeftProps
 ) {
+  const pathname = useLocation({
+    select: (location) => location.pathname
+  });
+
   return (
     <nav
       className={`
@@ -118,18 +123,38 @@ export default function SidebarLeft (
       ? 'translate-x-0'
       : '-translate-x-full'}`}
     >
-      <h2 className='pl-2 text-base font-bold'>FIND</h2>
+      <h2 className='pb-1 pl-2 text-base font-bold cursor-default'>
+        {iconMode
+          ? <FaSearch className='text-2xl' />
+          : 'FIND'}
+      </h2>
       <Link
         to='/gyms'
-        className='pl-2 hover:bg-primary dark:hover:bg-background-dark'
+        className={`
+        py-1 pl-2 hover:bg-primary dark:hover:bg-background-dark
+        active:font-semibold
+        ${pathname === '/gyms'
+      ? 'bg-primary dark:bg-background-dark font-semibold'
+      : ''
+    }`}
       >
-        gyms
+        {iconMode
+          ? <MdOutlineLocationOn className='text-xl' />
+          : 'gyms'}
       </Link>
       <Link
         to='/equipment'
-        className='pl-2 hover:bg-primary dark:hover:bg-background-dark'
+        className={`
+        py-1 pl-2 hover:bg-primary dark:hover:bg-background-dark
+        active:font-semibold
+        ${pathname === '/equipment'
+      ? 'bg-primary dark:bg-background-dark font-semibold'
+      : ''
+    }`}
       >
-        equipment
+        {iconMode
+          ? <CgGym className='text-xl' />
+          : 'equipment'}
       </Link>
 
       <div className='flex flex-col gap-1 mt-auto p-1'>

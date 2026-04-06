@@ -1,6 +1,9 @@
 import { useLocation } from '@tanstack/react-router';
 
 import {
+  MdOutlineAdminPanelSettings, MdOutlineLocationOn
+} from 'react-icons/md';
+import {
   TbLayoutSidebarLeftCollapse,
   TbLayoutSidebarLeftCollapseFilled,
   TbLayoutSidebarLeftExpand,
@@ -8,40 +11,76 @@ import {
   TbLayoutSidebarRightCollapse,
   TbLayoutSidebarRightCollapseFilled,
   TbLayoutSidebarRightExpand,
-  TbLayoutSidebarRightExpandFilled
+  TbLayoutSidebarRightExpandFilled,
+  TbLogin2
 } from 'react-icons/tb';
+import { CgGym } from 'react-icons/cg';
+
+interface PageTitleProps {
+  pathname: string
+  iconMode: boolean
+}
+
+function PageTitle ({ pathname, iconMode }: PageTitleProps) {
+  if (pathname === '/gyms') {
+    return (
+      <p>
+        {iconMode
+          ? <MdOutlineLocationOn className='text-2xl' />
+          : 'gyms'}
+      </p>
+    );
+  } else if (pathname === '/equipment') {
+    return (
+      <p>
+        {iconMode
+          ? <CgGym className='text-2xl' />
+          : 'equipment'}
+      </p>
+    );
+  } else if (pathname === '/login') {
+    return (
+      <p>
+        {iconMode
+          ? <TbLogin2 className='text-2xl' />
+          : 'login'}
+      </p>
+    );
+  } else if (pathname === '/admin') {
+    return (
+      <p>
+        {iconMode
+          ? <MdOutlineAdminPanelSettings className='text-2xl' />
+          : 'admin'}
+      </p>
+    );
+  }
+}
 
 interface NavbarProps {
   sidebarLeftVisible: boolean
   setSidebarLeftVisible: React.Dispatch<React.SetStateAction<boolean>>
   sidebarRightVisible: boolean
   setSidebarRightVisible: React.Dispatch<React.SetStateAction<boolean>>
+  iconMode: boolean
 }
 
 export default function Navbar ({
   sidebarLeftVisible,
   setSidebarLeftVisible,
   sidebarRightVisible,
-  setSidebarRightVisible
+  setSidebarRightVisible,
+  iconMode
 }: NavbarProps) {
-  const location = useLocation();
-  const pathname = location.pathname;
-  let pageTitle = pathname;
-
-  // TODO: add more
-  if (pathname === '/gyms') {
-    pageTitle = 'gyms';
-  } else if (pathname === '/equipment') {
-    pageTitle = 'equipment';
-  } else if (pathname === '/login') {
-    pageTitle = 'log in';
-  }
+  const pathname = useLocation({
+    select: (location) => location.pathname
+  });
 
   return (
     <nav
       className='
       md:hidden flex justify-between items-center
-      bg-secondary dark:bg-secondary-dark px-1
+      bg-secondary dark:bg-secondary-dark p-1
       text-primary-text dark:text-primary-text-dark'
     >
       <button
@@ -74,7 +113,7 @@ export default function Navbar ({
             </div>
           )}
       </button>
-      <p>{pageTitle}</p>
+      <PageTitle pathname={pathname} iconMode={iconMode} />
       <button
         className='group relative w-4 h-4 cursor-pointer'
         onClick={() => {

@@ -21,11 +21,3 @@ export const AuthContext = createContext<AuthState>({
 });
 
 export const IconContext = createContext(false);
-
-/* export function useAuth () {
-  const context = use(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-} */

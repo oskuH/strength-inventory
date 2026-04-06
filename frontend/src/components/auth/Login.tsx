@@ -1,8 +1,10 @@
-// work in progress
-
 import { use, useActionState } from 'react';
 
-import { AuthContext } from '../../utils/contexts';
+import {
+  TbLogin2, TbPassword, TbUser, TbUserPlus, TbUserQuestion
+} from 'react-icons/tb';
+
+import { AuthContext, IconContext } from '../../utils/contexts';
 
 import { Route } from '../../routes/(auth)/login';
 
@@ -12,6 +14,7 @@ export default function Login () {
   const auth = use(AuthContext);
   const { redirect } = Route.useSearch();
   const navigate = Route.useNavigate();
+  const iconMode = use(IconContext);
 
   const [state, submitAction, isPending] = useActionState(login, {
     success: false,
@@ -47,7 +50,6 @@ export default function Login () {
     });
   }
 
-  console.log(redirect);
   return (
     <div
       className='
@@ -64,9 +66,12 @@ export default function Login () {
           action={submitAction}
           className='flex flex-col items-center gap-3'
         >
-          <div className='flex flex-col items-center'>
+          <div className='flex flex-col items-center gap-1'>
             <label htmlFor='username'>
-              username
+              {iconMode
+                ? <TbUser className='text-2xl' />
+                : 'username'}
+
             </label>
             <input
               id='username'
@@ -78,9 +83,11 @@ export default function Login () {
             />
           </div>
 
-          <div className='flex flex-col items-center'>
+          <div className='flex flex-col items-center gap-1'>
             <label htmlFor='password'>
-              password
+              {iconMode
+                ? <TbPassword className='text-2xl' />
+                : 'password'}
             </label>
             <input
               id='password'
@@ -91,34 +98,54 @@ export default function Login () {
             />
           </div>
 
-          <div className='flex flex-col items-center'>
-            <div>
+          <div
+            className={`
+              flex flex-col items-center
+              ${!state.error
+      ? 'mt-7'
+      : 'gap-1'}`}
+          >
+            <div className='text-red-600'>
               {state.error}
             </div>
 
             <button
               type='submit'
               disabled={isPending}
-              className={`
-                border bg-primary w-30 cursor-pointer
-                ${!state.error
-      ? 'mt-6'
-      : ''}`}
+              className='
+                flex justify-center border
+                bg-primary dark:bg-primary-dark py-1 w-30 cursor-pointer
+                hover:inset-ring active:font-semibold'
             >
-              {isPending
-                ? 'logging in...'
+              {iconMode
+                ? <TbLogin2 className='text-2xl' />
                 : 'log in'}
             </button>
           </div>
         </form>
       </div>
 
-      <div className='flex flex-col justify-center gap-3 p-3'>
-        <button className='border bg-secondary cursor-pointer'>
-          sign up
+      {/* Signing up and recovery not implemented, yet */}
+      <div className='flex flex-col gap-3 p-3'>
+        <button
+          className='
+          flex justify-center border border-dashed
+          bg-secondary dark:bg-secondary-dark py-1 cursor-not-allowed
+          hover:inset-ring'
+        >
+          {iconMode
+            ? <TbUserPlus className='text-2xl' />
+            : 'sign up'}
         </button>
-        <button className='border bg-secondary cursor-pointer'>
-          recover
+        <button
+          className='
+          flex justify-center border border-dashed
+          bg-secondary dark:bg-secondary-dark py-1 cursor-not-allowed
+          hover:inset-ring'
+        >
+          {iconMode
+            ? <TbUserQuestion className='text-2xl' />
+            : 'recover'}
         </button>
       </div>
     </div>
