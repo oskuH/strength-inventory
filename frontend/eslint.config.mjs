@@ -15,7 +15,6 @@ export default defineConfig({
     eslintJs.configs.recommended,
     tseslint.configs.recommended,
     tseslint.configs.strictTypeChecked,
-    tseslint.configs.strictTypeChecked,
     eslintReact.configs['recommended-typescript'],
     pluginQuery.configs['flat/recommended'],
     reactHooks.configs.flat.recommended,

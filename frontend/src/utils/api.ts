@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { GymGetSchema } from '@strength-inventory/schemas';
+import { EquipmentSchema, GymGetSchema } from '@strength-inventory/schemas';
 
 export const baseUrl
   = import.meta.env.VITE_API_URL
@@ -16,4 +16,26 @@ export const getGyms = async () => {
   const data: unknown = await res.json();
   const validatedData = z.array(GymGetSchema).parse(data);
   return validatedData;
+};
+
+export const getGymsIdAndName = async () => {
+  const res = await fetch(`${baseUrl}/gyms`);
+  if (!res.ok) {
+    throw new Error(`Response status: ${res.statusText}`);
+  }
+
+  const data: unknown = await res.json();
+  const validatedData = z.array(GymGetSchema).parse(data);
+  return validatedData.map(({ id, name }) => ({ id, name }));
+};
+
+export const getEquipmentIdAndName = async () => {
+  const res = await fetch(`${baseUrl}/equipment`);
+  if (!res.ok) {
+    throw new Error(`Response status: ${res.statusText}`);
+  }
+
+  const data: unknown = await res.json();
+  const validatedData = z.array(EquipmentSchema).parse(data);
+  return validatedData.map(({ id, name }) => ({ id, name }));
 };

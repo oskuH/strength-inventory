@@ -56,7 +56,7 @@ export default function Root () {
 
   return (
     <IconContext value={iconMode}>
-      <div className='flex flex-col min-h-svh'>
+      <div className='flex flex-col h-svh'>
         <Header />
         <Navbar
           sidebarLeftVisible={sidebarLeftVisible}
@@ -79,7 +79,7 @@ export default function Root () {
           />
           <div
             className='
-            flex flex-col bg-background dark:bg-background-dark flex-1
+            flex flex-1 flex-col bg-background dark:bg-background-dark
             transition'
           >
             <Outlet />

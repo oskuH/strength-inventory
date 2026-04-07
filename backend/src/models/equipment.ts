@@ -101,7 +101,7 @@ Equipment.init({
   modelName: 'equipment',
   validate: {
     customValidator () {
-      const instance = this as Equipment;
+      const instance = this as unknown as Equipment;
 
       if (
         !instance.weightUnit
