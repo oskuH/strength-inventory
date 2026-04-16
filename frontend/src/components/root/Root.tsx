@@ -56,6 +56,8 @@ export default function Root () {
 
   return (
     <IconContext value={iconMode}>
+      {/* svh (Small Viewport Height) ensures that
+      content does not get hidden behind browser UI */}
       <div className='flex flex-col h-svh'>
         <Header />
         <Navbar
@@ -65,7 +67,7 @@ export default function Root () {
           setSidebarRightVisible={setSidebarRightVisible}
           iconMode={iconMode}
         />
-        <div className='flex relative flex-col flex-1'>
+        <div className='relative flex flex-1 flex-col overflow-hidden'>
           <SidebarLeft
             sidebarLeftVisible={sidebarLeftVisible}
             iconMode={iconMode}
@@ -80,7 +82,7 @@ export default function Root () {
           <div
             className='
             flex flex-1 flex-col bg-background dark:bg-background-dark
-            transition'
+            overflow-y-auto transition'
           >
             <Outlet />
           </div>

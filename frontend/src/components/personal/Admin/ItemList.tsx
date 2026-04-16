@@ -1,41 +1,20 @@
 // work in progress
 
-import { use } from 'react';
+import { use, useState } from 'react';
 
 import { TbEdit, TbMinus, TbPlus } from 'react-icons/tb';
-import { CgGym } from 'react-icons/cg';
-import { MdOutlineLocationOn } from 'react-icons/md';
 
 import { IconContext } from '../../../utils/contexts';
 
-interface TitleProps {
-  model: string
-  iconMode: boolean
+interface ListProps {
+  data: { id: string, name: string }[] | undefined
+  selectedItemId: string
+  setSelectedItemId: React.Dispatch<React.SetStateAction<string>>
 }
 
-function Title ({ model, iconMode }: TitleProps) {
-  if (model === 'gym') {
-    return (
-      <h2 className='self-center font-bold'>
-        {iconMode
-          ? <MdOutlineLocationOn className='text-2xl' />
-          : 'Gyms'}
-      </h2>
-    );
-  }
-
-  if (model === 'equipment') {
-    return (
-      <h2 className='self-center font-bold'>
-        {iconMode
-          ? <CgGym className='text-2xl' />
-          : 'Equipment'}
-      </h2>
-    );
-  }
-}
-
-function List ({ data }: { data: { id: string, name: string }[] | undefined }) {
+function List (
+  { data, selectedItemId, setSelectedItemId }: ListProps
+) {
   if (!data) {
     return (
       <ol>
@@ -45,14 +24,20 @@ function List ({ data }: { data: { id: string, name: string }[] | undefined }) {
   }
 
   return (
-    <ol>
+    <ol className='min-w-full text-sm'>
       {data.map((item) => (
         <li key={item.id}>
           <button
-            aria-pressed='false'
-            className='flex pl-1 w-full aria-pressed:bg-gray-300'
+            onClick={() => {
+              setSelectedItemId(item.id);
+            }}
+            aria-pressed={item.id === selectedItemId}
+            className='
+            flex px-1 min-w-full whitespace-nowrap
+            aria-pressed:bg-gray-300 dark:aria-pressed:bg-gray-600
+            '
           >
-            <p className='truncate'>{item.name}</p>
+            <p>{item.name}</p>
           </button>
         </li>
       ))}
@@ -61,60 +46,98 @@ function List ({ data }: { data: { id: string, name: string }[] | undefined }) {
 }
 
 interface ItemListProps {
-  model: string,
   data: { id: string, name: string }[] | undefined
+  selectedItemId: string
+  setSelectedItemId: React.Dispatch<React.SetStateAction<string>>
+  setFormMode: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function ItemList ({ model, data }: ItemListProps) {
+export default function ItemList (
+  { data, selectedItemId, setSelectedItemId, setFormMode }: ItemListProps
+) {
+  const [search, setSearch] = useState('');
+  const [filteredItems, setFilteredItems] = useState(data);
+
   const iconMode = use(IconContext);
 
+  const filter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const keyword = e.target.value;
+
+    if (keyword !== '' && data) {
+      const results = data.filter((item) => {
+        return (
+          item.name.toLowerCase().includes(keyword.toLowerCase())
+          || item.id === selectedItemId);
+      });
+      setFilteredItems(results);
+    } else {
+      setFilteredItems(data);
+    }
+
+    setSearch(keyword);
+  };
+
   return (
-    <div
-      className='
-      flex flex-col gap-1 border bg-secondary dark:bg-secondary-dark p-3 w-1/2
-      text-primary-text dark:text-primary-text-dark'
-    >
-      <Title model={model} iconMode={iconMode} />
+    <div className='flex flex-1 flex-col gap-1'>
       <input
         type='text'
+        value={search}
         placeholder='search'
+        onChange={filter}
         className='bg-background dark:bg-background-dark pl-1'
       />
       <div className='flex justify-around'>
         <button
+          onClick={() => {
+            setFormMode('create');
+          }}
           className='
           p-1 border border-dotted
-          bg-primary dark:bg-primary-dark cursor-pointer'
+          bg-primary dark:bg-primary-dark text-sm md:text-base
+          cursor-pointer hover:border-solid'
         >
           {iconMode
-            ? <TbPlus className='text-2xl' />
+            ? <TbPlus className='text-xl md:text-2xl' />
             : 'create'}
         </button>
         <button
+          onClick={() => {
+            setFormMode('edit');
+          }}
+          disabled={!selectedItemId}
           className='
           p-1 border border-dotted
-          bg-primary dark:bg-primary-dark cursor-pointer'
+          bg-primary dark:bg-primary-dark text-sm md:text-base
+          enabled:cursor-pointer enabled:hover:border-solid
+          disabled:text-secondary dark:disabled:text-secondary-dark'
         >
           {iconMode
-            ? <TbEdit className='text-2xl' />
+            ? <TbEdit className='text-xl md:text-2xl' />
             : 'edit'}
         </button>
         <button
+          disabled={!selectedItemId}
           className='
           p-1 border border-dotted
-          bg-primary dark:bg-primary-dark cursor-pointer'
+          bg-primary dark:bg-primary-dark text-sm md:text-base
+          enabled:cursor-pointer enabled:hover:border-solid
+          disabled:text-secondary dark:disabled:text-secondary-dark'
         >
           {iconMode
-            ? <TbMinus className='text-2xl' />
+            ? <TbMinus className='text-xl md:text-2xl' />
             : 'delete'}
         </button>
       </div>
       <div
         className='
         flex flex-1 bg-background dark:bg-background-dark
-        overflow-x-scroll overflow-y-scroll'
+        overflow-y-scroll overflow-x-scroll'
       >
-        <List data={data} />
+        <List
+          data={filteredItems}
+          selectedItemId={selectedItemId}
+          setSelectedItemId={setSelectedItemId}
+        />
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { getEquipmentIdAndName, getGymsIdAndName } from '../../../utils/api';
 
-import ItemList from './ItemList';
+import Model from './Model';
 
 export default function Admin () {
   const gymsQuery = useQuery({
@@ -17,13 +17,26 @@ export default function Admin () {
     queryFn: () => getEquipmentIdAndName()
   });
 
+  if (gymsQuery.isPending || equipmentQuery.isPending) {
+    return <p>Loading...</p>;
+  }
+
+  if (gymsQuery.isError) {
+    return <p>Error: {gymsQuery.error.message} </p>;
+  }
+
+  if (equipmentQuery.isError) {
+    return <p>Error: {equipmentQuery.error.message} </p>;
+  }
+
   return (
     <div
-      className='flex flex-1 justify-center items-stretch w-full'
+      className='
+      flex flex-1 justify-center items-stretch w-full overflow-hidden'
     >
-      <div className='flex flex-1 gap-3 p-3 max-w-145'>
-        <ItemList model='gym' data={gymsQuery.data} />
-        <ItemList model='equipment' data={equipmentQuery.data} />
+      <div className='flex flex-1 gap-3 p-3 min-w-90 max-w-145'>
+        <Model model='gym' data={gymsQuery.data} />
+        <Model model='equipment' data={equipmentQuery.data} />
       </div>
     </div>
   );
