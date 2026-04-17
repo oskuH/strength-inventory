@@ -215,11 +215,13 @@ export const EquipmentPostAndPutSchema = EquipmentSchema.pick({
 // gym
 
 export const OpeningHoursExceptionSchema = z.object({
+  id: z.uuidv4(),
   date: z.date(),
   hours: TimeSchema,
   reason: z.string(),
   concernsMembers: z.boolean()
 })
+export type OpeningHoursException = z.infer<typeof OpeningHoursExceptionSchema>;
 
 export const HoursExceptionsSchema = z.object({
     data: z.array(OpeningHoursExceptionSchema).nullish()

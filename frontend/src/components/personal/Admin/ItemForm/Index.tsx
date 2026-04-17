@@ -1,5 +1,5 @@
 // work in progress
-import GymForm from './GymForm';
+import GymForm from './GymForm/Index';
 
 interface ItemFormProps {
   formMode: string

@@ -1,5 +1,9 @@
 // work in progress
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
+
+import Exceptions from './Exceptions';
+
+import { type OpeningHoursException } from '@strength-inventory/schemas';
 
 function OpeningHoursDayInput ({ group, day }: { group: string, day: string }) {
   return (
@@ -28,14 +32,32 @@ function OpeningHoursDayInput ({ group, day }: { group: string, day: string }) {
 
 interface GymFormProps {
   formMode: string
-  setFormMode: React.Dispatch<SetStateAction<string>>
+  setFormMode: React.Dispatch<React.SetStateAction<string>>
 }
+
+const mockExceptions = [
+  {
+    id: '1ebcd386-4f55-4292-b209-b2ec931e7fe0',
+    date: new Date('2026-04-17'),
+    hours: [12, 21],
+    reason: 'repairs in the morning',
+    concernsMembers: true
+  },
+  {
+    id: '55dee45c-d514-4b0c-b1f7-8e0f8e04abd5',
+    date: new Date('2026-04-18'),
+    hours: [15, 20],
+    reason: 'staff shortage',
+    concernsMembers: false
+  }
+];
 
 export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
   const [state, submitAction, isPending] = useActionState(submit, {
     success: false,
     error: null
   });
+  const [exceptions, setExceptions] = useState<OpeningHoursException[]>(mockExceptions);
 
   interface State {
     success: boolean
@@ -71,14 +93,14 @@ export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
   }
 
   return (
-    <div className='min-h-0 overflow-y-scroll'>
+    <div className='min-h-0 overflow-y-scroll text-xs'>
       {formMode === 'create'
         ? <h3>create new gym</h3>
         : <h3>edit gym</h3>}  {/* formMode is either 'create' or 'edit' */}
 
       <form
         action={submitAction}
-        className='flex flex-col gap-1 text-sm'
+        className='flex flex-col gap-1'
       >
         <label htmlFor='name'>
           name
@@ -196,8 +218,8 @@ export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
             <OpeningHoursDayInput group='members' day='Su' />
           </div>
         </div>
-        <label>exceptions</label>
       </form>
+      <Exceptions exceptions={exceptions} setExceptions={setExceptions} />
     </div>
   );
 }

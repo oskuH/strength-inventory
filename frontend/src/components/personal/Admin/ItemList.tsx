@@ -92,8 +92,8 @@ export default function ItemList (
             setFormMode('create');
           }}
           className='
-          p-1 border border-dotted
-          bg-primary dark:bg-primary-dark text-sm md:text-base
+          border border-dotted
+          bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
           cursor-pointer hover:border-solid'
         >
           {iconMode
@@ -106,8 +106,8 @@ export default function ItemList (
           }}
           disabled={!selectedItemId}
           className='
-          p-1 border border-dotted
-          bg-primary dark:bg-primary-dark text-sm md:text-base
+          border border-dotted
+          bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
           enabled:cursor-pointer enabled:hover:border-solid
           disabled:text-secondary dark:disabled:text-secondary-dark'
         >
@@ -118,8 +118,8 @@ export default function ItemList (
         <button
           disabled={!selectedItemId}
           className='
-          p-1 border border-dotted
-          bg-primary dark:bg-primary-dark text-sm md:text-base
+          border border-dotted
+          bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
           enabled:cursor-pointer enabled:hover:border-solid
           disabled:text-secondary dark:disabled:text-secondary-dark'
         >
