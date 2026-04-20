@@ -40,13 +40,27 @@ function ExceptionsItem ({
   );
 }
 
+interface ExceptionsItemFormProps {
+  exception: OpeningHoursException
+  setEditedException: React.Dispatch<React.SetStateAction<string>>
+}
+
 function ExceptionsItemForm ({
-  exception
-}: { exception: OpeningHoursException}) {
+  exception, setEditedException
+}: ExceptionsItemFormProps) {
   return (
-    <div>
-      edit exception
-    </div>
+    <form>
+      <input
+        type='date' defaultValue={exception.date.toISOString().split('T')[0]}
+      />
+      <button
+        onClick={() => {
+          setEditedException('');
+        }}
+      >
+        cancel edit
+      </button>
+    </form>
   );
 }
 
@@ -59,7 +73,8 @@ export default function Exceptions ({
   exceptions, setExceptions
 }: ExceptionsProps) {
   const [selectedExceptionId, setSelectedExceptionId] = useState('');
-  const [exceptionFormMode, setExceptionFormMode] = useState('hidden');
+  const [createException, setCreateException] = useState(false);
+  const [editedException, setEditedException] = useState('');
 
   const iconMode = use(IconContext);
 
@@ -69,7 +84,7 @@ export default function Exceptions ({
       <div className='flex justify-around'>
         <button
           onClick={() => {
-            setExceptionFormMode('create');
+            setCreateException(true);
           }}
           className='
           border border-dotted
@@ -82,9 +97,10 @@ export default function Exceptions ({
         </button>
         <button
           onClick={() => {
-            setExceptionFormMode('edit');
+            setEditedException(selectedExceptionId);
+            setSelectedExceptionId('');
           }}
-          disabled={!selectedExceptionId}
+          disabled={!selectedExceptionId || editedException !== ''}
           className='
           border border-dotted
           bg-primary dark:bg-primary-dark p-1 text-xs
@@ -108,18 +124,43 @@ export default function Exceptions ({
             : 'delete'}
         </button>
       </div>
+      {createException
+        ? (
+          <form>
+            <button
+              onClick={() => {
+                setCreateException(false);
+              }}
+            >
+              cancel
+            </button>
+          </form>
+        )
+        : ''}
       <ol
         className='
         flex flex-col gap-1 p-1 bg-background dark:bg-background-dark'
       >
-        <li>
-          <ExceptionsItem
-            exception={exceptions[0]}
-            selectedExceptionId={selectedExceptionId}
-            setSelectedExceptionId={setSelectedExceptionId}
-          />
-        </li>
-        <li><ExceptionsItemForm exception={exceptions[1]} /></li>
+        {exceptions.map((exception) => (
+          exception.id !== editedException
+            ? (
+              <li key={exception.id}>
+                <ExceptionsItem
+                  exception={exception}
+                  selectedExceptionId={selectedExceptionId}
+                  setSelectedExceptionId={setSelectedExceptionId}
+                />
+              </li>
+            )
+            : (
+              <li key={exception.id}>
+                <ExceptionsItemForm
+                  exception={exception}
+                  setEditedException={setEditedException}
+                />
+              </li>
+            )
+        ))}
       </ol>
     </div>
   );

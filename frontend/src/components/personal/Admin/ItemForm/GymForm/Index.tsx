@@ -57,7 +57,8 @@ export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
     success: false,
     error: null
   });
-  const [exceptions, setExceptions] = useState<OpeningHoursException[]>(mockExceptions);
+  const [exceptions, setExceptions]
+    = useState<OpeningHoursException[]>(mockExceptions);
 
   interface State {
     success: boolean
