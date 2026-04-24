@@ -219,8 +219,23 @@ export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
             <OpeningHoursDayInput group='members' day='Su' />
           </div>
         </div>
+        <Exceptions exceptions={exceptions} setExceptions={setExceptions} />
+        <div className='flex justify-around'>
+          <button
+            className='cursor-pointer'
+          >
+            submit
+          </button>
+          <button
+            onClick={() => {
+              setFormMode('hidden');
+            }}
+            className='cursor-pointer'
+          >
+            cancel
+          </button>
+        </div>
       </form>
-      <Exceptions exceptions={exceptions} setExceptions={setExceptions} />
     </div>
   );
 }

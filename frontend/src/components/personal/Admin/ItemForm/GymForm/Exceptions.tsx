@@ -1,5 +1,5 @@
-// work in progress
 import { use, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { TbEdit, TbMinus, TbPlus } from 'react-icons/tb';
 
@@ -7,15 +7,15 @@ import { IconContext } from '../../../../../utils/contexts';
 
 import { type OpeningHoursException } from '@strength-inventory/schemas';
 
-interface ExceptionsItemProps {
+interface ExceptionProps {
   exception: OpeningHoursException
   selectedExceptionId: string
   setSelectedExceptionId: React.Dispatch<React.SetStateAction<string>>
 }
 
-function ExceptionsItem ({
+function Exception ({
   exception, selectedExceptionId, setSelectedExceptionId
-}: ExceptionsItemProps) {
+}: ExceptionProps) {
   const { id, date, hours, reason, concernsMembers } = exception;
 
   return (
@@ -40,26 +40,225 @@ function ExceptionsItem ({
   );
 }
 
-interface ExceptionsItemFormProps {
-  exception: OpeningHoursException
-  setEditedException: React.Dispatch<React.SetStateAction<string>>
+interface ExceptionCreateFormProps {
+  exceptions: OpeningHoursException[]
+  setExceptions: React.Dispatch<React.SetStateAction<OpeningHoursException[]>>
+  setCreateException: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function ExceptionsItemForm ({
-  exception, setEditedException
-}: ExceptionsItemFormProps) {
+function ExceptionCreateForm ({
+  exceptions, setExceptions, setCreateException
+}: ExceptionCreateFormProps) {
+  const [date, setDate] = useState('');
+  const [from, setFrom] = useState(0);
+  const [to, setTo] = useState(0);
+  const [members, setMembers] = useState(false);
+  const [reason, setReason] = useState('');
+
+  function handleSubmit (e: React.SubmitEvent) {
+    e.preventDefault();
+    const newExceptions = [
+      ...exceptions, {
+        id: uuidv4(),
+        date: new Date(date),
+        hours: [from, to],
+        concernsMembers: members,
+        reason: reason
+      }
+    ];
+    setExceptions(newExceptions);
+    setCreateException(false);
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit} className='flex flex-col gap-1 border p-1'>
       <input
-        type='date' defaultValue={exception.date.toISOString().split('T')[0]}
-      />
-      <button
-        onClick={() => {
-          setEditedException('');
+        id='date'
+        name='date'
+        type='date'
+        value={date}
+        onChange={(event) => {
+          setDate(event.target.value);
         }}
-      >
-        cancel edit
-      </button>
+        className='w-26'
+      />
+      <div className='flex gap-1'>
+        <input
+          id='from'
+          name='from'
+          type='number'
+          min='0'
+          max='24'
+          value={from}
+          onChange={(event) => {
+            setFrom(Number(event.target.value));
+          }}
+          className='bg-secondary dark:bg-secondary-dark w-11'
+        />
+        <span>-</span>
+        <input
+          id='to'
+          name='to'
+          type='number'
+          min='0'
+          max='24'
+          value={to}
+          onChange={(event) => {
+            setTo(Number(event.target.value));
+          }}
+          className='bg-secondary dark:bg-secondary-dark w-11'
+        />
+      </div>
+      <div className='flex gap-1'>
+        <label htmlFor='members'>Members</label>
+        <input
+          id='members'
+          name='members'
+          type='checkbox'
+          value='members'
+          checked={members}
+          onChange={() => {
+            setMembers(!members);
+          }}
+        />
+      </div>
+      <label htmlFor='reason' className='self-center'>Reason</label>
+      <textarea
+        id='reason'
+        name='reason'
+        defaultValue={reason}
+        onChange={(event) => {
+          setReason(event.target.value);
+        }}
+        className='border'
+      />
+      <div className='flex justify-around'>
+        <button type='submit' className='cursor-pointer'>
+          create
+        </button>
+        <button
+          onClick={() => {
+            setCreateException(false);
+          }}
+          className='cursor-pointer'
+        >
+          cancel
+        </button>
+      </div>
+    </form>
+  );
+}
+
+interface ExceptionEditFormProps {
+  exception: OpeningHoursException
+  setEditedException: React.Dispatch<React.SetStateAction<string>>
+  exceptions: OpeningHoursException[]
+  setExceptions: React.Dispatch<React.SetStateAction<OpeningHoursException[]>>
+}
+
+function ExceptionEditForm ({
+  exception, setEditedException, exceptions, setExceptions
+}: ExceptionEditFormProps) {
+  const [date, setDate] = useState(exception.date.toISOString().split('T')[0]);
+  const [from, setFrom] = useState(exception.hours[0]);
+  const [to, setTo] = useState(exception.hours[1]);
+  const [members, setMembers] = useState(exception.concernsMembers);
+  const [reason, setReason] = useState(exception.reason);
+
+  function handleSubmit (e: React.SubmitEvent) {
+    e.preventDefault();
+    const newExceptions = exceptions.map((obj) => {
+      if (obj.id === exception.id) {
+        return {
+          ...obj,
+          date: new Date(date),
+          hours: [from, to],
+          concernsMembers: members,
+          reason: reason
+        };
+      }
+
+      return obj;
+    });
+    setExceptions(newExceptions);
+    setEditedException('');
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className='flex flex-col gap-1 border p-1'>
+      <input
+        id='date'
+        name='date'
+        type='date'
+        value={date}
+        onChange={(event) => {
+          setDate(event.target.value);
+        }}
+        className='w-26'
+      />
+      <div className='flex gap-1'>
+        <input
+          id='from'
+          name='from'
+          type='number'
+          min='0'
+          max='24'
+          value={from}
+          onChange={(event) => {
+            setFrom(Number(event.target.value));
+          }}
+          className='bg-secondary dark:bg-secondary-dark w-11'
+        />
+        <span>-</span>
+        <input
+          id='to'
+          name='to'
+          type='number'
+          min='0'
+          max='24'
+          value={to}
+          onChange={(event) => {
+            setTo(Number(event.target.value));
+          }}
+          className='bg-secondary dark:bg-secondary-dark w-11'
+        />
+      </div>
+      <div className='flex gap-1'>
+        <label htmlFor='members'>Members</label>
+        <input
+          id='members'
+          name='members'
+          type='checkbox'
+          value='members'
+          checked={members}
+          onChange={() => {
+            setMembers(!members);
+          }}
+        />
+      </div>
+      <label htmlFor='reason' className='self-center'>Reason</label>
+      <textarea
+        id='reason'
+        name='reason'
+        defaultValue={reason}
+        onChange={(event) => {
+          setReason(event.target.value);
+        }}
+        className='border'
+      />
+      <div className='flex justify-around'>
+        <button type='submit' className='cursor-pointer'>
+          apply
+        </button>
+        <button
+          onClick={() => {
+            setEditedException('');
+          }}
+          className='cursor-pointer'
+        >
+          cancel
+        </button>
+      </div>
     </form>
   );
 }
@@ -86,10 +285,12 @@ export default function Exceptions ({
           onClick={() => {
             setCreateException(true);
           }}
+          disabled={createException}
           className='
           border border-dotted
           bg-primary dark:bg-primary-dark p-1 text-xs
-          cursor-pointer hover:border-solid'
+          enabled:cursor-pointer enabled:hover:border-solid
+          disabled:text-secondary dark:disabled:text-secondary-dark'
         >
           {iconMode
             ? <TbPlus className='text-base' />
@@ -112,6 +313,16 @@ export default function Exceptions ({
             : 'edit'}
         </button>
         <button
+          onClick={() => {
+            const newExceptions = exceptions.filter((obj) => {
+              if (obj.id !== selectedExceptionId) {
+                return obj;
+              }
+            });
+
+            setExceptions(newExceptions);
+            setSelectedExceptionId('');
+          }}
           disabled={!selectedExceptionId}
           className='
           border border-dotted
@@ -126,15 +337,11 @@ export default function Exceptions ({
       </div>
       {createException
         ? (
-          <form>
-            <button
-              onClick={() => {
-                setCreateException(false);
-              }}
-            >
-              cancel
-            </button>
-          </form>
+          <ExceptionCreateForm
+            exceptions={exceptions}
+            setExceptions={setExceptions}
+            setCreateException={setCreateException}
+          />
         )
         : ''}
       <ol
@@ -145,7 +352,7 @@ export default function Exceptions ({
           exception.id !== editedException
             ? (
               <li key={exception.id}>
-                <ExceptionsItem
+                <Exception
                   exception={exception}
                   selectedExceptionId={selectedExceptionId}
                   setSelectedExceptionId={setSelectedExceptionId}
@@ -154,9 +361,11 @@ export default function Exceptions ({
             )
             : (
               <li key={exception.id}>
-                <ExceptionsItemForm
+                <ExceptionEditForm
                   exception={exception}
                   setEditedException={setEditedException}
+                  exceptions={exceptions}
+                  setExceptions={setExceptions}
                 />
               </li>
             )
