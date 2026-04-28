@@ -22,11 +22,11 @@ export default function Admin () {
   }
 
   if (gymsQuery.isError) {
-    return <p>Error: {gymsQuery.error.message} </p>;
+    return <p>Error: {gymsQuery.error.message}</p>;
   }
 
   if (equipmentQuery.isError) {
-    return <p>Error: {equipmentQuery.error.message} </p>;
+    return <p>Error: {equipmentQuery.error.message}</p>;
   }
 
   return (

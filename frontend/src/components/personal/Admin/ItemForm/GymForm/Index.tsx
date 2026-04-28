@@ -1,11 +1,23 @@
 // work in progress
 import { useActionState, useState } from 'react';
 
+import { skipToken, useQuery } from '@tanstack/react-query';
+
+import { getGym } from '../../../../../utils/api';
+
 import Exceptions from './Exceptions';
 
-import { type OpeningHoursException } from '@strength-inventory/schemas';
+import type { Hours, OpeningHoursException } from '@strength-inventory/schemas';
 
-function OpeningHoursDayInput ({ group, day }: { group: string, day: string }) {
+interface OpeningHoursDayInputProps {
+  group: 'everyone' | 'members'
+  day: 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU'
+  editedHours: Hours | undefined
+}
+
+function OpeningHoursDayInput (
+  { group, day, editedHours }: OpeningHoursDayInputProps
+) {
   return (
     <div className='flex gap-1'>
       <span className='w-5'>{day}</span>
@@ -15,6 +27,9 @@ function OpeningHoursDayInput ({ group, day }: { group: string, day: string }) {
         type='number'
         min='0'
         max='24'
+        defaultValue={editedHours?.[day]
+          ? editedHours[day][0]
+          : undefined}
         className='flex flex-1 dark:bg-background-dark md:w-9'
       />
       <span>-</span>
@@ -24,6 +39,9 @@ function OpeningHoursDayInput ({ group, day }: { group: string, day: string }) {
         type='number'
         min='0'
         max='24'
+        defaultValue={editedHours?.[day]
+          ? editedHours[day][1]
+          : undefined}
         className='flex flex-1 dark:bg-background-dark md:w-9'
       />
     </div>
@@ -33,6 +51,7 @@ function OpeningHoursDayInput ({ group, day }: { group: string, day: string }) {
 interface GymFormProps {
   formMode: string
   setFormMode: React.Dispatch<React.SetStateAction<string>>
+  selectedItemId: string
 }
 
 const mockExceptions = [
@@ -52,13 +71,34 @@ const mockExceptions = [
   }
 ];
 
-export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
+export default function GymForm (
+  { formMode, setFormMode, selectedItemId }: GymFormProps
+) {
+  const gymQuery = useQuery({
+    queryKey: ['gym', selectedItemId],
+    queryFn: selectedItemId
+      ? () => getGym({ id: selectedItemId })
+      : skipToken  // disable query when selectedItemId === ''
+  });
+
   const [state, submitAction, isPending] = useActionState(submit, {
     success: false,
     error: null
   });
   const [exceptions, setExceptions]
     = useState<OpeningHoursException[]>(mockExceptions);
+
+  // TODO: add useEffect for exceptions
+
+  if (selectedItemId && gymQuery.isPending) {
+    return <p>Loading...</p>;
+  }
+
+  if (selectedItemId && gymQuery.isError) {
+    return <p>Error: {gymQuery.error.message}</p>;
+  }
+
+  const editedGym = gymQuery.data;
 
   interface State {
     success: boolean
@@ -90,8 +130,10 @@ export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
   }
 
   if (state.success) {
-    setFormMode('hidden');
+    console.log('success!');
   }
+
+  // TODO: different returns when editing equipment/memberships/managers
 
   return (
     <div className='min-h-0 overflow-y-scroll text-xs'>
@@ -110,6 +152,7 @@ export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
           id='name'
           name='name'
           type='text'
+          defaultValue={editedGym?.name}
           className='border'
           required
         />
@@ -121,6 +164,9 @@ export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
           id='chain'
           name='chain'
           type='text'
+          defaultValue={editedGym?.chain
+            ? editedGym.chain
+            : undefined}
           className='border'
           required
         />
@@ -132,6 +178,7 @@ export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
           id='street'
           name='street'
           type='text'
+          defaultValue={editedGym?.street}
           className='border'
           required
         />
@@ -143,6 +190,7 @@ export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
           id='streetNumber'
           name='streetNumber'
           type='text'
+          defaultValue={editedGym?.streetNumber}
           className='border'
           required
         />
@@ -154,6 +202,7 @@ export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
           id='city'
           name='city'
           type='text'
+          defaultValue={editedGym?.city}
           className='border'
           required
         />
@@ -165,6 +214,7 @@ export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
           id='district'
           name='district'
           type='text'
+          defaultValue={editedGym?.district}
           className='border'
           required
         />
@@ -176,6 +226,9 @@ export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
           id='url'
           name='url'
           type='url'
+          defaultValue={editedGym?.url
+            ? editedGym.url
+            : undefined}
           className='border'
           required
         />
@@ -186,56 +239,121 @@ export default function GymForm ({ formMode, setFormMode }: GymFormProps) {
         <textarea
           id='notes'
           name='notes'
+          defaultValue={editedGym?.notes
+            ? editedGym.notes
+            : undefined}
           className='border'
           required
         />
 
-        <label>opening hours</label>
-        <label>everyone</label>
+        <h4 className='font-bold'>opening hours</h4>
+        <h5>everyone</h5>
         <div className='flex flex-col gap-1 md:gap-3 md:flex-row'>
           <div className='flex flex-col gap-1 md:basis-1/2'>
-            <OpeningHoursDayInput group='everyone' day='Mo' />
-            <OpeningHoursDayInput group='everyone' day='Tu' />
-            <OpeningHoursDayInput group='everyone' day='We' />
-            <OpeningHoursDayInput group='everyone' day='Th' />
+            <OpeningHoursDayInput
+              group='everyone'
+              day='MO'
+              editedHours={editedGym?.openingHoursEveryone}
+            />
+            <OpeningHoursDayInput
+              group='everyone'
+              day='TU'
+              editedHours={editedGym?.openingHoursEveryone}
+            />
+            <OpeningHoursDayInput
+              group='everyone'
+              day='WE'
+              editedHours={editedGym?.openingHoursEveryone}
+            />
+            <OpeningHoursDayInput
+              group='everyone'
+              day='TH'
+              editedHours={editedGym?.openingHoursEveryone}
+            />
           </div>
           <div className='flex flex-col gap-1 md:justify-center md:basis-1/2'>
-            <OpeningHoursDayInput group='everyone' day='Fr' />
-            <OpeningHoursDayInput group='everyone' day='Sa' />
-            <OpeningHoursDayInput group='everyone' day='Su' />
+            <OpeningHoursDayInput
+              group='everyone'
+              day='FR'
+              editedHours={editedGym?.openingHoursEveryone}
+            />
+            <OpeningHoursDayInput
+              group='everyone'
+              day='SA'
+              editedHours={editedGym?.openingHoursEveryone}
+            />
+            <OpeningHoursDayInput
+              group='everyone'
+              day='SU'
+              editedHours={editedGym?.openingHoursEveryone}
+            />
           </div>
         </div>
-        <label>members</label>
+        <h5>members</h5>
         <div className='flex flex-col gap-1 md:gap-3 md:flex-row'>
           <div className='flex flex-col gap-1 md:basis-1/2'>
-            <OpeningHoursDayInput group='members' day='Mo' />
-            <OpeningHoursDayInput group='members' day='Tu' />
-            <OpeningHoursDayInput group='members' day='We' />
-            <OpeningHoursDayInput group='members' day='Th' />
+            <OpeningHoursDayInput
+              group='members'
+              day='MO'
+              editedHours={editedGym?.openingHoursMembers}
+            />
+            <OpeningHoursDayInput
+              group='members'
+              day='TU'
+              editedHours={editedGym?.openingHoursMembers}
+            />
+            <OpeningHoursDayInput
+              group='members'
+              day='WE'
+              editedHours={editedGym?.openingHoursMembers}
+            />
+            <OpeningHoursDayInput
+              group='members'
+              day='TH'
+              editedHours={editedGym?.openingHoursMembers}
+            />
           </div>
           <div className='flex flex-col gap-1 md:justify-center md:basis-1/2'>
-            <OpeningHoursDayInput group='members' day='Fr' />
-            <OpeningHoursDayInput group='members' day='Sa' />
-            <OpeningHoursDayInput group='members' day='Su' />
+            <OpeningHoursDayInput
+              group='members'
+              day='FR'
+              editedHours={editedGym?.openingHoursMembers}
+            />
+            <OpeningHoursDayInput
+              group='members'
+              day='SA'
+              editedHours={editedGym?.openingHoursMembers}
+            />
+            <OpeningHoursDayInput
+              group='members'
+              day='SU'
+              editedHours={editedGym?.openingHoursMembers}
+            />
           </div>
-        </div>
-        <Exceptions exceptions={exceptions} setExceptions={setExceptions} />
-        <div className='flex justify-around'>
-          <button
-            className='cursor-pointer'
-          >
-            submit
-          </button>
-          <button
-            onClick={() => {
-              setFormMode('hidden');
-            }}
-            className='cursor-pointer'
-          >
-            cancel
-          </button>
         </div>
       </form>
+      <Exceptions exceptions={exceptions} setExceptions={setExceptions} />
+      <button
+        className='cursor-pointer'
+      >
+        submit changes
+      </button>
+
+      <hr />
+
+      <div className='flex flex-col'>
+        <button className='cursor-pointer'>edit equipment</button>
+        <button className='cursor-pointer'>edit memberships</button>
+        <button className='cursor-pointer'>edit managers</button>
+        <button
+          onClick={() => {
+            setFormMode('hidden');
+          }}
+          className='cursor-pointer'
+        >
+          return
+        </button>
+      </div>
     </div>
   );
 }

@@ -240,6 +240,9 @@ export const GymSchema = z.object({
   openingHoursMembers: HoursSchema,
   openingHoursExceptions: HoursExceptionsSchema,
   url: z.url().nullish(),
+  equipmentVisible: z.boolean(),
+  membershipsVisible: z.boolean(),
+  openingHoursVisible: z.boolean(),
   notes: z.string().nullish(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date()
@@ -271,6 +274,9 @@ export const GymPostSchema = GymSchema.pick({
   openingHoursMembers: true,
   openingHoursExceptions: true,
   url: true,
+  equipmentVisible: true,
+  membershipsVisible: true,
+  openingHoursVisible: true,
   notes: true
 });
 export type GymPost = z.infer<typeof GymPostSchema>;

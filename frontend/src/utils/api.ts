@@ -18,6 +18,17 @@ export const getGyms = async () => {
   return validatedData;
 };
 
+export const getGym = async ({ id }: { id: string }) => {
+  const res = await fetch(`${baseUrl}/gyms/${id}`);
+  if (!res.ok) {
+    throw new Error(`Response status: ${res.statusText}`);
+  }
+
+  const data: unknown = await res.json();
+  const validatedData = GymGetSchema.parse(data);
+  return validatedData;
+};
+
 export const getGymsIdAndName = async () => {
   const res = await fetch(`${baseUrl}/gyms`);
   if (!res.ok) {

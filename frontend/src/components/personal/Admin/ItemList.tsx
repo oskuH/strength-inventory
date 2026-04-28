@@ -89,6 +89,7 @@ export default function ItemList (
       <div className='flex justify-around'>
         <button
           onClick={() => {
+            setSelectedItemId('');
             setFormMode('create');
           }}
           className='

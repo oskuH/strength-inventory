@@ -26,16 +26,16 @@ function Exception ({
       aria-pressed={id === selectedExceptionId}
       className='
       flex flex-col min-w-full
-      aria-pressed:bg-gray-300 dark:aria-pressed:bg-gray-600'
+      aria-pressed:bg-gray-300 dark:aria-pressed:bg-gray-600 text-left'
     >
-      <span className='flex gap-2'>
+      <span className='flex flex-col md:flex-row md:gap-2'>
         <span>{date.toLocaleDateString('en-GB')}</span>
         <span>{hours[0]}-{hours[1]}</span>
         {concernsMembers
           ? <span>Members: yes</span>
           : <span>Members: no</span>}
       </span>
-      <span>Reason: {reason}</span>
+      <span className=''>Reason: {reason}</span>
     </button>
   );
 }

@@ -70,6 +70,7 @@ export default function Model ({ model, data }: ModelProps) {
             formMode={formMode}
             setFormMode={setFormMode}
             model={model}
+            selectedItemId={selectedItemId}
           />
         ) }
     </div>

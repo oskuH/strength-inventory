@@ -68,6 +68,9 @@ gymsRouter.post(
       openingHoursMembers,
       openingHoursExceptions,
       url,
+      equipmentVisible,
+      membershipsVisible,
+      openingHoursVisible,
       notes
     } = req.body;
 
@@ -82,6 +85,9 @@ gymsRouter.post(
       openingHoursMembers,
       openingHoursExceptions,
       url,
+      equipmentVisible,
+      membershipsVisible,
+      openingHoursVisible,
       notes
     });
 

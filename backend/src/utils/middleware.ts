@@ -344,7 +344,23 @@ const targetGymExtractor = async (
     return;
   }
 
-  const gym = await Gym.findByPk(id);
+  const gym = await Gym.findByPk(id, {
+    include: [
+      {
+        model: User,
+        as: 'managers',
+        attributes: [
+          'id', 'username', 'email', 'name'
+        ]
+      },
+      {
+        model: Membership
+      },
+      {
+        model: Equipment
+      }
+    ]
+  });
   if (!gym) {
     res.status(404).json({ error: `Gym with ID ${id} not found.` });
     return;

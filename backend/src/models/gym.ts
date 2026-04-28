@@ -31,6 +31,9 @@ class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare openingHoursMembers: CreationOptional<Hours>;
   declare openingHoursExceptions: CreationOptional<HoursExceptions>;
   declare url: string | null | undefined;
+  declare equipmentVisible: boolean;
+  declare membershipsVisible: boolean;
+  declare openingHoursVisible: boolean;
   declare notes: string | null | undefined;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -86,6 +89,21 @@ Gym.init({
   },
   url: {
     type: DataTypes.STRING
+  },
+  equipmentVisible: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  },
+  membershipsVisible: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  },
+  openingHoursVisible: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   },
   notes: {
     type: DataTypes.STRING
