@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
-import { EquipmentSchema, GymGetSchema } from '@strength-inventory/schemas';
+import {
+  EquipmentSchema,
+  GymGetSchema,
+  type GymPost,
+  GymSchema
+} from '@strength-inventory/schemas';
 
 export const baseUrl
   = import.meta.env.VITE_API_URL
@@ -27,6 +32,31 @@ export const getGym = async ({ id }: { id: string }) => {
   const data: unknown = await res.json();
   const validatedData = GymGetSchema.parse(data);
   return validatedData;
+};
+
+// input has been validated before this function is called
+export const postGym = async ({ gym }: { gym: GymPost }) => {
+  const token = localStorage.getItem('auth-token');
+  if (token) {
+    const res = await fetch(`${baseUrl}/gyms`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `bearer ${token}`
+      },
+      body: JSON.stringify(gym)
+    });
+
+    if (!res.ok) {
+      throw new Error(`Response status: ${res.statusText}`);
+    }
+
+    const data: unknown = await res.json();
+    const validatedData = GymSchema.parse(data);
+    return validatedData;
+  } else {
+    throw new Error('User authorization token missing.');
+  }
 };
 
 export const getGymsIdAndName = async () => {

@@ -71,6 +71,7 @@ export default function Model ({ model, data }: ModelProps) {
             setFormMode={setFormMode}
             model={model}
             selectedItemId={selectedItemId}
+            setSelectedItemId={setSelectedItemId}
           />
         ) }
     </div>

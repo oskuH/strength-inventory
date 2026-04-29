@@ -6,10 +6,13 @@ interface ItemFormProps {
   setFormMode: React.Dispatch<React.SetStateAction<string>>
   model: string
   selectedItemId: string
+  setSelectedItemId: React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function ItemForm (
-  { formMode, setFormMode, model, selectedItemId }: ItemFormProps
+  {
+    formMode, setFormMode, model, selectedItemId, setSelectedItemId
+  }: ItemFormProps
 ) {
   if (model === 'gym') {
     return (
@@ -17,6 +20,7 @@ export default function ItemForm (
         formMode={formMode}
         setFormMode={setFormMode}
         selectedItemId={selectedItemId}
+        setSelectedItemId={setSelectedItemId}
       />
     );
   }

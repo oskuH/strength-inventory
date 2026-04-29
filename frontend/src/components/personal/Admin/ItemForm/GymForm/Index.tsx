@@ -1,13 +1,22 @@
 // work in progress
 import { useActionState, useState } from 'react';
 
-import { skipToken, useQuery } from '@tanstack/react-query';
+import {
+  skipToken, useMutation, useQuery, useQueryClient
+} from '@tanstack/react-query';
 
-import { getGym } from '../../../../../utils/api';
+import { getGym, postGym } from '../../../../../utils/api';
 
 import Exceptions from './Exceptions';
 
-import type { Hours, OpeningHoursException } from '@strength-inventory/schemas';
+import {
+  type GymPost,
+  type GymPostFrontend,
+  GymPostFrontendSchema,
+  GymPostSchema,
+  type Hours,
+  type OpeningHoursException
+} from '@strength-inventory/schemas';
 
 interface OpeningHoursDayInputProps {
   group: 'everyone' | 'members'
@@ -29,6 +38,8 @@ function OpeningHoursDayInput (
         max='24'
         defaultValue={editedHours?.[day]
           ? editedHours[day][0]
+            ? editedHours[day][0]
+            : undefined
           : undefined}
         className='flex flex-1 dark:bg-background-dark md:w-9'
       />
@@ -41,6 +52,8 @@ function OpeningHoursDayInput (
         max='24'
         defaultValue={editedHours?.[day]
           ? editedHours[day][1]
+            ? editedHours[day][1]
+            : undefined
           : undefined}
         className='flex flex-1 dark:bg-background-dark md:w-9'
       />
@@ -52,6 +65,7 @@ interface GymFormProps {
   formMode: string
   setFormMode: React.Dispatch<React.SetStateAction<string>>
   selectedItemId: string
+  setSelectedItemId: React.Dispatch<React.SetStateAction<string>>
 }
 
 const mockExceptions = [
@@ -72,23 +86,87 @@ const mockExceptions = [
 ];
 
 export default function GymForm (
-  { formMode, setFormMode, selectedItemId }: GymFormProps
+  { formMode, setFormMode, selectedItemId, setSelectedItemId }: GymFormProps
 ) {
+  interface formatSubmit {
+    req: GymPostFrontend
+    exceptions: OpeningHoursException[]
+  }
+
+  function formatSubmit ({ req, exceptions }: formatSubmit) {
+    const weekdays = [
+      'MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'
+    ] as const;
+    const openingHoursEveryone: Hours = {};
+    const openingHoursMembers: Hours = {};
+
+    weekdays.forEach((weekday) => {
+      if (req[`everyone${weekday}Open`] || req[`everyone${weekday}Close`]) {
+        openingHoursEveryone[weekday]
+          = [req[`everyone${weekday}Open`], req[`everyone${weekday}Close`]];
+      }
+      if (req[`members${weekday}Open`] || req[`members${weekday}Close`]) {
+        openingHoursMembers[weekday]
+          = [req[`members${weekday}Open`], req[`members${weekday}Close`]];
+      }
+    });
+
+    const {
+      name,
+      chain,
+      street,
+      streetNumber,
+      district,
+      city,
+      url,
+      equipmentVisible,
+      membershipsVisible,
+      openingHoursVisible,
+      notes
+    } = req;
+
+    const formattedGym = {
+      name: name,
+      chain: chain,
+      street: street,
+      streetNumber: streetNumber,
+      district: district,
+      city: city,
+      openingHoursEveryone: openingHoursEveryone,
+      openingHoursMembers: openingHoursMembers,
+      openingHoursExceptions: { data: exceptions },
+      url: url,
+      equipmentVisible: equipmentVisible,
+      membershipsVisible: membershipsVisible,
+      openingHoursVisible: openingHoursVisible,
+      notes: notes
+    };
+
+    return formattedGym;
+  }
+
+  const queryClient = useQueryClient();
+
   const gymQuery = useQuery({
     queryKey: ['gym', selectedItemId],
     queryFn: selectedItemId
       ? () => getGym({ id: selectedItemId })
-      : skipToken  // disable query when selectedItemId === ''
+      : skipToken  // disable this query when selectedItemId === ''
+  });
+
+  const postMutation = useMutation({
+    mutationFn: (newGym: GymPost) => postGym({ gym: newGym })
   });
 
   const [state, submitAction, isPending] = useActionState(submit, {
     success: false,
-    error: null
+    error: null,
+    submittedGymId: ''
   });
   const [exceptions, setExceptions]
     = useState<OpeningHoursException[]>(mockExceptions);
 
-  // TODO: add useEffect for exceptions
+  // TODO: add useEffect for exceptions that triggers after the query
 
   if (selectedItemId && gymQuery.isPending) {
     return <p>Loading...</p>;
@@ -103,34 +181,55 @@ export default function GymForm (
   interface State {
     success: boolean
     error: string | null
+    submittedGymId: string
   }
 
   async function submit (_previousState: State, formData: FormData) {
     const req = Object.fromEntries(formData.entries());
 
-    if (formMode === 'create') {
-      try {
-        return;
-      } catch {
-        return {
-          success: false,
-          error: 'Error!'
-        };
+    try {
+      const validatedReq = GymPostFrontendSchema.parse(req);
+      const formattedGym = formatSubmit({
+        req: validatedReq, exceptions: exceptions
+      });
+      if (formMode === 'create') {
+        try {
+          const res = await postMutation.mutateAsync(formattedGym);
+          return { success: true, error: null, submittedGymId: res.id };
+        } catch {
+          return {
+            success: false,
+            error: 'Error!',
+            submittedGymId: ''
+          };
+        }
+      } else { // formMode === 'edit'
+        try { // TODO!
+          const validatedReq = GymPostSchema.parse(req);
+          const res = await postMutation.mutateAsync(validatedReq);
+          return { success: true, error: null, submittedGymId: res.id };
+        } catch {
+          return {
+            success: false,
+            error: 'Error!',
+            submittedGymId: ''
+          };
+        }
       }
-    } else if (formMode === 'edit') {
-      try {
-        return;
-      } catch {
-        return {
-          success: false,
-          error: 'Error!'
-        };
-      }
+    } catch {
+      return {
+        success: false,
+        error: 'Validation error!',
+        submittedGymId: ''
+      };
     }
   }
 
-  if (state.success) {
-    console.log('success!');
+  // submit function guarantees that neither of these conditions is truthy alone
+  if (state.success && state.submittedGymId) {
+    setSelectedItemId(state.submittedGymId);
+    setFormMode('edit');
+    void queryClient.invalidateQueries({ queryKey: ['gyms'] });
   }
 
   // TODO: different returns when editing equipment/memberships/managers

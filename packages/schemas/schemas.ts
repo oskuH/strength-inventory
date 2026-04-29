@@ -1,11 +1,10 @@
 import { z } from 'zod';
 
 
-/* All timestamps have .coerce to enable using json-server for frontend development.
-Although using .coerce is not optimal in terms of strictness and only required for json-server,
-it should not cause any issues as long as in production timestamps can only be modified by Sequelize.  */
+/* .coerce in timestamps should not cause any issues 
+as long as timestamps can only be modified by Sequelize.  */
 
-const TimeSchema = z.array(z.number().min(0).max(24)).length(2);
+const TimeSchema = z.array(z.number().min(0).max(24).nullish()).length(2);
 
 export const HoursSchema = z.object({
   MO: TimeSchema.nullish(),
@@ -280,6 +279,50 @@ export const GymPostSchema = GymSchema.pick({
   notes: true
 });
 export type GymPost = z.infer<typeof GymPostSchema>;
+
+export const GymPostFrontendSchema = GymSchema.pick({
+  name: true,
+  chain: true,
+  street: true,
+  streetNumber: true,
+  district: true,
+  city: true,
+  url: true,
+  equipmentVisible: true,
+  membershipsVisible: true,
+  openingHoursVisible: true,
+  notes: true
+}).extend({
+  everyoneMOOpen: z.number().optional(),
+  everyoneMOClose: z.number().optional(),
+  everyoneTUOpen: z.number().optional(),
+  everyoneTUClose: z.number().optional(),
+  everyoneWEOpen: z.number().optional(),
+  everyoneWEClose: z.number().optional(),
+  everyoneTHOpen: z.number().optional(),
+  everyoneTHClose: z.number().optional(),
+  everyoneFROpen: z.number().optional(),
+  everyoneFRClose: z.number().optional(),
+  everyoneSAOpen: z.number().optional(),
+  everyoneSAClose: z.number().optional(),
+  everyoneSUOpen: z.number().optional(),
+  everyoneSUClose: z.number().optional(),
+  membersMOOpen: z.number().optional(),
+  membersMOClose: z.number().optional(),
+  membersTUOpen: z.number().optional(),
+  membersTUClose: z.number().optional(),
+  membersWEOpen: z.number().optional(),
+  membersWEClose: z.number().optional(),
+  membersTHOpen: z.number().optional(),
+  membersTHClose: z.number().optional(),
+  membersFROpen: z.number().optional(),
+  membersFRClose: z.number().optional(),
+  membersSAOpen: z.number().optional(),
+  membersSAClose: z.number().optional(),
+  membersSUOpen: z.number().optional(),
+  membersSUClose: z.number().optional()
+})
+export type GymPostFrontend = z.infer<typeof GymPostFrontendSchema>;
 
 export const GymPatchHoursSchema = GymSchema.pick({
   openingHoursEveryone: true,
