@@ -41,8 +41,9 @@ function Exception ({
 }
 
 interface ExceptionCreateFormProps {
-  exceptions: OpeningHoursException[]
-  setExceptions: React.Dispatch<React.SetStateAction<OpeningHoursException[]>>
+  exceptions: OpeningHoursException[] | undefined
+  setExceptions:
+  React.Dispatch<React.SetStateAction<OpeningHoursException[] | undefined>>
   setCreateException: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -57,15 +58,28 @@ function ExceptionCreateForm ({
 
   function handleSubmit (e: React.SubmitEvent) {
     e.preventDefault();
-    const newExceptions = [
-      ...exceptions, {
-        id: uuidv4(),
-        date: new Date(date),
-        hours: [from, to],
-        concernsMembers: members,
-        reason: reason
-      }
-    ];
+    let newExceptions;
+    if (exceptions) {
+      newExceptions = [
+        ...exceptions, {
+          id: uuidv4(),
+          date: new Date(date),
+          hours: [from, to],
+          concernsMembers: members,
+          reason: reason
+        }
+      ];
+    } else {
+      newExceptions = [
+        {
+          id: uuidv4(),
+          date: new Date(date),
+          hours: [from, to],
+          concernsMembers: members,
+          reason: reason
+        }
+      ];
+    }
     setExceptions(newExceptions);
     setCreateException(false);
   }
@@ -153,7 +167,8 @@ interface ExceptionEditFormProps {
   exception: OpeningHoursException
   setEditedException: React.Dispatch<React.SetStateAction<string>>
   exceptions: OpeningHoursException[]
-  setExceptions: React.Dispatch<React.SetStateAction<OpeningHoursException[]>>
+  setExceptions:
+  React.Dispatch<React.SetStateAction<OpeningHoursException[] | undefined>>
 }
 
 function ExceptionEditForm ({
@@ -194,6 +209,7 @@ function ExceptionEditForm ({
         onChange={(event) => {
           setDate(event.target.value);
         }}
+        required
         className='w-26'
       />
       <div className='flex gap-1'>
@@ -207,6 +223,7 @@ function ExceptionEditForm ({
           onChange={(event) => {
             setFrom(Number(event.target.value));
           }}
+          required
           className='bg-secondary dark:bg-secondary-dark w-11'
         />
         <span>-</span>
@@ -220,6 +237,7 @@ function ExceptionEditForm ({
           onChange={(event) => {
             setTo(Number(event.target.value));
           }}
+          required
           className='bg-secondary dark:bg-secondary-dark w-11'
         />
       </div>
@@ -244,6 +262,7 @@ function ExceptionEditForm ({
         onChange={(event) => {
           setReason(event.target.value);
         }}
+        required
         className='border'
       />
       <div className='flex justify-around'>
@@ -264,8 +283,9 @@ function ExceptionEditForm ({
 }
 
 interface ExceptionsProps {
-  exceptions: OpeningHoursException[]
-  setExceptions: React.Dispatch<React.SetStateAction<OpeningHoursException[]>>
+  exceptions: OpeningHoursException[] | undefined
+  setExceptions:
+  React.Dispatch<React.SetStateAction<OpeningHoursException[] | undefined>>
 }
 
 export default function Exceptions ({
@@ -279,7 +299,7 @@ export default function Exceptions ({
 
   return (
     <div className='flex flex-col'>
-      <span>exceptions</span>
+      <span>exceptional opening hours</span>
       <div className='flex justify-around'>
         <button
           onClick={() => {
@@ -314,7 +334,7 @@ export default function Exceptions ({
         </button>
         <button
           onClick={() => {
-            const newExceptions = exceptions.filter((obj) => {
+            const newExceptions = exceptions?.filter((obj) => {
               if (obj.id !== selectedExceptionId) {
                 return obj;
               }
@@ -348,7 +368,7 @@ export default function Exceptions ({
         className='
         flex flex-col gap-1 p-1 bg-background dark:bg-background-dark'
       >
-        {exceptions.map((exception) => (
+        {exceptions?.map((exception) => (
           exception.id !== editedException
             ? (
               <li key={exception.id}>

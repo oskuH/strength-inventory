@@ -4,62 +4,20 @@ import { useActionState, useState } from 'react';
 import {
   skipToken, useMutation, useQuery, useQueryClient
 } from '@tanstack/react-query';
+import { z } from 'zod';
 
 import { getGym, postGym } from '../../../../../utils/api';
 
 import Exceptions from './Exceptions';
+import OpeningHoursDayInput from './OpeningHoursDayInput';
 
 import {
   type GymPost,
   type GymPostFrontend,
   GymPostFrontendSchema,
-  GymPostSchema,
   type Hours,
   type OpeningHoursException
 } from '@strength-inventory/schemas';
-
-interface OpeningHoursDayInputProps {
-  group: 'everyone' | 'members'
-  day: 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU'
-  editedHours: Hours | undefined
-}
-
-function OpeningHoursDayInput (
-  { group, day, editedHours }: OpeningHoursDayInputProps
-) {
-  return (
-    <div className='flex gap-1'>
-      <span className='w-5'>{day}</span>
-      <input
-        id={`${group}${day}Open`}
-        name={`${group}${day}Open`}
-        type='number'
-        min='0'
-        max='24'
-        defaultValue={editedHours?.[day]
-          ? editedHours[day][0]
-            ? editedHours[day][0]
-            : undefined
-          : undefined}
-        className='flex flex-1 dark:bg-background-dark md:w-9'
-      />
-      <span>-</span>
-      <input
-        id={`${group}${day}Close`}
-        name={`${group}${day}Close`}
-        type='number'
-        min='0'
-        max='24'
-        defaultValue={editedHours?.[day]
-          ? editedHours[day][1]
-            ? editedHours[day][1]
-            : undefined
-          : undefined}
-        className='flex flex-1 dark:bg-background-dark md:w-9'
-      />
-    </div>
-  );
-}
 
 interface GymFormProps {
   formMode: string
@@ -68,29 +26,12 @@ interface GymFormProps {
   setSelectedItemId: React.Dispatch<React.SetStateAction<string>>
 }
 
-const mockExceptions = [
-  {
-    id: '1ebcd386-4f55-4292-b209-b2ec931e7fe0',
-    date: new Date('2026-04-17'),
-    hours: [12, 21],
-    reason: 'repairs in the morning',
-    concernsMembers: true
-  },
-  {
-    id: '55dee45c-d514-4b0c-b1f7-8e0f8e04abd5',
-    date: new Date('2026-04-18'),
-    hours: [15, 20],
-    reason: 'staff shortage',
-    concernsMembers: false
-  }
-];
-
 export default function GymForm (
   { formMode, setFormMode, selectedItemId, setSelectedItemId }: GymFormProps
 ) {
   interface formatSubmit {
     req: GymPostFrontend
-    exceptions: OpeningHoursException[]
+    exceptions: OpeningHoursException[] | undefined
   }
 
   function formatSubmit ({ req, exceptions }: formatSubmit) {
@@ -119,11 +60,33 @@ export default function GymForm (
       district,
       city,
       url,
-      equipmentVisible,
-      membershipsVisible,
-      openingHoursVisible,
+      equipmentVisibility,
+      membershipsVisibility,
+      openingHoursVisibility,
       notes
     } = req;
+
+    let equipmentVisible: boolean;
+    let membershipsVisible: boolean;
+    let openingHoursVisible: boolean;
+
+    if (equipmentVisibility) {
+      equipmentVisible = true;
+    } else {
+      equipmentVisible = false;
+    }
+
+    if (membershipsVisibility) {
+      membershipsVisible = true;
+    } else {
+      membershipsVisible = false;
+    }
+
+    if (openingHoursVisibility) {
+      openingHoursVisible = true;
+    } else {
+      openingHoursVisible = false;
+    }
 
     const formattedGym = {
       name: name,
@@ -164,19 +127,7 @@ export default function GymForm (
     submittedGymId: ''
   });
   const [exceptions, setExceptions]
-    = useState<OpeningHoursException[]>(mockExceptions);
-
-  // TODO: add useEffect for exceptions that triggers after the query
-
-  if (selectedItemId && gymQuery.isPending) {
-    return <p>Loading...</p>;
-  }
-
-  if (selectedItemId && gymQuery.isError) {
-    return <p>Error: {gymQuery.error.message}</p>;
-  }
-
-  const editedGym = gymQuery.data;
+    = useState<OpeningHoursException[] | undefined>();
 
   interface State {
     success: boolean
@@ -196,19 +147,32 @@ export default function GymForm (
         try {
           const res = await postMutation.mutateAsync(formattedGym);
           return { success: true, error: null, submittedGymId: res.id };
-        } catch {
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            return {
+              success: false,
+              error: err.message,
+              submittedGymId: ''
+            };
+          }
           return {
             success: false,
-            error: 'Error!',
+            error: 'Error here!',
             submittedGymId: ''
           };
         }
       } else { // formMode === 'edit'
         try { // TODO!
-          const validatedReq = GymPostSchema.parse(req);
-          const res = await postMutation.mutateAsync(validatedReq);
+          const res = await postMutation.mutateAsync(formattedGym);
           return { success: true, error: null, submittedGymId: res.id };
-        } catch {
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            return {
+              success: false,
+              error: err.message,
+              submittedGymId: ''
+            };
+          }
           return {
             success: false,
             error: 'Error!',
@@ -216,12 +180,28 @@ export default function GymForm (
           };
         }
       }
-    } catch {
-      return {
-        success: false,
-        error: 'Validation error!',
-        submittedGymId: ''
-      };
+    } catch (err: unknown) {
+      if (err instanceof z.ZodError) {
+        const messages = err.issues.map((issue) => issue.message);
+        console.error(messages);
+        return {
+          success: false,
+          error: err.issues[0].message,
+          submittedGymId: ''
+        };
+      } else if (err instanceof Error) {
+        return {
+          success: false,
+          error: err.message,
+          submittedGymId: ''
+        };
+      } else {
+        return {
+          success: false,
+          error: 'Validation error!',
+          submittedGymId: ''
+        };
+      }
     }
   }
 
@@ -231,6 +211,23 @@ export default function GymForm (
     setFormMode('edit');
     void queryClient.invalidateQueries({ queryKey: ['gyms'] });
   }
+
+  if (selectedItemId && gymQuery.isPending) {
+    return <p>Loading...</p>;
+  }
+
+  if (selectedItemId && gymQuery.isError) {
+    return <p>Error: {gymQuery.error.message}</p>;
+  }
+
+  if (selectedItemId && gymQuery.isSuccess && !exceptions) {
+    if (gymQuery.data.openingHoursExceptions.data) {
+      setExceptions(gymQuery.data.openingHoursExceptions.data);
+    } else {
+      setExceptions([]);
+    }
+  }
+  const editedGym = gymQuery.data;
 
   // TODO: different returns when editing equipment/memberships/managers
 
@@ -342,7 +339,6 @@ export default function GymForm (
             ? editedGym.notes
             : undefined}
           className='border'
-          required
         />
 
         <h4 className='font-bold'>opening hours</h4>
@@ -430,20 +426,89 @@ export default function GymForm (
             />
           </div>
         </div>
+        <div className='flex gap-1'>
+          <label htmlFor='equipmentVisibility' hidden={formMode === 'create'}>
+            equipment visible
+          </label>
+          <input
+            id='equipmentVisibility'
+            name='equipmentVisibility'
+            type='checkbox'
+            value='visible'
+            defaultChecked={editedGym?.equipmentVisible}
+            hidden={formMode === 'create'}
+          />
+        </div>
+        <div className='flex gap-1'>
+          <label htmlFor='membershipsVisibility' hidden={formMode === 'create'}>
+            memberships visible
+          </label>
+          <input
+            id='membershipsVisibility'
+            name='membershipsVisibility'
+            type='checkbox'
+            value='visible'
+            defaultChecked={editedGym?.membershipsVisible}
+            hidden={formMode === 'create'}
+          />
+        </div>
+        <div className='flex gap-1'>
+          <label htmlFor='openingHoursVisibility'>
+            opening hours visible
+          </label>
+          <input
+            id='openingHoursVisibility'
+            name='openingHoursVisibility'
+            type='checkbox'
+            value='visible'
+            defaultChecked={editedGym?.openingHoursVisible}
+          />
+        </div>
+        {/* actual submit button is below Exceptions */}
+        <input
+          type='submit'
+          id='submit-form'
+          className='hidden'
+          disabled={isPending}
+        />
       </form>
+
       <Exceptions exceptions={exceptions} setExceptions={setExceptions} />
-      <button
+
+      {/* actual submit button outside the <form>
+      to have <Exceptions /> appear as part of the form */}
+      <label
         className='cursor-pointer'
+        htmlFor='submit-form'
+        tabIndex={0} /* make this tab-selectable */
       >
-        submit changes
-      </button>
+        {formMode === 'create'
+          ? <span>create</span>
+          : <span>submit changes</span>}
+      </label>
+
+      <div className='text-red-600'>
+        {state.error}
+      </div>
 
       <hr />
 
       <div className='flex flex-col'>
-        <button className='cursor-pointer'>edit equipment</button>
-        <button className='cursor-pointer'>edit memberships</button>
-        <button className='cursor-pointer'>edit managers</button>
+        {formMode === 'edit'
+          ? (
+            <>
+              <button className='cursor-pointer text-red-400'>
+                edit equipment {/* todo */}
+              </button>
+              <button className='cursor-pointer text-red-400'>
+                edit memberships {/* todo */}
+              </button>
+              <button className='cursor-pointer text-red-400'>
+                edit managers {/* todo */}
+              </button>
+            </>
+          )
+          : null}
         <button
           onClick={() => {
             setFormMode('hidden');

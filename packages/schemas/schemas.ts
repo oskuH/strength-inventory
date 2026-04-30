@@ -5,6 +5,7 @@ import { z } from 'zod';
 as long as timestamps can only be modified by Sequelize.  */
 
 const TimeSchema = z.array(z.number().min(0).max(24).nullish()).length(2);
+const TimeSchemaExceptions = z.array(z.number().min(0).max(24)).length(2);
 
 export const HoursSchema = z.object({
   MO: TimeSchema.nullish(),
@@ -215,15 +216,15 @@ export const EquipmentPostAndPutSchema = EquipmentSchema.pick({
 
 export const OpeningHoursExceptionSchema = z.object({
   id: z.uuidv4(),
-  date: z.date(),
-  hours: TimeSchema,
+  date: z.coerce.date(),
+  hours: TimeSchemaExceptions,
   reason: z.string(),
   concernsMembers: z.boolean()
 })
 export type OpeningHoursException = z.infer<typeof OpeningHoursExceptionSchema>;
 
 export const HoursExceptionsSchema = z.object({
-    data: z.array(OpeningHoursExceptionSchema).nullish()
+    data: z.array(OpeningHoursExceptionSchema).optional()
   })
 export type HoursExceptions = z.infer<typeof HoursExceptionsSchema>;
 
@@ -288,39 +289,39 @@ export const GymPostFrontendSchema = GymSchema.pick({
   district: true,
   city: true,
   url: true,
-  equipmentVisible: true,
-  membershipsVisible: true,
-  openingHoursVisible: true,
   notes: true
 }).extend({
-  everyoneMOOpen: z.number().optional(),
-  everyoneMOClose: z.number().optional(),
-  everyoneTUOpen: z.number().optional(),
-  everyoneTUClose: z.number().optional(),
-  everyoneWEOpen: z.number().optional(),
-  everyoneWEClose: z.number().optional(),
-  everyoneTHOpen: z.number().optional(),
-  everyoneTHClose: z.number().optional(),
-  everyoneFROpen: z.number().optional(),
-  everyoneFRClose: z.number().optional(),
-  everyoneSAOpen: z.number().optional(),
-  everyoneSAClose: z.number().optional(),
-  everyoneSUOpen: z.number().optional(),
-  everyoneSUClose: z.number().optional(),
-  membersMOOpen: z.number().optional(),
-  membersMOClose: z.number().optional(),
-  membersTUOpen: z.number().optional(),
-  membersTUClose: z.number().optional(),
-  membersWEOpen: z.number().optional(),
-  membersWEClose: z.number().optional(),
-  membersTHOpen: z.number().optional(),
-  membersTHClose: z.number().optional(),
-  membersFROpen: z.number().optional(),
-  membersFRClose: z.number().optional(),
-  membersSAOpen: z.number().optional(),
-  membersSAClose: z.number().optional(),
-  membersSUOpen: z.number().optional(),
-  membersSUClose: z.number().optional()
+  equipmentVisibility: z.string().optional(),
+  membershipsVisibility: z.string().optional(),
+  openingHoursVisibility: z.string().optional(),
+  everyoneMOOpen: z.coerce.number().min(0).max(24).optional(),
+  everyoneMOClose: z.coerce.number().min(0).max(24).optional(),
+  everyoneTUOpen: z.coerce.number().min(0).max(24).optional(),
+  everyoneTUClose: z.coerce.number().min(0).max(24).optional(),
+  everyoneWEOpen: z.coerce.number().min(0).max(24).optional(),
+  everyoneWEClose: z.coerce.number().min(0).max(24).optional(),
+  everyoneTHOpen: z.coerce.number().min(0).max(24).optional(),
+  everyoneTHClose: z.coerce.number().min(0).max(24).optional(),
+  everyoneFROpen: z.coerce.number().min(0).max(24).optional(),
+  everyoneFRClose: z.coerce.number().min(0).max(24).optional(),
+  everyoneSAOpen: z.coerce.number().min(0).max(24).optional(),
+  everyoneSAClose: z.coerce.number().min(0).max(24).optional(),
+  everyoneSUOpen: z.coerce.number().min(0).max(24).optional(),
+  everyoneSUClose: z.coerce.number().min(0).max(24).optional(),
+  membersMOOpen: z.coerce.number().min(0).max(24).optional(),
+  membersMOClose: z.coerce.number().min(0).max(24).optional(),
+  membersTUOpen: z.coerce.number().min(0).max(24).optional(),
+  membersTUClose: z.coerce.number().min(0).max(24).optional(),
+  membersWEOpen: z.coerce.number().min(0).max(24).optional(),
+  membersWEClose: z.coerce.number().min(0).max(24).optional(),
+  membersTHOpen: z.coerce.number().min(0).max(24).optional(),
+  membersTHClose: z.coerce.number().min(0).max(24).optional(),
+  membersFROpen: z.coerce.number().min(0).max(24).optional(),
+  membersFRClose: z.coerce.number().min(0).max(24).optional(),
+  membersSAOpen: z.coerce.number().min(0).max(24).optional(),
+  membersSAClose: z.coerce.number().min(0).max(24).optional(),
+  membersSUOpen: z.coerce.number().min(0).max(24).optional(),
+  membersSUClose: z.coerce.number().min(0).max(24).optional()
 })
 export type GymPostFrontend = z.infer<typeof GymPostFrontendSchema>;
 

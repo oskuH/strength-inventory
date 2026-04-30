@@ -15,7 +15,7 @@ export const baseUrl
 export const getGyms = async () => {
   const res = await fetch(`${baseUrl}/gyms`);
   if (!res.ok) {
-    throw new Error(`Response status: ${res.statusText}`);
+    throw Error(`Response status: ${res.statusText}`);
   }
 
   const data: unknown = await res.json();
@@ -26,7 +26,7 @@ export const getGyms = async () => {
 export const getGym = async ({ id }: { id: string }) => {
   const res = await fetch(`${baseUrl}/gyms/${id}`);
   if (!res.ok) {
-    throw new Error(`Response status: ${res.statusText}`);
+    throw Error(`Response status: ${res.statusText}`);
   }
 
   const data: unknown = await res.json();
@@ -48,7 +48,7 @@ export const postGym = async ({ gym }: { gym: GymPost }) => {
     });
 
     if (!res.ok) {
-      throw new Error(`Response status: ${res.statusText}`);
+      throw Error(`Response status: ${res.statusText}`);
     }
 
     const data: unknown = await res.json();
@@ -62,7 +62,7 @@ export const postGym = async ({ gym }: { gym: GymPost }) => {
 export const getGymsIdAndName = async () => {
   const res = await fetch(`${baseUrl}/gyms`);
   if (!res.ok) {
-    throw new Error(`Response status: ${res.statusText}`);
+    throw Error(`Response status: ${res.statusText}`);
   }
 
   const data: unknown = await res.json();
@@ -73,7 +73,7 @@ export const getGymsIdAndName = async () => {
 export const getEquipmentIdAndName = async () => {
   const res = await fetch(`${baseUrl}/equipment`);
   if (!res.ok) {
-    throw new Error(`Response status: ${res.statusText}`);
+    throw Error(`Response status: ${res.statusText}`);
   }
 
   const data: unknown = await res.json();
