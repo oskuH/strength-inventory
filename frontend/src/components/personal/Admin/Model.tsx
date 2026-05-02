@@ -1,5 +1,3 @@
-// work in progress
-
 import { use, useState } from 'react';
 
 import { CgGym } from 'react-icons/cg';
@@ -59,6 +57,7 @@ export default function Model ({ model, data }: ModelProps) {
       {formMode === 'hidden'
         ? (
           <ItemList
+            model={model}
             data={data}
             selectedItemId={selectedItemId}
             setSelectedItemId={setSelectedItemId}

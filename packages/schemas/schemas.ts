@@ -239,7 +239,10 @@ export const GymSchema = z.object({
   openingHoursEveryone: HoursSchema,
   openingHoursMembers: HoursSchema,
   openingHoursExceptions: HoursExceptionsSchema,
-  url: z.url().nullish(),
+  url: z.preprocess(
+    (val) => (val === '' ? undefined : val),
+    z.url().nullish()
+  ),
   equipmentVisible: z.boolean(),
   membershipsVisible: z.boolean(),
   openingHoursVisible: z.boolean(),
@@ -340,6 +343,9 @@ export const GymPatchSchema = GymSchema.pick({
   district: true,
   city: true,
   url: true,
+  equipmentVisible: true,
+  membershipsVisible: true,
+  openingHoursVisible: true,
   notes: true
 });
 export type GymPatch = z.infer<typeof GymPatchSchema>;

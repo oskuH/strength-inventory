@@ -1,9 +1,9 @@
-// work in progress
-
 import { use, useState } from 'react';
 
 import { TbEdit, TbMinus, TbPlus } from 'react-icons/tb';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { deleteEquipment, deleteGym } from '../../../utils/api';
 import { IconContext } from '../../../utils/contexts';
 
 interface ListProps {
@@ -46,6 +46,7 @@ function List (
 }
 
 interface ItemListProps {
+  model: string
   data: { id: string, name: string }[] | undefined
   selectedItemId: string
   setSelectedItemId: React.Dispatch<React.SetStateAction<string>>
@@ -53,29 +54,46 @@ interface ItemListProps {
 }
 
 export default function ItemList (
-  { data, selectedItemId, setSelectedItemId, setFormMode }: ItemListProps
+  { model, data, selectedItemId, setSelectedItemId, setFormMode }: ItemListProps
 ) {
   const [search, setSearch] = useState('');
-  const [filteredItems, setFilteredItems] = useState(data);
 
   const iconMode = use(IconContext);
 
-  const filter = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const keyword = e.target.value;
+  const queryClient = useQueryClient();
 
-    if (keyword !== '' && data) {
-      const results = data.filter((item) => {
-        return (
-          item.name.toLowerCase().includes(keyword.toLowerCase())
-          || item.id === selectedItemId);
-      });
-      setFilteredItems(results);
-    } else {
-      setFilteredItems(data);
+  const deleteGymMutation = useMutation({
+    mutationFn: (id: string) => deleteGym({ id: id }),
+    onSuccess: () => {
+      return queryClient.invalidateQueries({ queryKey: ['gyms'] });
     }
+  });
 
-    setSearch(keyword);
-  };
+  const deleteEquipmentMutation = useMutation({
+    mutationFn: (id: string) => deleteEquipment({ id: id }),
+    onSuccess: () => {
+      return queryClient.invalidateQueries({ queryKey: ['equipment'] });
+    }
+  });
+
+  let filteredItems: { id: string, name: string }[] | undefined = data;
+  if (search !== '' && data) {
+    filteredItems = data.filter((item) => {
+      return (
+        item.name.toLowerCase().includes(search.toLowerCase())
+        || item.id === selectedItemId);
+    });
+  }
+
+  function handleDelete (id: string) {
+    if (model === 'gym') {
+      deleteGymMutation.mutate(id);
+    } else if (model === 'equipment') {
+      deleteEquipmentMutation.mutate(id);
+    } else {
+      return; // admin panel currently only has gyms and equipment
+    }
+  }
 
   return (
     <div className='flex flex-1 flex-col gap-1'>
@@ -83,7 +101,9 @@ export default function ItemList (
         type='text'
         value={search}
         placeholder='search'
-        onChange={filter}
+        onChange={(event) => {
+          setSearch(event.target.value);
+        }}
         className='bg-background dark:bg-background-dark pl-1'
       />
       <div className='flex justify-around'>
@@ -117,6 +137,9 @@ export default function ItemList (
             : 'edit'}
         </button>
         <button
+          onClick={() => {
+            handleDelete(selectedItemId);
+          }}
           disabled={!selectedItemId}
           className='
           border border-dotted

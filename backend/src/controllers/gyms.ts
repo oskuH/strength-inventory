@@ -120,6 +120,9 @@ gymsRouter.put(
       openingHoursMembers,
       openingHoursExceptions,
       url,
+      equipmentVisible,
+      membershipsVisible,
+      openingHoursVisible,
       notes
     } = req.body;
 
@@ -134,6 +137,9 @@ gymsRouter.put(
       openingHoursMembers: openingHoursMembers,
       openingHoursExceptions: openingHoursExceptions,
       url: url,
+      equipmentVisible: equipmentVisible,
+      membershipsVisible: membershipsVisible,
+      openingHoursVisible: openingHoursVisible,
       notes: notes
     });
     await gym.save();
@@ -173,7 +179,7 @@ gymsRouter.patch(
   }
 );
 
-// PATCH for managers to edit information other than service hours
+// PATCH for managers to edit information other than opening hours
 gymsRouter.patch(
   '/:id',
   targetGymExtractor,
@@ -195,6 +201,9 @@ gymsRouter.patch(
       district,
       city,
       url,
+      equipmentVisible,
+      membershipsVisible,
+      openingHoursVisible,
       notes
     } = req.body;
 
@@ -206,6 +215,9 @@ gymsRouter.patch(
       district: district,
       city: city,
       url: url,
+      equipmentVisible: equipmentVisible,
+      membershipsVisible: membershipsVisible,
+      openingHoursVisible: openingHoursVisible,
       notes: notes
     });
     await gym.save();

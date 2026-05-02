@@ -1,5 +1,3 @@
-// work in progress
-
 import { useQuery } from '@tanstack/react-query';
 
 import { getEquipmentIdAndName, getGymsIdAndName } from '../../../utils/api';

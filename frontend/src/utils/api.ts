@@ -23,6 +23,17 @@ export const getGyms = async () => {
   return validatedData;
 };
 
+export const getGymsIdAndName = async () => {
+  const res = await fetch(`${baseUrl}/gyms`);
+  if (!res.ok) {
+    throw Error(`Response status: ${res.statusText}`);
+  }
+
+  const data: unknown = await res.json();
+  const validatedData = z.array(GymGetSchema).parse(data);
+  return validatedData.map(({ id, name }) => ({ id, name }));
+};
+
 export const getGym = async ({ id }: { id: string }) => {
   const res = await fetch(`${baseUrl}/gyms/${id}`);
   if (!res.ok) {
@@ -55,19 +66,51 @@ export const postGym = async ({ gym }: { gym: GymPost }) => {
     const validatedData = GymSchema.parse(data);
     return validatedData;
   } else {
-    throw new Error('User authorization token missing.');
+    throw Error('User authorization token missing.');
   }
 };
 
-export const getGymsIdAndName = async () => {
-  const res = await fetch(`${baseUrl}/gyms`);
-  if (!res.ok) {
-    throw Error(`Response status: ${res.statusText}`);
-  }
+// input has been validated before this function is called
+export const putGym = async ({ id, gym }: { id: string, gym: GymPost }) => {
+  const token = localStorage.getItem('auth-token');
+  if (token) {
+    const res = await fetch(`${baseUrl}/gyms/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `bearer ${token}`
+      },
+      body: JSON.stringify(gym)
+    });
 
-  const data: unknown = await res.json();
-  const validatedData = z.array(GymGetSchema).parse(data);
-  return validatedData.map(({ id, name }) => ({ id, name }));
+    if (!res.ok) {
+      throw Error(`Response status: ${res.statusText}`);
+    }
+
+    const data: unknown = await res.json();
+    const validatedData = GymSchema.parse(data);
+    return validatedData;
+  } else {
+    throw Error('User authorization token missing.');
+  }
+};
+
+export const deleteGym = async ({ id }: { id: string }) => {
+  const token = localStorage.getItem('auth-token');
+  if (token) {
+    const res = await fetch(`${baseUrl}/gyms/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `bearer ${token}`
+      }
+    });
+
+    if (!res.ok) {
+      throw Error(`Response status: ${res.statusText}`);
+    }
+  } else {
+    throw Error('User authorization token missing.');
+  }
 };
 
 export const getEquipmentIdAndName = async () => {
@@ -79,4 +122,22 @@ export const getEquipmentIdAndName = async () => {
   const data: unknown = await res.json();
   const validatedData = z.array(EquipmentSchema).parse(data);
   return validatedData.map(({ id, name }) => ({ id, name }));
+};
+
+export const deleteEquipment = async ({ id }: { id: string }) => {
+  const token = localStorage.getItem('auth-token');
+  if (token) {
+    const res = await fetch(`${baseUrl}/equipment/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `bearer ${token}`
+      }
+    });
+
+    if (!res.ok) {
+      throw Error(`Response status: ${res.statusText}`);
+    }
+  } else {
+    throw Error('User authorization token missing.');
+  }
 };
