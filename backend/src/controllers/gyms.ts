@@ -95,6 +95,27 @@ gymsRouter.post(
   }
 );
 
+// POST for admins and managers to add equipment
+gymsRouter.post(
+  '/:id/equipment',
+  ...isAdminOrManager,
+  targetGymExtractor,
+  async (
+    req: Request<{ id: string }, unknown, { equipmentId: string }>,
+    res
+  ) => {
+    if (!req.targetGym) {
+      throw new Error('Gym missing from request.');
+    }  // Should never trigger after middleware.
+
+    const gym = req.targetGym;
+    const { equipmentId } = req.body;
+    await gym.addEquipment(equipmentId);
+
+    return res.status(201);
+  }
+);
+
 // PUT for admins to modify everything except id and timestamps
 gymsRouter.put(
   '/:id',
@@ -237,5 +258,26 @@ gymsRouter.delete('/:id', ...isAdmin, targetGymExtractor, async (req, res) => {
 
   return res.status(204).end();
 });
+
+// DELETE for admins and managers to remove equipment
+gymsRouter.delete(
+  '/:id/equipment',
+  ...isAdminOrManager,
+  targetGymExtractor,
+  async (
+    req: Request<{ id: string }, unknown, { equipmentId: string }>,
+    res
+  ) => {
+    if (!req.targetGym) {
+      throw new Error('Gym missing from request.');
+    }  // Should never trigger after middleware.
+
+    const gym = req.targetGym;
+    const { equipmentId } = req.body;
+    await gym.removeEquipment(equipmentId);
+
+    return res.status(204);
+  }
+);
 
 export default gymsRouter;

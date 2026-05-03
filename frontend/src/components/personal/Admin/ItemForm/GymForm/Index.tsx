@@ -1,4 +1,3 @@
-// work in progress
 import { useActionState, useState } from 'react';
 
 import {
@@ -8,6 +7,7 @@ import { z } from 'zod';
 
 import { getGym, postGym, putGym } from '../../../../../utils/api';
 
+import Equipment from './Equipment';
 import Exceptions from './Exceptions';
 import OpeningHoursDayInput from './OpeningHoursDayInput';
 
@@ -118,12 +118,21 @@ export default function GymForm (
   });
 
   const postMutation = useMutation({
-    mutationFn: (newGym: GymPost) => postGym({ gym: newGym })
+    mutationFn: (newGym: GymPost) => postGym({ gym: newGym }),
+    onSuccess: (newGymFromServer) => {
+      void queryClient.invalidateQueries({ queryKey: ['gyms'] });
+      setSelectedItemId(newGymFromServer.id);
+      setFormMode('edit');
+    }
   });
 
   const putMutation = useMutation({
     mutationFn: ({ id, updatedGym }: { id: string, updatedGym: GymPost }) =>
-      putGym({ id: id, gym: updatedGym })
+      putGym({ id: id, gym: updatedGym }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['gyms'] });
+      void queryClient.invalidateQueries({ queryKey: ['gym', selectedItemId] });
+    }
   });
 
   /* Opening hours are currently not included in the form state.
@@ -152,6 +161,7 @@ export default function GymForm (
   });
   const [exceptions, setExceptions]
     = useState<OpeningHoursException[] | undefined>();
+  const [editForm, setEditForm] = useState('');
 
   interface State {
     success: boolean
@@ -366,17 +376,6 @@ export default function GymForm (
     }
   }
 
-  // submit function guarantees that neither of these conditions is truthy alone
-  if (state.success && state.submittedGymId) {
-    void queryClient.invalidateQueries({ queryKey: ['gyms'] });
-    if (formMode === 'edit') {
-      void queryClient.invalidateQueries({ queryKey: ['gym', selectedItemId] });
-    } else {
-      setSelectedItemId(state.submittedGymId);
-      setFormMode('edit');
-    }
-  }
-
   if (selectedItemId && gymQuery.isPending) {
     return <p>Loading...</p>;
   }
@@ -395,6 +394,16 @@ export default function GymForm (
   const editedGym = gymQuery.data;
 
   // TODO: different returns when editing equipment/memberships/managers
+
+  if (editedGym && editForm === 'equipment') {
+    return (
+      <Equipment
+        selectedItemId={selectedItemId}
+        gymName={editedGym.name}
+        setEditForm={setEditForm}
+      />
+    );
+  }
 
   return (
     <div className='min-h-0 overflow-y-scroll text-xs'>
@@ -678,7 +687,7 @@ export default function GymForm (
       >
         {formMode === 'create'
           ? <span>create</span>
-          : <span>submit changes</span>}
+          : <span>save changes</span>}
       </label>
 
       <div className='text-red-600'>
@@ -691,13 +700,18 @@ export default function GymForm (
         {formMode === 'edit'
           ? (
             <>
-              <button className='cursor-pointer text-red-400'>
-                edit equipment {/* todo */}
+              <button
+                className='cursor-pointer'
+                onClick={() => {
+                  setEditForm('equipment');
+                }}
+              >
+                edit equipment
               </button>
-              <button className='cursor-pointer text-red-400'>
+              <button className='cursor-pointer text-red-400' disabled>
                 edit memberships {/* todo */}
               </button>
-              <button className='cursor-pointer text-red-400'>
+              <button className='cursor-pointer text-red-400' disabled>
                 edit managers {/* todo */}
               </button>
             </>

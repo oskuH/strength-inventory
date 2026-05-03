@@ -1,7 +1,7 @@
 import Express, { type Request, type Response } from 'express';
 
 import {
-  isAdminOrManager,
+  isAdmin,
   targetGymEquipmentExtractor,
   targetGymExtractor
 } from '../utils/middleware.ts';
@@ -21,11 +21,13 @@ gymEquipmentRouter.get('/', async (_req, res) => {
   return res.json(junctions);
 });
 
-// POST for admins and managers to create a new junction
+// POST for admins to create a new junction
+// Only for dev use.
+// Frontend uses routes in gyms.ts to add equipment to gyms.
 gymEquipmentRouter.post(
   '/:id',
   targetGymExtractor,
-  ...isAdminOrManager,
+  ...isAdmin,
   async (
     req: Request<{ id: string; }, unknown, GymEquipmentPost>,
     res: Response<FullGymEquipment>
@@ -43,11 +45,13 @@ gymEquipmentRouter.post(
   }
 );
 
-// DELETE for admins and managers to delete a junction
+// DELETE for admins to delete a junction
+// Only for dev use.
+// Frontend uses routes in gyms.ts to remove equipment from gyms.
 gymEquipmentRouter.delete(
   '/:id',
   targetGymEquipmentExtractor,
-  ...isAdminOrManager,
+  ...isAdmin,
   async (req, res) => {
     if (!req.targetGymEquipment) {
       throw new Error('Association missing from request.');

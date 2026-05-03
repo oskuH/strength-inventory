@@ -65,14 +65,16 @@ export default function ItemList (
   const deleteGymMutation = useMutation({
     mutationFn: (id: string) => deleteGym({ id: id }),
     onSuccess: () => {
-      return queryClient.invalidateQueries({ queryKey: ['gyms'] });
+      void queryClient.invalidateQueries({ queryKey: ['gyms'] });
+      setSelectedItemId('');
     }
   });
 
   const deleteEquipmentMutation = useMutation({
     mutationFn: (id: string) => deleteEquipment({ id: id }),
     onSuccess: () => {
-      return queryClient.invalidateQueries({ queryKey: ['equipment'] });
+      void queryClient.invalidateQueries({ queryKey: ['equipment'] });
+      setSelectedItemId('');
     }
   });
 

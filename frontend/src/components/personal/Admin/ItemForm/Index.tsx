@@ -1,4 +1,3 @@
-// work in progress
 import GymForm from './GymForm/Index';
 
 interface ItemFormProps {
@@ -27,7 +26,16 @@ export default function ItemForm (
 
   if (model === 'equipment') {
     return (
-      <p>Form missing!</p>
+      <div>
+        <p>Form missing!</p>
+        <button
+          onClick={() => {
+            setFormMode('hidden');
+          }}
+        >
+          Return
+        </button>
+      </div>
     );
   }
 }

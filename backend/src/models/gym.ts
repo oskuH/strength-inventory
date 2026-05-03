@@ -1,6 +1,8 @@
 /* eslint-disable @stylistic/lines-between-class-members */
 import {
+  type BelongsToManyAddAssociationMixin,
   type BelongsToManyGetAssociationsMixin,
+  type BelongsToManyRemoveAssociationMixin,
   type CreationOptional,
   DataTypes,
   type InferAttributes,
@@ -41,6 +43,9 @@ class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare getManagers: BelongsToManyGetAssociationsMixin<User>;
   declare getEquipment: BelongsToManyGetAssociationsMixin<Equipment>;
   declare getMemberships: BelongsToManyGetAssociationsMixin<Membership>;
+  declare addEquipment: BelongsToManyAddAssociationMixin<Equipment, string>;
+  declare removeEquipment:
+  BelongsToManyRemoveAssociationMixin<Equipment, string>;
 }
 
 Gym.init({

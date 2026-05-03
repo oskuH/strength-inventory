@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-
 /* .coerce in timestamps should not cause any issues 
 as long as timestamps can only be modified by Sequelize.  */
 
