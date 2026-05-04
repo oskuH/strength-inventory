@@ -40,6 +40,8 @@ gymsRouter.get('/', async (_req, res) => {
   return res.json(gyms);
 });
 
+// GET a gym
+// targetGymExtractor returns same includes as the above GET all route
 gymsRouter.get('/:id', targetGymExtractor, (req, res) => {
   if (!req.targetGym) {
     throw new Error('Gym missing from request.');
@@ -47,6 +49,16 @@ gymsRouter.get('/:id', targetGymExtractor, (req, res) => {
 
   const gym = req.targetGym;
   return res.json(gym);
+});
+
+// GET a gym's equipment
+gymsRouter.get('/:id/equipment', targetGymExtractor, async (req, res) => {
+  if (!req.targetGym) {
+    throw new Error('Gym missing from request.');
+  }  // Should never trigger after middleware.
+
+  const equipment = await req.targetGym.getEquipment();
+  return res.json(equipment);
 });
 
 // POST a new gym

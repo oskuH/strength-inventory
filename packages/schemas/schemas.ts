@@ -211,6 +211,24 @@ export const EquipmentPostAndPutSchema = EquipmentSchema.pick({
 }); export type EquipmentPostAndPut = z.infer<typeof EquipmentPostAndPutSchema>;
 
 
+// gymequipment
+
+export const GymEquipmentSchema = z.object({
+  id: z.uuidv4(),
+  gymId: z.uuidv4(),
+  equipmentId: z.uuidv4(),
+  count: z.int().min(1),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
+});
+export type GymEquipment = z.infer<typeof GymEquipmentSchema>;
+
+export const GymEquipmentPostSchema = GymEquipmentSchema.pick({
+  equipmentId: true
+});
+export type GymEquipmentPost = z.infer<typeof GymEquipmentPostSchema>;
+
+
 // gym
 
 export const OpeningHoursExceptionSchema = z.object({
@@ -264,6 +282,10 @@ export const GymGetSchema = GymSchema.extend({
   equipment: z.array(EquipmentSchema)
 })
 export type GymGet = z.infer<typeof GymGetSchema>;
+
+export const GymGetEquipmentSchema = EquipmentSchema.extend({
+  gymequipment: GymEquipmentSchema
+})
 
 export const GymPostSchema = GymSchema.pick({
   name: true,
@@ -369,23 +391,6 @@ export const LoginResponseSchema = UserSchema.pick({
   token: z.string()
 })
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
-
-
-// gymequipment
-
-export const GymEquipmentSchema = z.object({
-  id: z.uuidv4(),
-  gymId: z.uuidv4(),
-  equipmentId: z.uuidv4(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date()
-});
-export type GymEquipment = z.infer<typeof GymEquipmentSchema>;
-
-export const GymEquipmentPostSchema = GymEquipmentSchema.pick({
-  equipmentId: true
-});
-export type GymEquipmentPost = z.infer<typeof GymEquipmentPostSchema>;
 
 
 // gymmemberships

@@ -2,6 +2,8 @@ import { z } from 'zod';
 
 import {
   EquipmentSchema,
+  GymEquipmentSchema,
+  GymGetEquipmentSchema,
   GymGetSchema,
   type GymPost,
   GymSchema
@@ -34,8 +36,8 @@ export const getGymsIdAndName = async () => {
   return validatedData.map(({ id, name }) => ({ id, name }));
 };
 
-export const getGym = async ({ id }: { id: string }) => {
-  const res = await fetch(`${baseUrl}/gyms/${id}`);
+export const getGym = async ({ gymId }: { gymId: string }) => {
+  const res = await fetch(`${baseUrl}/gyms/${gymId}`);
   if (!res.ok) {
     throw Error(`Response status: ${res.statusText}`);
   }
@@ -45,8 +47,20 @@ export const getGym = async ({ id }: { id: string }) => {
   return validatedData;
 };
 
+export const getGymEquipment = async ({ gymId }: { gymId: string }) => {
+  const res = await fetch(`${baseUrl}/gyms/${gymId}/equipment`);
+  if (!res.ok) {
+    throw Error(`Response status: ${res.statusText}`);
+  }
+
+  const data: unknown = await res.json();
+  const validatedData = z.array(GymGetEquipmentSchema).parse(data);
+  return validatedData;
+};
+
 // input has been validated before this function is called
 export const postGym = async ({ gym }: { gym: GymPost }) => {
+  /* only admins and managers have permission */
   const token = localStorage.getItem('auth-token');
   if (token) {
     const res = await fetch(`${baseUrl}/gyms`, {
@@ -70,11 +84,36 @@ export const postGym = async ({ gym }: { gym: GymPost }) => {
   }
 };
 
-// input has been validated before this function is called
-export const putGym = async ({ id, gym }: { id: string, gym: GymPost }) => {
+export const postGymEquipment = async (
+  { gymId, equipmentId }: { gymId: string, equipmentId: string }
+) => {
+  /* only admins and managers have permission */
   const token = localStorage.getItem('auth-token');
   if (token) {
-    const res = await fetch(`${baseUrl}/gyms/${id}`, {
+    const res = await fetch(`${baseUrl}/gyms/${gymId}/equipment`, {
+      method: 'POST',
+      headers: {
+        Authorization: `bearer ${token}`
+      },
+      body: JSON.stringify({ equipmentId: equipmentId })
+    });
+
+    if (!res.ok) {
+      throw Error(`Response status: ${res.statusText}`);
+    }
+  } else {
+    throw Error('User authorization token missing.');
+  }
+};
+
+// input has been validated before this function is called
+export const putGym = async (
+  { gymId, gym }: { gymId: string, gym: GymPost }
+) => {
+  /* only admins have permission */
+  const token = localStorage.getItem('auth-token');
+  if (token) {
+    const res = await fetch(`${baseUrl}/gyms/${gymId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -95,7 +134,34 @@ export const putGym = async ({ id, gym }: { id: string, gym: GymPost }) => {
   }
 };
 
+export const setGymEquipmentCount = async (
+  { relationshipId, count }: { relationshipId: string, count: number }
+) => {
+  /* only admins and managers have permission */
+  const token = localStorage.getItem('auth-token');
+  if (token) {
+    const res = await fetch(`${baseUrl}/gymequipment/${relationshipId}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `bearer ${token}`
+      },
+      body: JSON.stringify({ count: count })
+    });
+
+    if (!res.ok) {
+      throw Error(`Response status: ${res.statusText}`);
+    }
+
+    const data: unknown = await res.json();
+    const validatedData = GymEquipmentSchema.parse(data);
+    return validatedData;
+  } else {
+    throw Error('User authorization token missing.');
+  }
+};
+
 export const deleteGym = async ({ id }: { id: string }) => {
+  /* only admins have permission */
   const token = localStorage.getItem('auth-token');
   if (token) {
     const res = await fetch(`${baseUrl}/gyms/${id}`, {
@@ -111,6 +177,17 @@ export const deleteGym = async ({ id }: { id: string }) => {
   } else {
     throw Error('User authorization token missing.');
   }
+};
+
+export const getEquipment = async () => {
+  const res = await fetch(`${baseUrl}/equipment`);
+  if (!res.ok) {
+    throw Error(`Response status: ${res.statusText}`);
+  }
+
+  const data: unknown = await res.json();
+  const validatedData = z.array(EquipmentSchema).parse(data);
+  return validatedData;
 };
 
 export const getEquipmentIdAndName = async () => {

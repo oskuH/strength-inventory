@@ -6,12 +6,12 @@ import Model from './Model';
 
 export default function Admin () {
   const gymsQuery = useQuery({
-    queryKey: ['gyms'],
+    queryKey: ['gymsIdAndName'],
     queryFn: () => getGymsIdAndName()
   });
 
   const equipmentQuery = useQuery({
-    queryKey: ['equipment'],
+    queryKey: ['equipmentIdAndName'],
     queryFn: () => getEquipmentIdAndName()
   });
 

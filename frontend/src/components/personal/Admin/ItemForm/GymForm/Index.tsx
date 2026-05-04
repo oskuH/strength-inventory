@@ -29,6 +29,8 @@ interface GymFormProps {
 export default function GymForm (
   { formMode, setFormMode, selectedItemId, setSelectedItemId }: GymFormProps
 ) {
+  const queryClient = useQueryClient();
+
   interface formatSubmit {
     req: GymPostFrontend
     exceptions: OpeningHoursException[] | undefined
@@ -108,19 +110,16 @@ export default function GymForm (
     return formattedGym;
   }
 
-  const queryClient = useQueryClient();
-
   const gymQuery = useQuery({
     queryKey: ['gym', selectedItemId],
     queryFn: selectedItemId
-      ? () => getGym({ id: selectedItemId })
+      ? () => getGym({ gymId: selectedItemId })
       : skipToken  // disable this query when selectedItemId === ''
   });
 
   const postMutation = useMutation({
     mutationFn: (newGym: GymPost) => postGym({ gym: newGym }),
     onSuccess: (newGymFromServer) => {
-      void queryClient.invalidateQueries({ queryKey: ['gyms'] });
       setSelectedItemId(newGymFromServer.id);
       setFormMode('edit');
     }
@@ -128,10 +127,9 @@ export default function GymForm (
 
   const putMutation = useMutation({
     mutationFn: ({ id, updatedGym }: { id: string, updatedGym: GymPost }) =>
-      putGym({ id: id, gym: updatedGym }),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['gyms'] });
-      void queryClient.invalidateQueries({ queryKey: ['gym', selectedItemId] });
+      putGym({ gymId: id, gym: updatedGym }),
+    onSuccess: (editedGymFromServer) => {
+      queryClient.setQueryData(['gym', selectedItemId], editedGymFromServer);
     }
   });
 
@@ -393,8 +391,6 @@ export default function GymForm (
   }
   const editedGym = gymQuery.data;
 
-  // TODO: different returns when editing equipment/memberships/managers
-
   if (editedGym && editForm === 'equipment') {
     return (
       <Equipment
@@ -404,6 +400,8 @@ export default function GymForm (
       />
     );
   }
+
+  // TODO: different returns when editing memberships/managers
 
   return (
     <div className='min-h-0 overflow-y-scroll text-xs'>
@@ -719,6 +717,9 @@ export default function GymForm (
           : null}
         <button
           onClick={() => {
+            void queryClient.invalidateQueries(
+              { queryKey: ['gymsIdAndName'] }
+            );
             setFormMode('hidden');
           }}
           className='cursor-pointer'

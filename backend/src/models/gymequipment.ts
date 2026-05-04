@@ -15,6 +15,7 @@ class GymEquipment extends Model<
   declare id: CreationOptional<string>;
   declare gymId: string;
   declare equipmentId: string;
+  declare count: CreationOptional<number>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -36,6 +37,14 @@ GymEquipment.init({
     allowNull: false,
     references: { model: 'equipment', key: 'id' },
     onDelete: 'CASCADE'
+  },
+  count: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 1,
+    validate: {
+      min: 1
+    }
   },
   createdAt: DataTypes.DATE,
   updatedAt: DataTypes.DATE

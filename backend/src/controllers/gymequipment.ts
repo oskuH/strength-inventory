@@ -2,6 +2,7 @@ import Express, { type Request, type Response } from 'express';
 
 import {
   isAdmin,
+  isAdminOrManager,
   targetGymEquipmentExtractor,
   targetGymExtractor
 } from '../utils/middleware.ts';
@@ -42,6 +43,31 @@ gymEquipmentRouter.post(
     const junction = await GymEquipment.create({ gymId, equipmentId });
 
     return res.status(201).json(junction);
+  }
+);
+
+// PATCH for admins and managers to set the number of equipment
+gymEquipmentRouter.patch(
+  '/:id',
+  targetGymEquipmentExtractor,
+  ...isAdminOrManager,
+  async (
+    req: Request<{ id: string }, unknown, { count: number }>,
+    res
+  ) => {
+    if (!req.targetGymEquipment) {
+      throw new Error('Association missing from request.');
+    }  // Should never trigger after middleware.
+
+    const junction = req.targetGymEquipment;
+    const { count } = req.body;
+
+    await junction.update({
+      count: count
+    });
+    await junction.save();
+
+    return res.status(200).json(junction);
   }
 );
 
