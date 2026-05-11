@@ -286,6 +286,7 @@ export type GymGet = z.infer<typeof GymGetSchema>;
 export const GymGetEquipmentSchema = EquipmentSchema.extend({
   gymequipment: GymEquipmentSchema
 })
+export type GymGetEquipment = z.infer<typeof GymGetEquipmentSchema>;
 
 export const GymPostSchema = GymSchema.pick({
   name: true,

@@ -7,8 +7,8 @@ import { z } from 'zod';
 
 import { getGym, postGym, putGym } from '../../../../../utils/api';
 
-import Equipment from './Equipment';
 import Exceptions from './Exceptions';
+import GymEquipment from './GymEquipment/Index';
 import OpeningHoursDayInput from './OpeningHoursDayInput';
 
 import {
@@ -20,20 +20,20 @@ import {
 } from '@strength-inventory/schemas';
 
 interface GymFormProps {
-  formMode: string
-  setFormMode: React.Dispatch<React.SetStateAction<string>>
-  selectedItemId: string
-  setSelectedItemId: React.Dispatch<React.SetStateAction<string>>
+  formMode: string;
+  setFormMode: React.Dispatch<React.SetStateAction<string>>;
+  selectedGymId: string;
+  setSelectedGymId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function GymForm (
-  { formMode, setFormMode, selectedItemId, setSelectedItemId }: GymFormProps
+  { formMode, setFormMode, selectedGymId, setSelectedGymId }: GymFormProps
 ) {
   const queryClient = useQueryClient();
 
   interface formatSubmit {
-    req: GymPostFrontend
-    exceptions: OpeningHoursException[] | undefined
+    req: GymPostFrontend;
+    exceptions: OpeningHoursException[] | undefined;
   }
 
   function formatSubmit ({ req, exceptions }: formatSubmit) {
@@ -111,25 +111,25 @@ export default function GymForm (
   }
 
   const gymQuery = useQuery({
-    queryKey: ['gym', selectedItemId],
-    queryFn: selectedItemId
-      ? () => getGym({ gymId: selectedItemId })
-      : skipToken  // disable this query when selectedItemId === ''
+    queryKey: ['gym', selectedGymId],
+    queryFn: selectedGymId
+      ? () => getGym({ gymId: selectedGymId })
+      : skipToken  // disable this query when selectedGymId === ''
   });
 
   const postMutation = useMutation({
     mutationFn: (newGym: GymPost) => postGym({ gym: newGym }),
     onSuccess: (newGymFromServer) => {
-      setSelectedItemId(newGymFromServer.id);
+      setSelectedGymId(newGymFromServer.id);
       setFormMode('edit');
     }
   });
 
   const putMutation = useMutation({
-    mutationFn: ({ id, updatedGym }: { id: string, updatedGym: GymPost }) =>
+    mutationFn: ({ id, updatedGym }: { id: string, updatedGym: GymPost; }) =>
       putGym({ gymId: id, gym: updatedGym }),
     onSuccess: (editedGymFromServer) => {
-      queryClient.setQueryData(['gym', selectedItemId], editedGymFromServer);
+      queryClient.setQueryData(['gym', selectedGymId], editedGymFromServer);
     }
   });
 
@@ -162,21 +162,21 @@ export default function GymForm (
   const [editForm, setEditForm] = useState('');
 
   interface State {
-    success: boolean
-    error: string | null
-    submittedGymId: string
-    submitFailed: boolean
-    name: string
-    chain: string | null | undefined
-    street: string
-    streetNumber: string
-    city: string
-    district: string
-    url: string | null | undefined
-    notes: string | null | undefined
-    equipmentVisible: boolean
-    membershipsVisible: boolean
-    openingHoursVisible: boolean
+    success: boolean;
+    error: string | null;
+    submittedGymId: string;
+    submitFailed: boolean;
+    name: string;
+    chain: string | null | undefined;
+    street: string;
+    streetNumber: string;
+    city: string;
+    district: string;
+    url: string | null | undefined;
+    notes: string | null | undefined;
+    equipmentVisible: boolean;
+    membershipsVisible: boolean;
+    openingHoursVisible: boolean;
   }
 
   async function submit (_previousState: State, formData: FormData) {
@@ -249,7 +249,7 @@ export default function GymForm (
         try {
           const res
             = await putMutation.mutateAsync({
-              id: selectedItemId, updatedGym: formattedGym
+              id: selectedGymId, updatedGym: formattedGym
             });
           return {
             success: true,
@@ -268,13 +268,13 @@ export default function GymForm (
               ? true
               : false,
             membershipsVisible:
-            formData.get('membershipsVisibility') === 'visible'
-              ? true
-              : false,
+              formData.get('membershipsVisibility') === 'visible'
+                ? true
+                : false,
             openingHoursVisible:
-            formData.get('openingHoursVisibility') === 'visible'
-              ? true
-              : false
+              formData.get('openingHoursVisibility') === 'visible'
+                ? true
+                : false
           };
         } catch (err: unknown) {
           if (err instanceof Error) {
@@ -336,13 +336,13 @@ export default function GymForm (
             ? true
             : false,
           membershipsVisible:
-          formData.get('membershipsVisibility') === 'visible'
-            ? true
-            : false,
+            formData.get('membershipsVisibility') === 'visible'
+              ? true
+              : false,
           openingHoursVisible:
-          formData.get('openingHoursVisibility') === 'visible'
-            ? true
-            : false
+            formData.get('openingHoursVisibility') === 'visible'
+              ? true
+              : false
         };
       } else {
         return {
@@ -362,27 +362,27 @@ export default function GymForm (
             ? true
             : false,
           membershipsVisible:
-          formData.get('membershipsVisibility') === 'visible'
-            ? true
-            : false,
+            formData.get('membershipsVisibility') === 'visible'
+              ? true
+              : false,
           openingHoursVisible:
-          formData.get('openingHoursVisibility') === 'visible'
-            ? true
-            : false
+            formData.get('openingHoursVisibility') === 'visible'
+              ? true
+              : false
         };
       }
     }
   }
 
-  if (selectedItemId && gymQuery.isPending) {
+  if (selectedGymId && gymQuery.isPending) {
     return <p>Loading...</p>;
   }
 
-  if (selectedItemId && gymQuery.isError) {
+  if (selectedGymId && gymQuery.isError) {
     return <p>Error: {gymQuery.error.message}</p>;
   }
 
-  if (selectedItemId && gymQuery.isSuccess && !exceptions) {
+  if (selectedGymId && gymQuery.isSuccess && !exceptions) {
     if (gymQuery.data.openingHoursExceptions.data) {
       setExceptions(gymQuery.data.openingHoursExceptions.data);
     } else {
@@ -393,8 +393,8 @@ export default function GymForm (
 
   if (editedGym && editForm === 'equipment') {
     return (
-      <Equipment
-        selectedItemId={selectedItemId}
+      <GymEquipment
+        gymId={selectedGymId}
         gymName={editedGym.name}
         setEditForm={setEditForm}
       />

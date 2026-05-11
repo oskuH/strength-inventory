@@ -46,7 +46,7 @@ gymEquipmentRouter.post(
   }
 );
 
-// PATCH for admins and managers to set the number of equipment
+// PATCH for admins and managers to set the number of equipment at some gym
 gymEquipmentRouter.patch(
   '/:id',
   targetGymEquipmentExtractor,

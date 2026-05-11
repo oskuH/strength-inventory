@@ -179,6 +179,32 @@ export const deleteGym = async ({ id }: { id: string }) => {
   }
 };
 
+export const deleteGymEquipment = async (
+  { gymId, equipmentId }: { gymId: string, equipmentId: string }
+) => {
+  /* only admins and managers have permission */
+  const token = localStorage.getItem('auth-token');
+  if (token) {
+    const res = await fetch(`${baseUrl}/gyms/${gymId}/equipment`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `bearer ${token}`
+      },
+      body: JSON.stringify({ equipmentId: equipmentId })
+    });
+
+    if (!res.ok) {
+      throw Error(`Response status: ${res.statusText}`);
+    }
+
+    const data: unknown = res.json();
+    const validatedData = z.uuidv4().parse(data);
+    return validatedData;
+  } else {
+    throw Error('User authorization token missing.');
+  }
+};
+
 export const getEquipment = async () => {
   const res = await fetch(`${baseUrl}/equipment`);
   if (!res.ok) {

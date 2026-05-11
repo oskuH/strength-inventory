@@ -3,78 +3,31 @@ import { use, useState } from 'react';
 import { TbEdit, TbMinus, TbPlus } from 'react-icons/tb';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { deleteEquipment, deleteGym } from '../../../utils/api';
-import { IconContext } from '../../../utils/contexts';
+import { deleteGym } from '../../../../utils/api';
+import { IconContext } from '../../../../utils/contexts';
 
-interface ListProps {
+import List from './List';
+
+interface GymListProps {
   data: { id: string, name: string }[] | undefined
-  selectedItemId: string
-  setSelectedItemId: React.Dispatch<React.SetStateAction<string>>
-}
-
-function List (
-  { data, selectedItemId, setSelectedItemId }: ListProps
-) {
-  if (!data) {
-    return (
-      <ol>
-        <li>no data</li>
-      </ol>
-    );
-  }
-
-  return (
-    <ol className='min-w-full text-sm'>
-      {data.map((item) => (
-        <li key={item.id}>
-          <button
-            onClick={() => {
-              setSelectedItemId(item.id);
-            }}
-            aria-pressed={item.id === selectedItemId}
-            className='
-            flex px-1 min-w-full whitespace-nowrap
-            aria-pressed:bg-gray-300 dark:aria-pressed:bg-gray-600
-            '
-          >
-            <p>{item.name}</p>
-          </button>
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-interface ItemListProps {
-  model: string
-  data: { id: string, name: string }[] | undefined
-  selectedItemId: string
-  setSelectedItemId: React.Dispatch<React.SetStateAction<string>>
+  selectedGymId: string
+  setSelectedGymId: React.Dispatch<React.SetStateAction<string>>
   setFormMode: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function ItemList (
-  { model, data, selectedItemId, setSelectedItemId, setFormMode }: ItemListProps
+export default function GymList (
+  { data, selectedGymId, setSelectedGymId, setFormMode }: GymListProps
 ) {
   const [search, setSearch] = useState('');
 
   const iconMode = use(IconContext);
-
   const queryClient = useQueryClient();
 
   const deleteGymMutation = useMutation({
     mutationFn: (id: string) => deleteGym({ id: id }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['gyms'] });
-      setSelectedItemId('');
-    }
-  });
-
-  const deleteEquipmentMutation = useMutation({
-    mutationFn: (id: string) => deleteEquipment({ id: id }),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['equipment'] });
-      setSelectedItemId('');
+      setSelectedGymId('');
     }
   });
 
@@ -83,18 +36,8 @@ export default function ItemList (
     filteredItems = data.filter((item) => {
       return (
         item.name.toLowerCase().includes(search.toLowerCase())
-        || item.id === selectedItemId);
+        || item.id === selectedGymId);
     });
-  }
-
-  function handleDelete (id: string) {
-    if (model === 'gym') {
-      deleteGymMutation.mutate(id);
-    } else if (model === 'equipment') {
-      deleteEquipmentMutation.mutate(id);
-    } else {
-      return; // admin panel currently only has gyms and equipment
-    }
   }
 
   return (
@@ -111,7 +54,7 @@ export default function ItemList (
       <div className='flex justify-around'>
         <button
           onClick={() => {
-            setSelectedItemId('');
+            setSelectedGymId('');
             setFormMode('create');
           }}
           className='
@@ -127,7 +70,7 @@ export default function ItemList (
           onClick={() => {
             setFormMode('edit');
           }}
-          disabled={!selectedItemId}
+          disabled={!selectedGymId}
           className='
           border border-dotted
           bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
@@ -140,9 +83,9 @@ export default function ItemList (
         </button>
         <button
           onClick={() => {
-            handleDelete(selectedItemId);
+            deleteGymMutation.mutate(selectedGymId);
           }}
-          disabled={!selectedItemId}
+          disabled={!selectedGymId}
           className='
           border border-dotted
           bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
@@ -161,8 +104,8 @@ export default function ItemList (
       >
         <List
           data={filteredItems}
-          selectedItemId={selectedItemId}
-          setSelectedItemId={setSelectedItemId}
+          selectedItemId={selectedGymId}
+          setSelectedItemId={setSelectedGymId}
         />
       </div>
     </div>

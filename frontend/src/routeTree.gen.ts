@@ -15,6 +15,8 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as openGymsRouteImport } from './routes/(open)/gyms'
 import { Route as openEquipmentRouteImport } from './routes/(open)/equipment'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as AuthenticatedAdminGymsRouteImport } from './routes/_authenticated/admin.gyms'
+import { Route as AuthenticatedAdminEquipmentRouteImport } from './routes/_authenticated/admin.equipment'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
@@ -45,20 +47,35 @@ const authLoginRoute = authLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminGymsRoute = AuthenticatedAdminGymsRouteImport.update({
+  id: '/gyms',
+  path: '/gyms',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminEquipmentRoute =
+  AuthenticatedAdminEquipmentRouteImport.update({
+    id: '/equipment',
+    path: '/equipment',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
   '/equipment': typeof openEquipmentRoute
   '/gyms': typeof openGymsRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/admin/equipment': typeof AuthenticatedAdminEquipmentRoute
+  '/admin/gyms': typeof AuthenticatedAdminGymsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
   '/equipment': typeof openEquipmentRoute
   '/gyms': typeof openGymsRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/admin/equipment': typeof AuthenticatedAdminEquipmentRoute
+  '/admin/gyms': typeof AuthenticatedAdminGymsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -67,13 +84,29 @@ export interface FileRoutesById {
   '/(auth)/login': typeof authLoginRoute
   '/(open)/equipment': typeof openEquipmentRoute
   '/(open)/gyms': typeof openGymsRoute
-  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/admin/equipment': typeof AuthenticatedAdminEquipmentRoute
+  '/_authenticated/admin/gyms': typeof AuthenticatedAdminGymsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/equipment' | '/gyms' | '/admin'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/equipment'
+    | '/gyms'
+    | '/admin'
+    | '/admin/equipment'
+    | '/admin/gyms'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/equipment' | '/gyms' | '/admin'
+  to:
+    | '/'
+    | '/login'
+    | '/equipment'
+    | '/gyms'
+    | '/admin'
+    | '/admin/equipment'
+    | '/admin/gyms'
   id:
     | '__root__'
     | '/'
@@ -82,6 +115,8 @@ export interface FileRouteTypes {
     | '/(open)/equipment'
     | '/(open)/gyms'
     | '/_authenticated/admin'
+    | '/_authenticated/admin/equipment'
+    | '/_authenticated/admin/gyms'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -136,15 +171,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/gyms': {
+      id: '/_authenticated/admin/gyms'
+      path: '/gyms'
+      fullPath: '/admin/gyms'
+      preLoaderRoute: typeof AuthenticatedAdminGymsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/equipment': {
+      id: '/_authenticated/admin/equipment'
+      path: '/equipment'
+      fullPath: '/admin/equipment'
+      preLoaderRoute: typeof AuthenticatedAdminEquipmentRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminEquipmentRoute: typeof AuthenticatedAdminEquipmentRoute
+  AuthenticatedAdminGymsRoute: typeof AuthenticatedAdminGymsRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminEquipmentRoute: AuthenticatedAdminEquipmentRoute,
+  AuthenticatedAdminGymsRoute: AuthenticatedAdminGymsRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
 interface AuthenticatedRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

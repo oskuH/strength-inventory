@@ -288,7 +288,7 @@ gymsRouter.delete(
     const { equipmentId } = req.body;
     await gym.removeEquipment(equipmentId);
 
-    return res.status(204);
+    return res.status(204).json(equipmentId);
   }
 );
 
