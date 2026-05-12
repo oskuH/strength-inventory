@@ -43,11 +43,9 @@ export default function GymEquipment (
     mutationFn: ({ gymId, equipmentId }:
     { gymId: string, equipmentId: string }) =>
       postGymEquipment({ gymId: gymId, equipmentId: equipmentId }),
-    onSuccess: async () => {
-      /* the backend method for adding a relationship returns void by default,
-      thus the query is invalidated instead of modified */
+    onSuccess: async (responseFromServer) => {
       await queryClient.invalidateQueries({
-        queryKey: ['gymEquipment', gymId]
+        queryKey: ['gymEquipment', responseFromServer.gymId]
       });
     }
   });
@@ -79,11 +77,11 @@ export default function GymEquipment (
     mutationFn: ({ gymId, equipmentId }:
     { gymId: string, equipmentId: string }) =>
       deleteGymEquipment({ gymId: gymId, equipmentId: equipmentId }),
-    onSuccess: async (removedEquipmentId) => {
+    onSuccess: async (responseFromServer) => {
       if (gymEquipmentQuery.data) {
         const updatedGymEquipment
           = gymEquipmentQuery.data.filter((equipment) => {
-            return equipment.id !== removedEquipmentId;
+            return equipment.id !== responseFromServer.equipmentId;
           });
 
         await queryClient.setQueryData([
@@ -129,29 +127,25 @@ export default function GymEquipment (
       className='flex flex-1 flex-col min-h-0 overflow-y-scroll'
     >
       <h3 className='self-center mb-3'>Editing equipment for {gymName}</h3>
-      {!search
+      <CurrentList
+        gymId={gymId}
+        gymEquipment={gymEquipmentQuery.data}
+        setEquipmentCountMutation={setEquipmentCountMutation}
+        removeEquipmentMutation={removeEquipmentMutation}
+      />
+      {search
         ? (
-          <CurrentList
+          <AvailableList
             gymId={gymId}
-            gymEquipment={gymEquipmentQuery.data}
-            setEquipmentCountMutation={setEquipmentCountMutation}
-            removeEquipmentMutation={removeEquipmentMutation}
+            currentEquipment={gymEquipmentQuery.data}
+            filteredEquipment={filteredEquipment}
+            addEquipmentMutation={addEquipmentMutation}
           />
         )
         : (
-          <div
-            className='
-            flex flex-1 bg-background dark:bg-background-dark
-            overflow-y-scroll overflow-x-scroll'
-          >
-            <AvailableList
-              gymId={gymId}
-              filteredEquipment={filteredEquipment}
-              addEquipmentMutation={addEquipmentMutation}
-            />
-          </div>
+          null
         )}
-      <div className='flex flex-col gap-1 mt-5 mb-3'>
+      <div className='flex flex-col gap-1 mt-1 mb-3'>
         <input
           type='text'
           value={search}
@@ -161,41 +155,16 @@ export default function GymEquipment (
           }}
           className='bg-background dark:bg-background-dark pl-1'
         />
-        {/* <div className='flex justify-around'>
-          <button
-            onClick={() => {
-              addEquipmentMutation.mutate({
-                gymId: gymId, equipmentId: selectedPieceId
-              });
-              setSelectedPieceId('');
-            }}
-            disabled={!selectedPieceId}
-            className='
-            flex flex-1 justify-center border border-dotted
-            bg-primary dark:bg-primary-dark p-1 text-sm
-            enabled:cursor-pointer enabled:hover:border-solid
-            disabled:text-secondary dark:disabled:text-secondary-dark'
-          >
-            add selected equipment
-          </button>
-        </div> */}
-        {/* <div
-          className='
-          flex flex-1 bg-background dark:bg-background-dark
-          overflow-y-scroll overflow-x-scroll'
-        >
-          <List
-            data={filteredEquipment}
-            gymId={selectedPieceId}
-            setSelectedItemId={setSelectedPieceId}
-          />
-        </div> */}
       </div>
       <button
         onClick={() => {
           setEditForm('');
         }}
-        className='cursor-pointer'
+        className='
+        self-center border bg-tertiary dark:bg-tertiary-dark py-1
+        w-9/10 text-xs cursor-pointer
+        hover:bg-background dark:hover:bg-background-dark
+        active:font-bold'
       >
         return
       </button>

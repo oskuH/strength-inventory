@@ -39,7 +39,8 @@ export default function OpeningHoursDayInput (
         onChange={(event) => {
           setOpenTime(event.target.value);
         }}
-        className='flex flex-1 bg-background dark:bg-background-dark md:w-9'
+        className='
+        flex flex-1 md:flex-none bg-background dark:bg-background-dark md:w-10'
       />
       <span>-</span>
       <input
@@ -56,7 +57,8 @@ export default function OpeningHoursDayInput (
         onChange={(event) => {
           setCloseTime(event.target.value);
         }}
-        className='flex flex-1 bg-background dark:bg-background-dark md:w-9'
+        className='
+        flex flex-1 md:flex-none bg-background dark:bg-background-dark md:w-10'
       />
     </div>
   );

@@ -298,8 +298,8 @@ export default function Exceptions ({
   const iconMode = use(IconContext);
 
   return (
-    <div className='flex flex-col'>
-      <span>exceptional opening hours</span>
+    <div className='flex flex-col gap-1'>
+      <h4 className='text-sm font-bold'>exceptional opening hours</h4>
       <div className='flex justify-around'>
         <button
           onClick={() => {

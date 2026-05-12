@@ -124,7 +124,7 @@ gymsRouter.post(
     const { equipmentId } = req.body;
     await gym.addEquipment(equipmentId);
 
-    return res.status(201);
+    return res.status(201).json({ gymId: gym.id, equipmentId: equipmentId });
   }
 );
 
@@ -288,7 +288,7 @@ gymsRouter.delete(
     const { equipmentId } = req.body;
     await gym.removeEquipment(equipmentId);
 
-    return res.status(204).json(equipmentId);
+    return res.status(200).json({ gymId: gym.id, equipmentId: equipmentId });
   }
 );
 

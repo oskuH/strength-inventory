@@ -93,6 +93,7 @@ export const postGymEquipment = async (
     const res = await fetch(`${baseUrl}/gyms/${gymId}/equipment`, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `bearer ${token}`
       },
       body: JSON.stringify({ equipmentId: equipmentId })
@@ -101,6 +102,12 @@ export const postGymEquipment = async (
     if (!res.ok) {
       throw Error(`Response status: ${res.statusText}`);
     }
+
+    const data: unknown = await res.json();
+    const validatedData = z.object({
+      gymId: z.uuidv4(), equipmentId: z.uuidv4()
+    }).parse(data);
+    return validatedData;
   } else {
     throw Error('User authorization token missing.');
   }
@@ -143,6 +150,7 @@ export const setGymEquipmentCount = async (
     const res = await fetch(`${baseUrl}/gymequipment/${relationshipId}`, {
       method: 'PATCH',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `bearer ${token}`
       },
       body: JSON.stringify({ count: count })
@@ -188,6 +196,7 @@ export const deleteGymEquipment = async (
     const res = await fetch(`${baseUrl}/gyms/${gymId}/equipment`, {
       method: 'DELETE',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `bearer ${token}`
       },
       body: JSON.stringify({ equipmentId: equipmentId })
@@ -197,8 +206,10 @@ export const deleteGymEquipment = async (
       throw Error(`Response status: ${res.statusText}`);
     }
 
-    const data: unknown = res.json();
-    const validatedData = z.uuidv4().parse(data);
+    const data: unknown = await res.json();
+    const validatedData = z.object({
+      gymId: z.uuidv4(), equipmentId: z.uuidv4()
+    }).parse(data);
     return validatedData;
   } else {
     throw Error('User authorization token missing.');

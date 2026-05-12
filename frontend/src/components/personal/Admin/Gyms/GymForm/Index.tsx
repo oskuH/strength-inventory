@@ -29,8 +29,6 @@ interface GymFormProps {
 export default function GymForm (
   { formMode, setFormMode, selectedGymId, setSelectedGymId }: GymFormProps
 ) {
-  const queryClient = useQueryClient();
-
   interface formatSubmit {
     req: GymPostFrontend;
     exceptions: OpeningHoursException[] | undefined;
@@ -109,6 +107,8 @@ export default function GymForm (
 
     return formattedGym;
   }
+
+  const queryClient = useQueryClient();
 
   const gymQuery = useQuery({
     queryKey: ['gym', selectedGymId],
@@ -404,328 +404,412 @@ export default function GymForm (
   // TODO: different returns when editing memberships/managers
 
   return (
-    <div className='min-h-0 overflow-y-scroll text-xs'>
-      {formMode === 'create'
-        ? <h3>create new gym</h3>
-        : <h3>edit gym</h3>}  {/* formMode is either 'create' or 'edit' */}
+    <div className='flex flex-col min-h-0 overflow-y-scroll'>
+      {/* second-highest <div> with px-3 ensures that
+      the scrolling bar stays clear of content */}
+      <div className='flex flex-col gap-3 px-3 text-xs'>
+        <h3 className='flex justify-center text-base'>
+          {/* formMode is either 'create' or 'edit' */}
+          {formMode === 'create'
+            ? 'create new gym'
+            : <span>editing {editedGym?.name}</span>}
+        </h3>
 
-      <form
-        action={submitAction}
-        className='flex flex-col gap-1'
-      >
-        <label htmlFor='name'>
-          name
-        </label>
-        <input
-          id='name'
-          name='name'
-          type='text'
-          defaultValue={state.submitFailed
-            ? state.name
-            : editedGym?.name}
-          className='border'
-          required
-        />
+        <form
+          action={submitAction}
+          className='flex flex-col gap-3'
+        >
+          <div className='flex flex-col gap-1'>
+            <div className='flex flex-col'>
+              <label htmlFor='name'>
+                name*
+              </label>
+              <input
+                id='name'
+                name='name'
+                type='text'
+                defaultValue={state.submitFailed
+                  ? state.name
+                  : editedGym?.name}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                required
+              />
+            </div>
 
-        <label htmlFor='chain'>
-          chain
-        </label>
-        <input
-          id='chain'
-          name='chain'
-          type='text'
-          defaultValue={state.submitFailed
-            ? state.chain
-              ? state.chain
-              : undefined
-            : editedGym?.chain
-              ? editedGym.chain
-              : undefined}
-          className='border'
-        />
+            <div className='flex flex-col'>
+              <label htmlFor='chain'>
+                chain
+              </label>
+              <input
+                id='chain'
+                name='chain'
+                type='text'
+                defaultValue={state.submitFailed
+                  ? state.chain
+                    ? state.chain
+                    : undefined
+                  : editedGym?.chain
+                    ? editedGym.chain
+                    : undefined}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+              />
+            </div>
 
-        <label htmlFor='street'>
-          street
-        </label>
-        <input
-          id='street'
-          name='street'
-          type='text'
-          defaultValue={state.submitFailed
-            ? state.street
-            : editedGym?.street}
-          className='border'
-          required
-        />
+            <div className='flex flex-col'>
+              <label htmlFor='street'>
+                street*
+              </label>
+              <input
+                id='street'
+                name='street'
+                type='text'
+                defaultValue={state.submitFailed
+                  ? state.street
+                  : editedGym?.street}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                required
+              />
+            </div>
 
-        <label htmlFor='streetNumber'>
-          street number
-        </label>
-        <input
-          id='streetNumber'
-          name='streetNumber'
-          type='text'
-          defaultValue={state.submitFailed
-            ? state.streetNumber
-            : editedGym?.streetNumber}
-          className='border'
-          required
-        />
+            <div className='flex flex-col'>
+              <label htmlFor='streetNumber'>
+                street number*
+              </label>
+              <input
+                id='streetNumber'
+                name='streetNumber'
+                type='text'
+                defaultValue={state.submitFailed
+                  ? state.streetNumber
+                  : editedGym?.streetNumber}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                required
+              />
+            </div>
 
-        <label htmlFor='city'>
-          city
-        </label>
-        <input
-          id='city'
-          name='city'
-          type='text'
-          defaultValue={state.submitFailed
-            ? state.city
-            : editedGym?.city}
-          className='border'
-          required
-        />
+            <div className='flex flex-col'>
+              <label htmlFor='city'>
+                city*
+              </label>
+              <input
+                id='city'
+                name='city'
+                type='text'
+                defaultValue={state.submitFailed
+                  ? state.city
+                  : editedGym?.city}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                required
+              />
+            </div>
 
-        <label htmlFor='district'>
-          district
-        </label>
-        <input
-          id='district'
-          name='district'
-          type='text'
-          defaultValue={state.submitFailed
-            ? state.district
-            : editedGym?.district}
-          className='border'
-          required
-        />
+            <div className='flex flex-col'>
+              <label htmlFor='district'>
+                district*
+              </label>
+              <input
+                id='district'
+                name='district'
+                type='text'
+                defaultValue={state.submitFailed
+                  ? state.district
+                  : editedGym?.district}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                required
+              />
+            </div>
 
-        <label htmlFor='url'>
-          url
-        </label>
-        <input
-          id='url'
-          name='url'
-          type='url'
-          defaultValue={state.submitFailed
-            ? state.url
-              ? state.url
-              : undefined
-            : editedGym?.url
-              ? editedGym.url
-              : undefined}
-          className='border'
-        />
+            <div className='flex flex-col'>
+              <label htmlFor='url'>
+                url
+              </label>
+              <input
+                id='url'
+                name='url'
+                type='url'
+                defaultValue={state.submitFailed
+                  ? state.url
+                    ? state.url
+                    : undefined
+                  : editedGym?.url
+                    ? editedGym.url
+                    : undefined}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+              />
+            </div>
 
-        <label htmlFor='notes'>
-          notes
-        </label>
-        <textarea
-          id='notes'
-          name='notes'
-          defaultValue={state.submitFailed
-            ? state.notes
-              ? state.notes
-              : undefined
-            : editedGym?.notes
-              ? editedGym.notes
-              : undefined}
-          /* defaultValue={editedGym?.notes && state.notes === ''
-            ? editedGym.notes
-            : state.url} */
-          className='border'
-        />
+            <div className='flex flex-col'>
+              <label htmlFor='notes'>
+                notes
+              </label>
+              <textarea
+                id='notes'
+                name='notes'
+                defaultValue={state.submitFailed
+                  ? state.notes
+                    ? state.notes
+                    : undefined
+                  : editedGym?.notes
+                    ? editedGym.notes
+                    : undefined}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+              />
+            </div>
 
-        <h4 className='font-bold'>opening hours</h4>
-        <h5>everyone</h5>
-        <div className='flex flex-col gap-1 md:gap-3 md:flex-row'>
-          <div className='flex flex-col gap-1 md:basis-1/2'>
-            <OpeningHoursDayInput
-              group='everyone'
-              day='MO'
-              editedHours={editedGym?.openingHoursEveryone}
-            />
-            <OpeningHoursDayInput
-              group='everyone'
-              day='TU'
-              editedHours={editedGym?.openingHoursEveryone}
-            />
-            <OpeningHoursDayInput
-              group='everyone'
-              day='WE'
-              editedHours={editedGym?.openingHoursEveryone}
-            />
-            <OpeningHoursDayInput
-              group='everyone'
-              day='TH'
-              editedHours={editedGym?.openingHoursEveryone}
-            />
+            <p>* = required</p>
           </div>
-          <div className='flex flex-col gap-1 md:justify-center md:basis-1/2'>
-            <OpeningHoursDayInput
-              group='everyone'
-              day='FR'
-              editedHours={editedGym?.openingHoursEveryone}
-            />
-            <OpeningHoursDayInput
-              group='everyone'
-              day='SA'
-              editedHours={editedGym?.openingHoursEveryone}
-            />
-            <OpeningHoursDayInput
-              group='everyone'
-              day='SU'
-              editedHours={editedGym?.openingHoursEveryone}
-            />
+
+          <div className='flex flex-col gap-1'>
+            <h4 className='text-sm font-bold'>regular opening hours</h4>
+            <div>
+              <h5>everyone</h5>
+              <div className='flex flex-col gap-1 md:gap-10 md:flex-row'>
+                <div className='flex flex-col gap-1'>
+                  <OpeningHoursDayInput
+                    group='everyone'
+                    day='MO'
+                    editedHours={editedGym?.openingHoursEveryone}
+                  />
+                  <OpeningHoursDayInput
+                    group='everyone'
+                    day='TU'
+                    editedHours={editedGym?.openingHoursEveryone}
+                  />
+                  <OpeningHoursDayInput
+                    group='everyone'
+                    day='WE'
+                    editedHours={editedGym?.openingHoursEveryone}
+                  />
+                </div>
+                <div className='flex flex-col gap-1 md:justify-center'>
+                  <OpeningHoursDayInput
+                    group='everyone'
+                    day='TH'
+                    editedHours={editedGym?.openingHoursEveryone}
+                  />
+                  <OpeningHoursDayInput
+                    group='everyone'
+                    day='FR'
+                    editedHours={editedGym?.openingHoursEveryone}
+                  />
+                </div>
+                <div className='flex flex-col gap-1 md:justify-center'>
+                  <OpeningHoursDayInput
+                    group='everyone'
+                    day='SA'
+                    editedHours={editedGym?.openingHoursEveryone}
+                  />
+                  <OpeningHoursDayInput
+                    group='everyone'
+                    day='SU'
+                    editedHours={editedGym?.openingHoursEveryone}
+                  />
+                </div>
+              </div>
+            </div>
+            <div>
+              <h5>members</h5>
+              <div className='flex flex-col gap-1 md:gap-10 md:flex-row'>
+                <div className='flex flex-col gap-1'>
+                  <OpeningHoursDayInput
+                    group='members'
+                    day='MO'
+                    editedHours={editedGym?.openingHoursMembers}
+                  />
+                  <OpeningHoursDayInput
+                    group='members'
+                    day='TU'
+                    editedHours={editedGym?.openingHoursMembers}
+                  />
+                  <OpeningHoursDayInput
+                    group='members'
+                    day='WE'
+                    editedHours={editedGym?.openingHoursMembers}
+                  />
+                </div>
+                <div className='flex flex-col gap-1 md:justify-center'>
+                  <OpeningHoursDayInput
+                    group='members'
+                    day='TH'
+                    editedHours={editedGym?.openingHoursMembers}
+                  />
+                  <OpeningHoursDayInput
+                    group='members'
+                    day='FR'
+                    editedHours={editedGym?.openingHoursMembers}
+                  />
+                </div>
+                <div className='flex flex-col gap-1 md:justify-center'>
+                  <OpeningHoursDayInput
+                    group='members'
+                    day='SA'
+                    editedHours={editedGym?.openingHoursMembers}
+                  />
+                  <OpeningHoursDayInput
+                    group='members'
+                    day='SU'
+                    editedHours={editedGym?.openingHoursMembers}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <h5>members</h5>
-        <div className='flex flex-col gap-1 md:gap-3 md:flex-row'>
-          <div className='flex flex-col gap-1 md:basis-1/2'>
-            <OpeningHoursDayInput
-              group='members'
-              day='MO'
-              editedHours={editedGym?.openingHoursMembers}
-            />
-            <OpeningHoursDayInput
-              group='members'
-              day='TU'
-              editedHours={editedGym?.openingHoursMembers}
-            />
-            <OpeningHoursDayInput
-              group='members'
-              day='WE'
-              editedHours={editedGym?.openingHoursMembers}
-            />
-            <OpeningHoursDayInput
-              group='members'
-              day='TH'
-              editedHours={editedGym?.openingHoursMembers}
-            />
-          </div>
-          <div className='flex flex-col gap-1 md:justify-center md:basis-1/2'>
-            <OpeningHoursDayInput
-              group='members'
-              day='FR'
-              editedHours={editedGym?.openingHoursMembers}
-            />
-            <OpeningHoursDayInput
-              group='members'
-              day='SA'
-              editedHours={editedGym?.openingHoursMembers}
-            />
-            <OpeningHoursDayInput
-              group='members'
-              day='SU'
-              editedHours={editedGym?.openingHoursMembers}
-            />
-          </div>
-        </div>
-        <div className='flex gap-1'>
-          <label htmlFor='equipmentVisibility' hidden={formMode === 'create'}>
-            equipment visible
-          </label>
-          <input
-            id='equipmentVisibility'
-            name='equipmentVisibility'
-            type='checkbox'
-            value='visible'
-            defaultChecked={state.submitFailed
-              ? state.equipmentVisible
-              : editedGym?.equipmentVisible}
-            hidden={formMode === 'create'}
-          />
-        </div>
-        <div className='flex gap-1'>
-          <label htmlFor='membershipsVisibility' hidden={formMode === 'create'}>
-            memberships visible
-          </label>
-          <input
-            id='membershipsVisibility'
-            name='membershipsVisibility'
-            type='checkbox'
-            value='visible'
-            defaultChecked={state.submitFailed
-              ? state.membershipsVisible
-              : editedGym?.membershipsVisible}
-            hidden={formMode === 'create'}
-          />
-        </div>
-        <div className='flex gap-1'>
-          <label htmlFor='openingHoursVisibility'>
-            opening hours visible
-          </label>
-          <input
-            id='openingHoursVisibility'
-            name='openingHoursVisibility'
-            type='checkbox'
-            value='visible'
-            defaultChecked={state.submitFailed
-              ? state.openingHoursVisible
-              : editedGym?.openingHoursVisible}
-          />
-        </div>
-        {/* actual submit button is below <Exceptions /> */}
-        <input
-          type='submit'
-          id='submit-form'
-          className='hidden'
-          disabled={isPending}
-        />
-      </form>
 
-      <Exceptions exceptions={exceptions} setExceptions={setExceptions} />
-
-      {/* actual submit button outside the <form>
-      to have <Exceptions /> appear as part of the form */}
-      <label
-        className='cursor-pointer'
-        htmlFor='submit-form'
-        tabIndex={0} /* make this tab-selectable */
-      >
-        {formMode === 'create'
-          ? <span>create</span>
-          : <span>save changes</span>}
-      </label>
-
-      <div className='text-red-600'>
-        {state.error}
-      </div>
-
-      <hr />
-
-      <div className='flex flex-col'>
-        {formMode === 'edit'
-          ? (
-            <>
-              <button
-                className='cursor-pointer'
-                onClick={() => {
-                  setEditForm('equipment');
-                }}
+          <div className='flex flex-col gap-1'>
+            <h4 className='text-sm font-bold'>visibility toggles</h4>
+            <div className='flex gap-1'>
+              <label
+                htmlFor='equipmentVisibility'
+                hidden={formMode === 'create'}
+                className='w-30'
               >
-                edit equipment
-              </button>
-              <button className='cursor-pointer text-red-400' disabled>
-                edit memberships {/* todo */}
-              </button>
-              <button className='cursor-pointer text-red-400' disabled>
-                edit managers {/* todo */}
-              </button>
-            </>
+                equipment visible
+              </label>
+              <input
+                id='equipmentVisibility'
+                name='equipmentVisibility'
+                type='checkbox'
+                value='visible'
+                defaultChecked={state.submitFailed
+                  ? state.equipmentVisible
+                  : editedGym?.equipmentVisible}
+                hidden={formMode === 'create'}
+              />
+            </div>
+            <div className='flex gap-1'>
+              <label
+                htmlFor='membershipsVisibility'
+                hidden={formMode === 'create'}
+                className='w-30'
+              >
+                memberships visible
+              </label>
+              <input
+                id='membershipsVisibility'
+                name='membershipsVisibility'
+                type='checkbox'
+                value='visible'
+                defaultChecked={state.submitFailed
+                  ? state.membershipsVisible
+                  : editedGym?.membershipsVisible}
+                hidden={formMode === 'create'}
+              />
+            </div>
+            <div className='flex gap-1'>
+              <label htmlFor='openingHoursVisibility' className='w-30'>
+                opening hours visible
+              </label>
+              <input
+                id='openingHoursVisibility'
+                name='openingHoursVisibility'
+                type='checkbox'
+                value='visible'
+                defaultChecked={state.submitFailed
+                  ? state.openingHoursVisible
+                  : editedGym?.openingHoursVisible}
+              />
+            </div>
+          </div>
+          {/* actual submit button is below <Exceptions /> */}
+          <input
+            type='submit'
+            id='submit-form'
+            className='hidden'
+            disabled={isPending}
+          />
+        </form>
+
+        <Exceptions exceptions={exceptions} setExceptions={setExceptions} />
+
+        {/* actual submit button outside the <form>
+        to have <Exceptions /> appear as part of the form */}
+        <label
+          htmlFor='submit-form'
+          tabIndex={0} /* make this tab-selectable */
+          className='
+          flex justify-center border border-black dark:border-white
+          bg-green-700 dark:bg-green-500 px-3 w-full
+          text-primary-text-dark dark:text-primary-text text-base
+          cursor-pointer
+          hover:border-white hover:dark:border-black active:font-bold'
+        >
+          {formMode === 'create'
+            ? <span>create</span>
+            : <span>save</span>}
+        </label>
+
+        {state.error
+          ? (
+            <div className='self-center text-red-700 dark:text-red-400'>
+              {state.error}
+            </div>
           )
           : null}
-        <button
-          onClick={() => {
-            void queryClient.invalidateQueries(
-              { queryKey: ['gymsIdAndName'] }
-            );
-            setFormMode('hidden');
-          }}
-          className='cursor-pointer'
-        >
-          return
-        </button>
+
+
+        {formMode === 'edit'
+          ? <hr />
+          : null}
+
+        <div className='flex flex-col gap-1'>
+          {formMode === 'edit'
+            ? (
+              <>
+                <button
+                  onClick={() => {
+                    setEditForm('equipment');
+                  }}
+                  className='
+                  border bg-tertiary dark:bg-tertiary-dark py-1 cursor-pointer
+                  hover:bg-background dark:hover:bg-background-dark
+                  active:font-bold'
+                >
+                  edit equipment
+                </button>
+                <button
+                  className='
+                  border bg-tertiary dark:bg-tertiary-dark py-1
+                  text-red-700 dark:text-red-400 cursor-pointer
+                  hover:bg-background dark:hover:bg-background-dark
+                  active:font-bold'
+                  disabled
+                >
+                  edit memberships {/* todo */}
+                </button>
+                <button
+                  className='
+                  border bg-tertiary dark:bg-tertiary-dark py-1
+                  text-red-700 dark:text-red-400 enabled:cursor-pointer
+                  enabled:hover:bg-background
+                  enabled:dark:hover:bg-background-dark
+                  enabled:active:font-bold'
+                  disabled
+                >
+                  edit managers {/* todo */}
+                </button>
+              </>
+            )
+            : null}
+          <button
+            onClick={() => {
+              void queryClient.invalidateQueries(
+                { queryKey: ['gymsIdAndName'] }
+              );
+              setFormMode('hidden');
+            }}
+            className={`
+            self-center border bg-tertiary dark:bg-tertiary-dark py-1
+            w-9/10 cursor-pointer
+            hover:bg-background dark:hover:bg-background-dark
+            active:font-bold
+            ${formMode === 'edit'
+      ? 'mt-3'
+      : ''
+    }`}
+          >
+            return without saving
+          </button>
+        </div>
       </div>
     </div>
   );
