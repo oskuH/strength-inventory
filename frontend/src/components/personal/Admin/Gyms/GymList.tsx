@@ -43,7 +43,7 @@ export default function GymList (
   return (
     <div className='flex flex-1 flex-col gap-1'>
       <input
-        type='text'
+        type='search'
         value={search}
         placeholder='search'
         onChange={(event) => {

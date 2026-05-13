@@ -10,13 +10,13 @@ import List from './List';
 
 interface EquipmentListProps {
   data: { id: string, name: string }[] | undefined
-  selectedItemId: string
-  setSelectedItemId: React.Dispatch<React.SetStateAction<string>>
+  selectedPieceId: string
+  setSelectedPieceId: React.Dispatch<React.SetStateAction<string>>
   setFormMode: React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function EquipmentList (
-  { data, selectedItemId, setSelectedItemId, setFormMode }: EquipmentListProps
+  { data, selectedPieceId, setSelectedPieceId, setFormMode }: EquipmentListProps
 ) {
   const [search, setSearch] = useState('');
 
@@ -27,7 +27,7 @@ export default function EquipmentList (
     mutationFn: (id: string) => deleteEquipment({ id: id }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['equipment'] });
-      setSelectedItemId('');
+      setSelectedPieceId('');
     }
   });
 
@@ -36,7 +36,7 @@ export default function EquipmentList (
     filteredItems = data.filter((item) => {
       return (
         item.name.toLowerCase().includes(search.toLowerCase())
-        || item.id === selectedItemId);
+        || item.id === selectedPieceId);
     });
   }
 
@@ -54,7 +54,7 @@ export default function EquipmentList (
       <div className='flex justify-around'>
         <button
           onClick={() => {
-            setSelectedItemId('');
+            setSelectedPieceId('');
             setFormMode('create');
           }}
           className='
@@ -70,7 +70,7 @@ export default function EquipmentList (
           onClick={() => {
             setFormMode('edit');
           }}
-          disabled={!selectedItemId}
+          disabled={!selectedPieceId}
           className='
           border border-dotted
           bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
@@ -83,9 +83,9 @@ export default function EquipmentList (
         </button>
         <button
           onClick={() => {
-            deleteEquipmentMutation.mutate(selectedItemId);
+            deleteEquipmentMutation.mutate(selectedPieceId);
           }}
-          disabled={!selectedItemId}
+          disabled={!selectedPieceId}
           className='
           border border-dotted
           bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
@@ -104,8 +104,8 @@ export default function EquipmentList (
       >
         <List
           data={filteredItems}
-          selectedItemId={selectedItemId}
-          setSelectedItemId={setSelectedItemId}
+          selectedItemId={selectedPieceId}
+          setSelectedItemId={setSelectedPieceId}
         />
       </div>
     </div>

@@ -147,7 +147,7 @@ export default function GymEquipment (
         )}
       <div className='flex flex-col gap-1 mt-1 mb-3'>
         <input
-          type='text'
+          type='search'
           value={search}
           placeholder='search to add new equipment'
           onChange={(event) => {

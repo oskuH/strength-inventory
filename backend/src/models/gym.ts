@@ -24,7 +24,7 @@ import { Equipment, Membership, User } from './index.ts';
 class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare id: CreationOptional<string>;
   declare name: string;
-  declare chain: string | null | undefined;
+  declare chain: string | undefined;
   declare street: string;
   declare streetNumber: string;
   declare district: string;
@@ -32,11 +32,11 @@ class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare openingHoursEveryone: CreationOptional<Hours>;
   declare openingHoursMembers: CreationOptional<Hours>;
   declare openingHoursExceptions: CreationOptional<HoursExceptions>;
-  declare url: string | null | undefined;
+  declare url: string | undefined;
   declare equipmentVisible: boolean;
   declare membershipsVisible: boolean;
   declare openingHoursVisible: boolean;
-  declare notes: string | null | undefined;
+  declare notes: string | undefined;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 

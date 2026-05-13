@@ -3,17 +3,17 @@ import { z } from 'zod';
 /* .coerce in timestamps should not cause any issues 
 as long as timestamps can only be modified by Sequelize.  */
 
-const TimeSchema = z.array(z.number().min(0).max(24).nullish()).length(2);
+const TimeSchema = z.array(z.number().min(0).max(24).optional()).length(2);
 const TimeSchemaExceptions = z.array(z.number().min(0).max(24)).length(2);
 
 export const HoursSchema = z.object({
-  MO: TimeSchema.nullish(),
-  TU: TimeSchema.nullish(),
-  WE: TimeSchema.nullish(),
-  TH: TimeSchema.nullish(),
-  FR: TimeSchema.nullish(),
-  SA: TimeSchema.nullish(),
-  SU: TimeSchema.nullish()
+  MO: TimeSchema.optional(),
+  TU: TimeSchema.optional(),
+  WE: TimeSchema.optional(),
+  TH: TimeSchema.optional(),
+  FR: TimeSchema.optional(),
+  SA: TimeSchema.optional(),
+  SU: TimeSchema.optional()
 });
 export type Hours = z.infer<typeof HoursSchema>;  // Used in gym and membership
 
@@ -33,18 +33,18 @@ export type MembershipAvailability = z.infer<typeof MembershipAvailabilitySchema
 
 export const MembershipSchema = z.object({
   id: z.uuidv4(),
-  chain: z.string().nullish(),
+  chain: z.string().optional(),
   name: z.string(),
   feeCurrency: z.string(),
   membershipFee: z.number(),
   validity: z.int(),
   validityUnit: MembershipTimeUnitEnum,
-  commitment: z.int().nullish(),
-  commitmentUnit: MembershipTimeUnitEnum.nullish(),  // TODO: custom validator
-  initiationFee: z.number().nullish(),
+  commitment: z.int().optional(),
+  commitmentUnit: MembershipTimeUnitEnum.optional(),  // TODO: custom validator
+  initiationFee: z.number().optional(),
   availability: MembershipAvailabilitySchema,
-  url: z.url().nullish(),
-  notes: z.string().nullish(),
+  url: z.url().optional(),
+  notes: z.string().optional(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date()
 });
@@ -64,7 +64,7 @@ export const MembershipGetSchema = MembershipSchema.pick({
   notes: true
 }).extend({
   membershipFee: z.string(),
-  initiationFee: z.string().nullish()
+  initiationFee: z.string().optional()
 })
 export type MembershipGet = z.infer<typeof MembershipGetSchema>;
 
@@ -143,7 +143,7 @@ export const UserPutSchema = UserSchema.pick({
   name: true,
   role: true
 }).extend({
-  password: PasswordSchema.nullish()
+  password: PasswordSchema.optional()
 });
 export type UserPut = z.infer<typeof UserPutSchema>;
 
@@ -166,7 +166,7 @@ export const UserFrontendQuerySchema = UserSchema.pick({
   name: true,
   role: true
 })
-export const UserFrontendSchema = UserFrontendQuerySchema.nullish()
+export const UserFrontendSchema = UserFrontendQuerySchema.optional()
 export type UserFrontend = z.infer<typeof UserFrontendSchema>
 
 
@@ -175,7 +175,7 @@ export type UserFrontend = z.infer<typeof UserFrontendSchema>
 export const EquipmentCategoryEnum = z.enum(['accessoryOrTool', 'cardio', 'freeWeight', 'handleAttachment', 'strengthMachine', 'system']);
 export type EquipmentCategory = z.infer<typeof EquipmentCategoryEnum>;
 
-export const EquipmentWeightUnitEnum = z.enum(['kg', 'lbs']).nullish();
+export const EquipmentWeightUnitEnum = z.enum(['kg', 'lbs']).optional();
 export type EquipmentWeightUnit = z.infer<typeof EquipmentWeightUnitEnum>;
 
 export const EquipmentSchema = z.object({
@@ -185,12 +185,12 @@ export const EquipmentSchema = z.object({
   manufacturer: z.string(),
   code: z.string(),
   weightUnit: EquipmentWeightUnitEnum,
-  weight: z.float32().nullish(),  // TODO: custom validator for this and the three below
-  startingWeight: z.float32().nullish(),
-  availableWeights: z.array(z.float32()).nullish(),
-  maximumWeight: z.float32().nullish(),
-  url: z.url().nullish(),
-  notes: z.string().nullish(),
+  weight: z.float32().optional(),  // TODO: custom validator for this and the three below
+  startingWeight: z.float32().optional(),
+  availableWeights: z.array(z.float32()).optional(),
+  maximumWeight: z.float32().optional(),
+  url: z.url().optional(),
+  notes: z.string().optional(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date()
 });
@@ -248,7 +248,7 @@ export type HoursExceptions = z.infer<typeof HoursExceptionsSchema>;
 export const GymSchema = z.object({
   id: z.uuidv4(),
   name: z.string(),
-  chain: z.string().nullish(),
+  chain: z.string().optional(),
   street: z.string(),
   streetNumber: z.string(),
   district: z.string(),
@@ -258,12 +258,12 @@ export const GymSchema = z.object({
   openingHoursExceptions: HoursExceptionsSchema,
   url: z.preprocess(
     (val) => (val === '' ? undefined : val),
-    z.url().nullish()
+    z.url().optional()
   ),
   equipmentVisible: z.boolean(),
   membershipsVisible: z.boolean(),
   openingHoursVisible: z.boolean(),
-  notes: z.string().nullish(),
+  notes: z.string().optional(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date()
 });

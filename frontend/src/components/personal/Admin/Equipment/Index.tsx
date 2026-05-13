@@ -11,7 +11,7 @@ import EquipmentForm from './EquipmentForm/Index';
 import EquipmentList from './EquipmentList';
 
 export default function AdminEquipment () {
-  const [selectedItemId, setSelectedItemId] = useState('');
+  const [selectedPieceId, setSelectedPieceId] = useState('');
   const [formMode, setFormMode] = useState('hidden');
 
   const iconMode = use(IconContext);
@@ -32,9 +32,8 @@ export default function AdminEquipment () {
   return (
     <div
       className='
-      flex flex-col gap-1 border bg-secondary dark:bg-secondary-dark
-      p-3 min-w-0 w-1/2
-      text-primary-text dark:text-primary-text-dark'
+      flex flex-1 flex-col gap-1 border bg-secondary dark:bg-secondary-dark
+      p-3 min-w-0 text-primary-text dark:text-primary-text-dark'
     >
       <h2 className='self-center font-bold'>
         {iconMode
@@ -45,8 +44,8 @@ export default function AdminEquipment () {
         ? (
           <EquipmentList
             data={equipmentQuery.data}
-            selectedItemId={selectedItemId}
-            setSelectedItemId={setSelectedItemId}
+            selectedPieceId={selectedPieceId}
+            setSelectedPieceId={setSelectedPieceId}
             setFormMode={setFormMode}
           />
         )
@@ -54,8 +53,8 @@ export default function AdminEquipment () {
           <EquipmentForm
             formMode={formMode}
             setFormMode={setFormMode}
-            selectedItemId={selectedItemId}
-            setSelectedItemId={setSelectedItemId}
+            selectedPieceId={selectedPieceId}
+            setSelectedPieceId={setSelectedPieceId}
           />
         ) }
     </div>

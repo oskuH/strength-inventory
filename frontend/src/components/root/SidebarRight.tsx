@@ -125,7 +125,7 @@ export default function SidebarRight (
               flex justify-end py-1 pr-2
               hover:bg-primary dark:hover:bg-background-dark
               active:font-semibold
-              ${pathname === '/admin'
+              ${pathname.startsWith('/admin')
             ? 'bg-primary dark:bg-background-dark font-semibold'
             : ''
           }`}

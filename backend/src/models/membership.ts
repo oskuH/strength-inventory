@@ -21,18 +21,18 @@ class Membership extends Model<
   InferAttributes<Membership>, InferCreationAttributes<Membership>
 > {
   declare id: CreationOptional<string>;
-  declare chain: string | null | undefined;
+  declare chain: string | undefined;
   declare name: string;
   declare feeCurrency: string;
   declare membershipFee: number;
   declare validity: number;
   declare validityUnit: MembershipTimeUnit;
-  declare commitment: number | null | undefined;
-  declare commitmentUnit: MembershipTimeUnit | null | undefined;
-  declare initiationFee: number | null | undefined;
+  declare commitment: number | undefined;
+  declare commitmentUnit: MembershipTimeUnit | undefined;
+  declare initiationFee: number | undefined;
   declare availability: MembershipAvailability;
-  declare url: string | null | undefined;
-  declare notes: string | null | undefined;
+  declare url: string | undefined;
+  declare notes: string | undefined;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
@@ -96,7 +96,7 @@ Membership.init({
   modelName: 'membership',
   validate: {
     customValidator () {
-      const instance = this as Membership;
+      const instance = this as unknown as Membership;
 
       if (!instance.commitmentUnit && instance.commitment) {
         throw new Error(

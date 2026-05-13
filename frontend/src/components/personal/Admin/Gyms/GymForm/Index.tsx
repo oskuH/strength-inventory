@@ -113,8 +113,8 @@ export default function GymForm (
   const gymQuery = useQuery({
     queryKey: ['gym', selectedGymId],
     queryFn: selectedGymId
-      ? () => getGym({ gymId: selectedGymId })
-      : skipToken  // disable this query when selectedGymId === ''
+      ? () => getGym({ id: selectedGymId })
+      : skipToken  // disable this query when creating a new gym
   });
 
   const postMutation = useMutation({
@@ -127,13 +127,13 @@ export default function GymForm (
 
   const putMutation = useMutation({
     mutationFn: ({ id, updatedGym }: { id: string, updatedGym: GymPost; }) =>
-      putGym({ gymId: id, gym: updatedGym }),
+      putGym({ id: id, gym: updatedGym }),
     onSuccess: (editedGymFromServer) => {
       queryClient.setQueryData(['gym', selectedGymId], editedGymFromServer);
     }
   });
 
-  /* Opening hours are currently not included in the form state.
+  /* Regular opening hours are currently not included in the form state.
   Thus, if creating a new gym fails after the form's own validation,
   entered hours will get erased.
   When editing a gym, changed hours revert back to their original values
@@ -141,7 +141,6 @@ export default function GymForm (
   const [state, submitAction, isPending] = useActionState(submit, {
     success: false,
     error: null,
-    submittedGymId: '',
     /* submitFailed is used by form fields to determine whether
     to use state variables as default values */
     submitFailed: false,
@@ -157,26 +156,33 @@ export default function GymForm (
     membershipsVisible: false,
     openingHoursVisible: false
   });
+
+  /* Opening hours exceptions move with
+  the above state variables and regular opening hours,
+  but they have their own state for convenience.
+  formatSubmit function attaches exceptions to
+  the other variables before API calls. */
   const [exceptions, setExceptions]
     = useState<OpeningHoursException[] | undefined>();
+  /* editForm denotes the subform opened
+  on top of the base form */
   const [editForm, setEditForm] = useState('');
 
   interface State {
-    success: boolean;
-    error: string | null;
-    submittedGymId: string;
-    submitFailed: boolean;
-    name: string;
-    chain: string | null | undefined;
-    street: string;
-    streetNumber: string;
-    city: string;
-    district: string;
-    url: string | null | undefined;
-    notes: string | null | undefined;
-    equipmentVisible: boolean;
-    membershipsVisible: boolean;
-    openingHoursVisible: boolean;
+    success: boolean
+    error: string | null
+    submitFailed: boolean
+    name: string
+    chain: string | undefined
+    street: string
+    streetNumber: string
+    city: string
+    district: string
+    url: string | undefined
+    notes: string | undefined
+    equipmentVisible: boolean
+    membershipsVisible: boolean
+    openingHoursVisible: boolean
   }
 
   async function submit (_previousState: State, formData: FormData) {
@@ -189,11 +195,13 @@ export default function GymForm (
       });
       if (formMode === 'create') {
         try {
-          const res = await postMutation.mutateAsync(formattedGym);
+          await postMutation.mutateAsync(formattedGym);
+          /* Upon a successful POST, state variables are returned
+          empty because the form gets rerendered as an
+          edit form with default values from gymQuery.*/
           return {
             success: true,
             error: null,
-            submittedGymId: res.id,
             submitFailed: false,
             name: '',
             chain: '',
@@ -208,29 +216,15 @@ export default function GymForm (
             openingHoursVisible: false
           };
         } catch (err: unknown) {
+          let errorMessage: string;
           if (err instanceof Error) {
-            return {
-              success: false,
-              error: err.message,
-              submittedGymId: '',
-              submitFailed: true,
-              name: formattedGym.name,
-              chain: formattedGym.chain,
-              street: formattedGym.street,
-              streetNumber: formattedGym.streetNumber,
-              city: formattedGym.city,
-              district: formattedGym.district,
-              url: formattedGym.url,
-              notes: formattedGym.notes,
-              equipmentVisible: formattedGym.equipmentVisible,
-              membershipsVisible: formattedGym.membershipsVisible,
-              openingHoursVisible: formattedGym.openingHoursVisible
-            };
+            errorMessage = err.message;
+          } else {
+            errorMessage = 'Unknown error!';
           }
           return {
             success: false,
-            error: 'Unknown error!',
-            submittedGymId: '',
+            error: errorMessage,
             submitFailed: true,
             name: formattedGym.name,
             chain: formattedGym.chain,
@@ -245,61 +239,37 @@ export default function GymForm (
             openingHoursVisible: formattedGym.openingHoursVisible
           };
         }
-      } else { // formMode === 'edit'
+      } else {  // formMode === 'edit'
         try {
-          const res
-            = await putMutation.mutateAsync({
-              id: selectedGymId, updatedGym: formattedGym
-            });
+          await putMutation.mutateAsync({
+            id: selectedGymId, updatedGym: formattedGym
+          });
           return {
             success: true,
             error: null,
-            submittedGymId: res.id,
             submitFailed: false,
-            name: formData.get('name') as string,
-            chain: formData.get('chain') as string,
-            street: formData.get('street') as string,
-            streetNumber: formData.get('streetNumber') as string,
-            city: formData.get('city') as string,
-            district: formData.get('district') as string,
-            url: formData.get('url') as string,
-            notes: formData.get('notes') as string,
-            equipmentVisible: formData.get('equipmentVisibility') === 'visible'
-              ? true
-              : false,
-            membershipsVisible:
-              formData.get('membershipsVisibility') === 'visible'
-                ? true
-                : false,
-            openingHoursVisible:
-              formData.get('openingHoursVisibility') === 'visible'
-                ? true
-                : false
+            name: formattedGym.name,
+            chain: formattedGym.chain,
+            street: formattedGym.street,
+            streetNumber: formattedGym.streetNumber,
+            city: formattedGym.city,
+            district: formattedGym.district,
+            url: formattedGym.url,
+            notes: formattedGym.notes,
+            equipmentVisible: formattedGym.equipmentVisible,
+            membershipsVisible: formattedGym.membershipsVisible,
+            openingHoursVisible: formattedGym.openingHoursVisible
           };
         } catch (err: unknown) {
+          let errorMessage: string;
           if (err instanceof Error) {
-            return {
-              success: false,
-              error: err.message,
-              submittedGymId: '',
-              submitFailed: true,
-              name: formattedGym.name,
-              chain: formattedGym.chain,
-              street: formattedGym.street,
-              streetNumber: formattedGym.streetNumber,
-              city: formattedGym.city,
-              district: formattedGym.district,
-              url: formattedGym.url,
-              notes: formattedGym.notes,
-              equipmentVisible: formattedGym.equipmentVisible,
-              membershipsVisible: formattedGym.membershipsVisible,
-              openingHoursVisible: formattedGym.openingHoursVisible
-            };
+            errorMessage = err.message;
+          } else {
+            errorMessage = 'Unknown error!';
           }
           return {
             success: false,
-            error: 'Unknown error!',
-            submittedGymId: '',
+            error: errorMessage,
             submitFailed: true,
             name: formattedGym.name,
             chain: formattedGym.chain,
@@ -316,61 +286,38 @@ export default function GymForm (
         }
       }
     } catch (err: unknown) {
+      let errorMessage: string;
       if (err instanceof z.ZodError) {
         const messages = err.issues.map((issue) => issue.message);
         console.error(messages);
-        return {
-          success: false,
-          error: err.issues[0].message,
-          submittedGymId: '',
-          submitFailed: true,
-          name: formData.get('name') as string,
-          chain: formData.get('chain') as string,
-          street: formData.get('street') as string,
-          streetNumber: formData.get('streetNumber') as string,
-          city: formData.get('city') as string,
-          district: formData.get('district') as string,
-          url: formData.get('url') as string,
-          notes: formData.get('notes') as string,
-          equipmentVisible: formData.get('equipmentVisibility') === 'visible'
-            ? true
-            : false,
-          membershipsVisible:
-            formData.get('membershipsVisibility') === 'visible'
-              ? true
-              : false,
-          openingHoursVisible:
-            formData.get('openingHoursVisibility') === 'visible'
-              ? true
-              : false
-        };
+        errorMessage = err.issues[0].message;
       } else {
-        return {
-          success: false,
-          error: 'Validation error!',
-          submittedGymId: '',
-          submitFailed: true,
-          name: formData.get('name') as string,
-          chain: formData.get('chain') as string,
-          street: formData.get('street') as string,
-          streetNumber: formData.get('streetNumber') as string,
-          city: formData.get('city') as string,
-          district: formData.get('district') as string,
-          url: formData.get('url') as string,
-          notes: formData.get('notes') as string,
-          equipmentVisible: formData.get('equipmentVisibility') === 'visible'
+        errorMessage = 'Validation error!';
+      }
+      return {
+        success: false,
+        error: errorMessage,
+        submitFailed: true,
+        name: formData.get('name') as string,
+        chain: formData.get('chain') as string,
+        street: formData.get('street') as string,
+        streetNumber: formData.get('streetNumber') as string,
+        city: formData.get('city') as string,
+        district: formData.get('district') as string,
+        url: formData.get('url') as string,
+        notes: formData.get('notes') as string,
+        equipmentVisible: formData.get('equipmentVisibility') === 'visible'
+          ? true
+          : false,
+        membershipsVisible:
+          formData.get('membershipsVisibility') === 'visible'
             ? true
             : false,
-          membershipsVisible:
-            formData.get('membershipsVisibility') === 'visible'
-              ? true
-              : false,
-          openingHoursVisible:
-            formData.get('openingHoursVisibility') === 'visible'
-              ? true
-              : false
-        };
-      }
+        openingHoursVisible:
+          formData.get('openingHoursVisibility') === 'visible'
+            ? true
+            : false
+      };
     }
   }
 
@@ -404,9 +351,9 @@ export default function GymForm (
   // TODO: different returns when editing memberships/managers
 
   return (
-    <div className='flex flex-col min-h-0 overflow-y-scroll'>
+    <div className='flex flex-col min-h-0'>
       {/* second-highest <div> with px-3 ensures that
-      the scrolling bar stays clear of content */}
+      the scrollbar stays clear of content */}
       <div className='flex flex-col gap-3 px-3 text-xs'>
         <h3 className='flex justify-center text-base'>
           {/* formMode is either 'create' or 'edit' */}
@@ -446,11 +393,7 @@ export default function GymForm (
                 type='text'
                 defaultValue={state.submitFailed
                   ? state.chain
-                    ? state.chain
-                    : undefined
-                  : editedGym?.chain
-                    ? editedGym.chain
-                    : undefined}
+                  : editedGym?.chain}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
@@ -529,11 +472,7 @@ export default function GymForm (
                 type='url'
                 defaultValue={state.submitFailed
                   ? state.url
-                    ? state.url
-                    : undefined
-                  : editedGym?.url
-                    ? editedGym.url
-                    : undefined}
+                  : editedGym?.url}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
@@ -547,11 +486,7 @@ export default function GymForm (
                 name='notes'
                 defaultValue={state.submitFailed
                   ? state.notes
-                    ? state.notes
-                    : undefined
-                  : editedGym?.notes
-                    ? editedGym.notes
-                    : undefined}
+                  : editedGym?.notes}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
@@ -726,16 +661,23 @@ export default function GymForm (
         <label
           htmlFor='submit-form'
           tabIndex={0} /* make this tab-selectable */
-          className='
+          className={`
           flex justify-center border border-black dark:border-white
           bg-green-700 dark:bg-green-500 px-3 w-full
           text-primary-text-dark dark:text-primary-text text-base
-          cursor-pointer
-          hover:border-white hover:dark:border-black active:font-bold'
+          hover:border-white hover:dark:border-black active:font-bold
+          ${!isPending
+      ? 'cursor-pointer'
+      : 'cursor-progress'
+    }`}
         >
           {formMode === 'create'
-            ? <span>create</span>
-            : <span>save</span>}
+            ? !isPending
+              ? <span>create</span>
+              : <span>creating...</span>
+            : !isPending
+              ? <span>save</span>
+              : <span>saving...</span>}
         </label>
 
         {state.error
