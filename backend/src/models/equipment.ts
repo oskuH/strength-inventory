@@ -26,12 +26,12 @@ class Equipment extends Model<
   declare manufacturer: string;
   declare code: string;
   declare weightUnit: EquipmentWeightUnit | undefined;
-  declare weight: number | undefined;
-  declare startingWeight: number | undefined;
-  declare availableWeights: number[] | undefined;
-  declare maximumWeight: number | undefined;
-  declare url: string | undefined;
-  declare notes: string | undefined;
+  declare weight: number | null | undefined;
+  declare startingWeight: number | null | undefined;
+  declare availableWeights: number[] | null | undefined;
+  declare maximumWeight: number | null | undefined;
+  declare url: string | null | undefined;
+  declare notes: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 

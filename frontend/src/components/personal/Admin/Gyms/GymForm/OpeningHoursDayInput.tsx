@@ -14,13 +14,13 @@ export default function OpeningHoursDayInput (
   const [openTime, setOpenTime] = useState(editedHours?.[day]
     ? editedHours[day][0]
       ? String(editedHours[day][0])
-      : '0'
-    : '0');
+      : ''
+    : '');
   const [closeTime, setCloseTime] = useState(editedHours?.[day]
     ? editedHours[day][1]
       ? String(editedHours[day][1])
-      : '24'
-    : '24');
+      : ''
+    : '');
 
   return (
     <div className='flex gap-1'>
@@ -31,11 +31,7 @@ export default function OpeningHoursDayInput (
         type='number'
         min='0'
         max={closeTime}
-        defaultValue={editedHours?.[day]
-          ? editedHours[day][0]
-            ? editedHours[day][0]
-            : undefined
-          : undefined}
+        value={openTime}
         onChange={(event) => {
           setOpenTime(event.target.value);
         }}
@@ -49,11 +45,7 @@ export default function OpeningHoursDayInput (
         type='number'
         min={openTime}
         max='24'
-        defaultValue={editedHours?.[day]
-          ? editedHours[day][1]
-            ? editedHours[day][1]
-            : undefined
-          : undefined}
+        value={closeTime}
         onChange={(event) => {
           setCloseTime(event.target.value);
         }}

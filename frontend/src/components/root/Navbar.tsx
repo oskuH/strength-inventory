@@ -46,7 +46,7 @@ function PageTitle ({ pathname, iconMode }: PageTitleProps) {
           : 'login'}
       </p>
     );
-  } else if (pathname === '/admin') {
+  } else if (pathname.startsWith('/admin')) {
     return (
       <p>
         {iconMode

@@ -385,13 +385,13 @@ const targetEquipmentExtractor = async (
     return;
   }
 
-  const membership = await Equipment.findByPk(id);
-  if (!membership) {
+  const equipment = await Equipment.findByPk(id);
+  if (!equipment) {
     res.status(404).json({ error: `Equipment with ID ${id} not found.` });
     return;
   }
 
-  req.targetEquipment = membership;
+  req.targetEquipment = equipment;
   next();
 };
 

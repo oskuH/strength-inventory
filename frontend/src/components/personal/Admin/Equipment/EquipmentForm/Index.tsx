@@ -1,5 +1,4 @@
-// work in progress
-import { useActionState, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 
 import {
   skipToken, useMutation, useQuery, useQueryClient
@@ -8,6 +7,8 @@ import { z } from 'zod';
 
 import { getPiece, postEquipment, putEquipment }
   from '../../../../../utils/api';
+
+import AvailableWeights from './AvailableWeights';
 
 import { type EquipmentPostAndPut, EquipmentPostAndPutSchema }
   from '@strength-inventory/schemas';
@@ -23,6 +24,27 @@ export default function EquipmentForm (
   { formMode, setFormMode, selectedPieceId, setSelectedPieceId }:
   EquipmentFormProps
 ) {
+  /* React 19's useActionState has had a bug since its 2024 release
+  where <select> fields to get reset after <form> submission.
+  The useEffect below is a workaround by GitHub user danieltott:
+  https://github.com/facebook/react/issues/29034#issuecomment-2843233452
+
+  A PR fixing this issue has been open since November 2025:
+  https://github.com/facebook/react/pull/35168 */
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    function watchReset (e: Event) {
+      console.log('reset in react', e);
+      e.preventDefault();
+    }
+    const form = formRef.current;
+    form?.addEventListener('reset', watchReset);
+
+    return () => {
+      form?.removeEventListener('reset', watchReset);
+    };
+  }, []);
+
   const queryClient = useQueryClient();
 
   const pieceQuery = useQuery({
@@ -52,39 +74,42 @@ export default function EquipmentForm (
   });
 
   const [state, submitAction, isPending] = useActionState(submit, {
-    success: false,
-    error: null,
-    /* submitFailed is used by form fields to determine whether
-    to use state variables as default values */
-    submitFailed: false,
+    success: true,
+    error: null
+  });
+
+  interface PieceProps {
+    name: string,
+    category: string,
+    manufacturer: string,
+    code: string,
+    weightUnit: string,
+    weight: string,
+    startingWeight: string,
+    maximumWeight: string,
+    url: string,
+    notes: string
+  }
+
+  const [piece, setPiece] = useState<PieceProps>({
     name: '',
     category: '',
     manufacturer: '',
     code: '',
     weightUnit: '',
-    weight: undefined,
-    startingWeight: undefined,
-    availableWeights: [],
-    maximumWeight: undefined,
+    weight: '',
+    startingWeight: '',
+    maximumWeight: '',
     url: '',
     notes: ''
   });
 
+  const [availableWeights, setAvailableWeights]
+    = useState<number[] | undefined>();
+
   interface State {
     success: boolean
     error: string | null
-    submitFailed: boolean
-    name: string
-    category: string
-    manufacturer: string
-    code: string
-    weightUnit: string | undefined
-    weight: number | undefined
-    startingWeight: number | undefined
-    availableWeights: number[] | undefined
-    maximumWeight: number | undefined
-    url: string | undefined
-    notes: string | undefined
   }
 
   async function submit (_previousState: State, formData: FormData) {
@@ -92,27 +117,23 @@ export default function EquipmentForm (
 
     try {
       const validatedEquipment = EquipmentPostAndPutSchema.parse(req);
+      if (!validatedEquipment.weightUnit
+        && (validatedEquipment.weight
+          || (availableWeights && availableWeights.length > 0)
+          || validatedEquipment.startingWeight
+          || validatedEquipment.maximumWeight
+        )) {
+        return {
+          success: false,
+          error: 'weight unit required'
+        };
+      }
       if (formMode === 'create') {
         try {
           await postMutation.mutateAsync(validatedEquipment);
-          /* Upon a successful POST, state variables are returned
-          empty because the form gets rerendered as an
-          edit form with default values from pieceQuery.*/
           return {
             success: true,
-            error: null,
-            submitFailed: false,
-            name: '',
-            category: '',
-            manufacturer: '',
-            code: '',
-            weightUnit: '',
-            weight: undefined,
-            startingWeight: undefined,
-            availableWeights: [],
-            maximumWeight: undefined,
-            url: '',
-            notes: ''
+            error: null
           };
         } catch (err: unknown) {
           let errorMessage: string;
@@ -123,19 +144,7 @@ export default function EquipmentForm (
           }
           return {
             success: false,
-            error: errorMessage,
-            submitFailed: true,
-            name: validatedEquipment.name,
-            category: validatedEquipment.category,
-            manufacturer: validatedEquipment.manufacturer,
-            code: validatedEquipment.code,
-            weightUnit: validatedEquipment.weightUnit,
-            weight: validatedEquipment.weight,
-            startingWeight: validatedEquipment.startingWeight,
-            availableWeights: validatedEquipment.availableWeights,
-            maximumWeight: validatedEquipment.maximumWeight,
-            url: validatedEquipment.url,
-            notes: validatedEquipment.notes
+            error: errorMessage
           };
         }
       } else {  // formMode === 'edit'
@@ -145,19 +154,7 @@ export default function EquipmentForm (
           });
           return {
             success: true,
-            error: null,
-            submitFailed: false,
-            name: validatedEquipment.name,
-            category: validatedEquipment.category,
-            manufacturer: validatedEquipment.manufacturer,
-            code: validatedEquipment.code,
-            weightUnit: validatedEquipment.weightUnit,
-            weight: validatedEquipment.weight,
-            startingWeight: validatedEquipment.startingWeight,
-            availableWeights: validatedEquipment.availableWeights,
-            maximumWeight: validatedEquipment.maximumWeight,
-            url: validatedEquipment.url,
-            notes: validatedEquipment.notes
+            error: null
           };
         } catch (err: unknown) {
           let errorMessage: string;
@@ -168,19 +165,7 @@ export default function EquipmentForm (
           }
           return {
             success: false,
-            error: errorMessage,
-            submitFailed: true,
-            name: validatedEquipment.name,
-            category: validatedEquipment.category,
-            manufacturer: validatedEquipment.manufacturer,
-            code: validatedEquipment.code,
-            weightUnit: validatedEquipment.weightUnit,
-            weight: validatedEquipment.weight,
-            startingWeight: validatedEquipment.startingWeight,
-            availableWeights: validatedEquipment.availableWeights,
-            maximumWeight: validatedEquipment.maximumWeight,
-            url: validatedEquipment.url,
-            notes: validatedEquipment.notes
+            error: errorMessage
           };
         }
       }
@@ -195,23 +180,7 @@ export default function EquipmentForm (
       }
       return {
         success: false,
-        error: errorMessage,
-        submitFailed: true,
-        name: formData.get('name') as string,
-        category: formData.get('category') as string,
-        manufacturer: formData.get('manufacturer') as string,
-        code: formData.get('code') as string,
-        weightUnit: formData.get('weightUnit') as string,
-        weight:
-        formData.get('weight') as unknown as number,
-        startingWeight:
-        formData.get('startingWeight') as unknown as number,
-        availableWeights:
-        formData.get('availableWeights') as unknown as number[],
-        maximumWeight:
-        formData.get('maximumWeight') as unknown as number,
-        url: formData.get('url') as string,
-        notes: formData.get('notes') as string
+        error: errorMessage
       };
     }
   }
@@ -222,6 +191,51 @@ export default function EquipmentForm (
 
   if (selectedPieceId && pieceQuery.isError) {
     return <p>Error: {pieceQuery.error.message}</p>;
+  }
+
+  /* Initialize the form fields when opened in edit mode.
+  selectedPieceId is only defined in edit mode.
+  Moreover, !availableWeights evaluates truthy only on the first render
+  because a few lines below it is guaranteed to be defined. */
+  if (selectedPieceId && pieceQuery.isSuccess && !availableWeights) {
+    const {
+      name,
+      category,
+      manufacturer,
+      code,
+      weightUnit,
+      weight,
+      startingWeight,
+      availableWeights,
+      maximumWeight,
+      url,
+      notes
+    } = pieceQuery.data;
+
+    setPiece({
+      name: name,
+      category: category,
+      manufacturer: manufacturer,
+      code: code,
+      weightUnit: weightUnit ?? '',
+      weight: weight
+        ? String(weight)
+        : '',
+      startingWeight: startingWeight
+        ? String(startingWeight)
+        : '',
+      maximumWeight: maximumWeight
+        ? String(maximumWeight)
+        : '',
+      url: url ?? '',
+      notes: notes
+    });
+
+    if (availableWeights) {
+      setAvailableWeights(availableWeights);
+    } else {
+      setAvailableWeights([]);
+    }
   }
 
   const editedPiece = pieceQuery.data;
@@ -239,6 +253,7 @@ export default function EquipmentForm (
 
         <form
           action={submitAction}
+          ref={formRef}
           className='flex flex-col gap-3'
         >
           <div className='flex flex-col gap-1'>
@@ -250,9 +265,10 @@ export default function EquipmentForm (
                 id='name'
                 name='name'
                 type='text'
-                defaultValue={state.submitFailed
-                  ? state.name
-                  : editedPiece?.name}
+                value={piece.name}
+                onChange={(event) => {
+                  setPiece({ ...piece, name: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 required
               />
@@ -265,9 +281,10 @@ export default function EquipmentForm (
               <select
                 id='category'
                 name='category'
-                defaultValue={state.submitFailed
-                  ? state.category
-                  : editedPiece?.category}
+                value={piece.category}
+                onChange={(event) => {
+                  setPiece({ ...piece, category: event.target.value });
+                }}
                 className='
                 border bg-tertiary dark:bg-tertiary-dark pl-1 cursor-pointer'
                 required
@@ -290,9 +307,10 @@ export default function EquipmentForm (
                 id='manufacturer'
                 name='manufacturer'
                 type='text'
-                defaultValue={state.submitFailed
-                  ? state.manufacturer
-                  : editedPiece?.manufacturer}
+                value={piece.manufacturer}
+                onChange={(event) => {
+                  setPiece({ ...piece, manufacturer: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 required
               />
@@ -306,9 +324,10 @@ export default function EquipmentForm (
                 id='code'
                 name='code'
                 type='text'
-                defaultValue={state.submitFailed
-                  ? state.code
-                  : editedPiece?.code}
+                value={piece.code}
+                onChange={(event) => {
+                  setPiece({ ...piece, code: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 required
               />
@@ -316,17 +335,17 @@ export default function EquipmentForm (
 
             <div className='flex flex-col'>
               <label htmlFor='weightUnit'>
-                weight unit {/* TODO add star if weights given */}
+                weight unit
               </label>
               <select
                 id='weightUnit'
                 name='weightUnit'
-                defaultValue={state.submitFailed
-                  ? state.weightUnit
-                  : editedPiece?.weightUnit}
+                value={piece.weightUnit}
+                onChange={(event) => {
+                  setPiece({ ...piece, weightUnit: event.target.value });
+                }}
                 className='
                 border bg-tertiary dark:bg-tertiary-dark pl-1 cursor-pointer'
-                required  /* TODO make conditional */
               >
                 <option value=''>-- weight unit for values below --</option>
                 <option value='kg'>kilograms</option>
@@ -342,12 +361,24 @@ export default function EquipmentForm (
                 id='weight'
                 name='weight'
                 type='number'
-                defaultValue={state.submitFailed
-                  ? state.weight
-                  : editedPiece?.weight}
+                value={piece.weight}
+                onChange={(event) => {
+                  setPiece({ ...piece, weight: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
+
+            {/* This ternary signals TS that availableWeights is defined.
+            The colon case should never happen in practice. */}
+            {availableWeights
+              ? (
+                <AvailableWeights
+                  availableWeights={availableWeights}
+                  setAvailableWeights={setAvailableWeights}
+                />
+              )
+              : null}
 
             <div className='flex flex-col'>
               <label htmlFor='startingWeight'>
@@ -357,9 +388,10 @@ export default function EquipmentForm (
                 id='startingWeight'
                 name='startingWeight'
                 type='number'
-                defaultValue={state.submitFailed
-                  ? state.startingWeight
-                  : editedPiece?.startingWeight}
+                value={piece.startingWeight}
+                onChange={(event) => {
+                  setPiece({ ...piece, startingWeight: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
@@ -372,9 +404,10 @@ export default function EquipmentForm (
                 id='maximumWeight'
                 name='maximumWeight'
                 type='number'
-                defaultValue={state.submitFailed
-                  ? state.maximumWeight
-                  : editedPiece?.maximumWeight}
+                value={piece.maximumWeight}
+                onChange={(event) => {
+                  setPiece({ ...piece, maximumWeight: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
@@ -387,9 +420,10 @@ export default function EquipmentForm (
                 id='url'
                 name='url'
                 type='url'
-                defaultValue={state.submitFailed
-                  ? state.url
-                  : editedPiece?.url}
+                value={piece.url}
+                onChange={(event) => {
+                  setPiece({ ...piece, url: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
@@ -401,9 +435,10 @@ export default function EquipmentForm (
               <textarea
                 id='notes'
                 name='notes'
-                defaultValue={state.submitFailed
-                  ? state.notes
-                  : editedPiece?.notes}
+                value={piece.notes}
+                onChange={(event) => {
+                  setPiece({ ...piece, notes: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
@@ -431,9 +466,35 @@ export default function EquipmentForm (
       : 'cursor-progress'
     }`}
               />
+              {state.error
+                ? (
+                  <div className='self-center text-red-700 dark:text-red-400'>
+                    {state.error}
+                  </div>
+                )
+                : null}
             </div>
           </div>
         </form>
+        <button
+          onClick={() => {
+            void queryClient.invalidateQueries(
+              { queryKey: ['equipmentIdAndName'] }
+            );
+            setFormMode('hidden');
+          }}
+          className={`
+          self-center border bg-tertiary dark:bg-tertiary-dark py-1
+          w-9/10 cursor-pointer
+          hover:bg-background dark:hover:bg-background-dark
+          active:font-bold
+          ${formMode === 'edit'
+      ? 'mt-3'
+      : ''
+    }`}
+        >
+          return without saving
+        </button>
       </div>
     </div>
   );

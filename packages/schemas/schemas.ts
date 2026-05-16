@@ -3,6 +3,9 @@ import { z } from 'zod';
 /* .coerce in timestamps should not cause any issues 
 as long as timestamps can only be modified by Sequelize.  */
 
+/* z.string().min(1) = required string
+z.string() = optional string i.e. empty strings accepted */
+
 const TimeSchema = z.array(z.number().min(0).max(24).optional()).length(2);
 const TimeSchemaExceptions = z.array(z.number().min(0).max(24)).length(2);
 
@@ -33,18 +36,21 @@ export type MembershipAvailability = z.infer<typeof MembershipAvailabilitySchema
 
 export const MembershipSchema = z.object({
   id: z.uuidv4(),
-  chain: z.string().optional(),
-  name: z.string(),
-  feeCurrency: z.string(),
+  chain: z.string(),
+  name: z.string().min(1),
+  feeCurrency: z.string().min(1),
   membershipFee: z.number(),
   validity: z.int(),
   validityUnit: MembershipTimeUnitEnum,
-  commitment: z.int().optional(),
+  commitment: z.int().nullish(),
   commitmentUnit: MembershipTimeUnitEnum.optional(),  // TODO: custom validator
-  initiationFee: z.number().optional(),
+  initiationFee: z.number().nullish(),
   availability: MembershipAvailabilitySchema,
-  url: z.url().optional(),
-  notes: z.string().optional(),
+  url: z.preprocess(
+    (val) => (val === '' ? undefined : val),
+    z.url().nullish()
+  ),
+  notes: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date()
 });
@@ -63,8 +69,8 @@ export const MembershipGetSchema = MembershipSchema.pick({
   url: true,
   notes: true
 }).extend({
-  membershipFee: z.string(),
-  initiationFee: z.string().optional()
+  membershipFee: z.string().min(1),
+  initiationFee: z.string()
 })
 export type MembershipGet = z.infer<typeof MembershipGetSchema>;
 
@@ -119,8 +125,8 @@ export const UserSchema = z.object({
   username: z.string().min(1).max(30),
   email: z.email(),
   emailVerified: z.boolean(),
-  passwordHash: z.string(),
-  name: z.string().max(100),
+  passwordHash: z.string().min(1),
+  name: z.string().min(1).max(100),
   role: UserRoleEnum,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date()
@@ -180,17 +186,50 @@ export type EquipmentWeightUnit = z.infer<typeof EquipmentWeightUnitEnum>;
 
 export const EquipmentSchema = z.object({
   id: z.uuidv4(),
-  name: z.string(),
+  name: z.string().min(1),
   category: EquipmentCategoryEnum,
-  manufacturer: z.string(),
-  code: z.string(),
+  manufacturer: z.string().min(1),
+  code: z.string().min(1),
   weightUnit: EquipmentWeightUnitEnum,
-  weight: z.float32().optional(),  // TODO: custom validator for this and the three below
-  startingWeight: z.float32().optional(),
-  availableWeights: z.array(z.float32()).optional(),
-  maximumWeight: z.float32().optional(),
-  url: z.url().optional(),
-  notes: z.string().optional(),
+  weight: z.preprocess((val) => {
+    if (!val) {
+      return undefined
+    }
+    if (typeof val === 'string') {
+      if (val) {
+        return Number.parseFloat(val)
+      } else {
+        return undefined
+      }
+    }
+    return val;
+  }, z.float32().nullish()),  // TODO: custom validator for this and the three below
+  startingWeight: z.preprocess((val) => {
+    if (typeof val === 'string') {
+      if (val) {
+        return Number.parseFloat(val)
+      } else {
+        return undefined
+      }
+    }
+    return val;
+  }, z.float32().nullish()),
+  availableWeights: z.array(z.float32()).nullish(),
+  maximumWeight: z.preprocess((val) => {
+    if (typeof val === 'string') {
+      if (val) {
+        return Number.parseFloat(val)
+      } else {
+        return undefined
+      }
+    }
+    return val;
+  }, z.float32().nullish()),
+  url: z.preprocess(
+    (val) => (val === '' ? undefined : val),
+    z.url().nullish()
+  ),
+  notes: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date()
 });
@@ -235,7 +274,7 @@ export const OpeningHoursExceptionSchema = z.object({
   id: z.uuidv4(),
   date: z.coerce.date(),
   hours: TimeSchemaExceptions,
-  reason: z.string(),
+  reason: z.string().min(1),
   concernsMembers: z.boolean()
 })
 export type OpeningHoursException = z.infer<typeof OpeningHoursExceptionSchema>;
@@ -247,23 +286,23 @@ export type HoursExceptions = z.infer<typeof HoursExceptionsSchema>;
 
 export const GymSchema = z.object({
   id: z.uuidv4(),
-  name: z.string(),
-  chain: z.string().optional(),
-  street: z.string(),
-  streetNumber: z.string(),
-  district: z.string(),
-  city: z.string(),
+  name: z.string().min(1),
+  chain: z.string(),
+  street: z.string().min(1),
+  streetNumber: z.string().min(1),
+  district: z.string().min(1),
+  city: z.string().min(1),
   openingHoursEveryone: HoursSchema,
   openingHoursMembers: HoursSchema,
   openingHoursExceptions: HoursExceptionsSchema,
   url: z.preprocess(
     (val) => (val === '' ? undefined : val),
-    z.url().optional()
+    z.url().nullish()
   ),
   equipmentVisible: z.boolean(),
   membershipsVisible: z.boolean(),
   openingHoursVisible: z.boolean(),
-  notes: z.string().optional(),
+  notes: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date()
 });
@@ -376,8 +415,8 @@ export type GymPatch = z.infer<typeof GymPatchSchema>;
 // login
 
 export const LoginRequestSchema = z.object({
-  username: z.string(),
-  password: z.string()
+  username: z.string().min(1),
+  password: z.string().min(1)
 });
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 
@@ -389,7 +428,7 @@ export const LoginResponseSchema = UserSchema.pick({
   name: true,
   role: true,
 }).extend({
-  token: z.string()
+  token: z.string().min(1)
 })
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 

@@ -21,18 +21,18 @@ class Membership extends Model<
   InferAttributes<Membership>, InferCreationAttributes<Membership>
 > {
   declare id: CreationOptional<string>;
-  declare chain: string | undefined;
+  declare chain: string;
   declare name: string;
   declare feeCurrency: string;
   declare membershipFee: number;
   declare validity: number;
   declare validityUnit: MembershipTimeUnit;
-  declare commitment: number | undefined;
+  declare commitment: number | null | undefined;
   declare commitmentUnit: MembershipTimeUnit | undefined;
-  declare initiationFee: number | undefined;
+  declare initiationFee: number | null | undefined;
   declare availability: MembershipAvailability;
-  declare url: string | undefined;
-  declare notes: string | undefined;
+  declare url: string | null | undefined;
+  declare notes: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 

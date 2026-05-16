@@ -27,6 +27,7 @@ export default function GymList (
     mutationFn: (id: string) => deleteGym({ id: id }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['gyms'] });
+      void queryClient.invalidateQueries({ queryKey: ['gymsIdAndName'] });
       setSelectedGymId('');
     }
   });

@@ -27,6 +27,7 @@ export default function EquipmentList (
     mutationFn: (id: string) => deleteEquipment({ id: id }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['equipment'] });
+      void queryClient.invalidateQueries({ queryKey: ['equipmentIdAndName'] });
       setSelectedPieceId('');
     }
   });

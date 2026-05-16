@@ -29,12 +29,12 @@ interface GymFormProps {
 export default function GymForm (
   { formMode, setFormMode, selectedGymId, setSelectedGymId }: GymFormProps
 ) {
-  interface formatSubmit {
+  interface formatSubmitProps {
     req: GymPostFrontend;
     exceptions: OpeningHoursException[] | undefined;
   }
 
-  function formatSubmit ({ req, exceptions }: formatSubmit) {
+  function formatSubmit ({ req, exceptions }: formatSubmitProps) {
     const weekdays = [
       'MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'
     ] as const;
@@ -133,28 +133,23 @@ export default function GymForm (
     }
   });
 
-  /* Regular opening hours are currently not included in the form state.
-  Thus, if creating a new gym fails after the form's own validation,
-  entered hours will get erased.
-  When editing a gym, changed hours revert back to their original values
-  in a similar situation. */
   const [state, submitAction, isPending] = useActionState(submit, {
     success: false,
-    error: null,
-    /* submitFailed is used by form fields to determine whether
-    to use state variables as default values */
-    submitFailed: false,
+    error: null
+  });
+
+  const [gym, setGym] = useState({
     name: '',
     chain: '',
     street: '',
     streetNumber: '',
-    city: '',
     district: '',
+    city: '',
     url: '',
-    notes: '',
     equipmentVisible: false,
     membershipsVisible: false,
-    openingHoursVisible: false
+    openingHoursVisible: false,
+    notes: ''
   });
 
   /* Opening hours exceptions move with
@@ -164,25 +159,12 @@ export default function GymForm (
   the other variables before API calls. */
   const [exceptions, setExceptions]
     = useState<OpeningHoursException[] | undefined>();
-  /* editForm denotes the subform opened
-  on top of the base form */
+  /* editForm denotes the subform opened on top of this form. */
   const [editForm, setEditForm] = useState('');
 
   interface State {
     success: boolean
     error: string | null
-    submitFailed: boolean
-    name: string
-    chain: string | undefined
-    street: string
-    streetNumber: string
-    city: string
-    district: string
-    url: string | undefined
-    notes: string | undefined
-    equipmentVisible: boolean
-    membershipsVisible: boolean
-    openingHoursVisible: boolean
   }
 
   async function submit (_previousState: State, formData: FormData) {
@@ -196,24 +178,9 @@ export default function GymForm (
       if (formMode === 'create') {
         try {
           await postMutation.mutateAsync(formattedGym);
-          /* Upon a successful POST, state variables are returned
-          empty because the form gets rerendered as an
-          edit form with default values from gymQuery.*/
           return {
             success: true,
-            error: null,
-            submitFailed: false,
-            name: '',
-            chain: '',
-            street: '',
-            streetNumber: '',
-            city: '',
-            district: '',
-            url: '',
-            notes: '',
-            equipmentVisible: false,
-            membershipsVisible: false,
-            openingHoursVisible: false
+            error: null
           };
         } catch (err: unknown) {
           let errorMessage: string;
@@ -224,19 +191,7 @@ export default function GymForm (
           }
           return {
             success: false,
-            error: errorMessage,
-            submitFailed: true,
-            name: formattedGym.name,
-            chain: formattedGym.chain,
-            street: formattedGym.street,
-            streetNumber: formattedGym.streetNumber,
-            city: formattedGym.city,
-            district: formattedGym.district,
-            url: formattedGym.url,
-            notes: formattedGym.notes,
-            equipmentVisible: formattedGym.equipmentVisible,
-            membershipsVisible: formattedGym.membershipsVisible,
-            openingHoursVisible: formattedGym.openingHoursVisible
+            error: errorMessage
           };
         }
       } else {  // formMode === 'edit'
@@ -246,19 +201,7 @@ export default function GymForm (
           });
           return {
             success: true,
-            error: null,
-            submitFailed: false,
-            name: formattedGym.name,
-            chain: formattedGym.chain,
-            street: formattedGym.street,
-            streetNumber: formattedGym.streetNumber,
-            city: formattedGym.city,
-            district: formattedGym.district,
-            url: formattedGym.url,
-            notes: formattedGym.notes,
-            equipmentVisible: formattedGym.equipmentVisible,
-            membershipsVisible: formattedGym.membershipsVisible,
-            openingHoursVisible: formattedGym.openingHoursVisible
+            error: null
           };
         } catch (err: unknown) {
           let errorMessage: string;
@@ -269,19 +212,7 @@ export default function GymForm (
           }
           return {
             success: false,
-            error: errorMessage,
-            submitFailed: true,
-            name: formattedGym.name,
-            chain: formattedGym.chain,
-            street: formattedGym.street,
-            streetNumber: formattedGym.streetNumber,
-            city: formattedGym.city,
-            district: formattedGym.district,
-            url: formattedGym.url,
-            notes: formattedGym.notes,
-            equipmentVisible: formattedGym.equipmentVisible,
-            membershipsVisible: formattedGym.membershipsVisible,
-            openingHoursVisible: formattedGym.openingHoursVisible
+            error: errorMessage
           };
         }
       }
@@ -296,27 +227,7 @@ export default function GymForm (
       }
       return {
         success: false,
-        error: errorMessage,
-        submitFailed: true,
-        name: formData.get('name') as string,
-        chain: formData.get('chain') as string,
-        street: formData.get('street') as string,
-        streetNumber: formData.get('streetNumber') as string,
-        city: formData.get('city') as string,
-        district: formData.get('district') as string,
-        url: formData.get('url') as string,
-        notes: formData.get('notes') as string,
-        equipmentVisible: formData.get('equipmentVisibility') === 'visible'
-          ? true
-          : false,
-        membershipsVisible:
-          formData.get('membershipsVisibility') === 'visible'
-            ? true
-            : false,
-        openingHoursVisible:
-          formData.get('openingHoursVisibility') === 'visible'
-            ? true
-            : false
+        error: errorMessage
       };
     }
   }
@@ -329,13 +240,46 @@ export default function GymForm (
     return <p>Error: {gymQuery.error.message}</p>;
   }
 
+  /* Initialize the form fields when opened in edit mode.
+  selectedGymId is only defined in edit mode.
+  Moreover, !exceptions evaluates truthy only on the first render
+  because a few lines below it is guaranteed to be defined. */
   if (selectedGymId && gymQuery.isSuccess && !exceptions) {
+    const {
+      name,
+      chain,
+      street,
+      streetNumber,
+      district,
+      city,
+      url,
+      equipmentVisible,
+      membershipsVisible,
+      openingHoursVisible,
+      notes
+    } = gymQuery.data;
+
+    setGym({
+      name: name,
+      chain: chain ?? '',
+      street: street,
+      streetNumber: streetNumber,
+      district: district,
+      city: city,
+      url: url ?? '',
+      equipmentVisible: equipmentVisible,
+      membershipsVisible: membershipsVisible,
+      openingHoursVisible: openingHoursVisible,
+      notes: notes ?? ''
+    });
+
     if (gymQuery.data.openingHoursExceptions.data) {
       setExceptions(gymQuery.data.openingHoursExceptions.data);
     } else {
       setExceptions([]);
     }
   }
+
   const editedGym = gymQuery.data;
 
   if (editedGym && editForm === 'equipment') {
@@ -375,9 +319,10 @@ export default function GymForm (
                 id='name'
                 name='name'
                 type='text'
-                defaultValue={state.submitFailed
-                  ? state.name
-                  : editedGym?.name}
+                value={gym.name}
+                onChange={(event) => {
+                  setGym({ ...gym, name: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 required
               />
@@ -391,9 +336,10 @@ export default function GymForm (
                 id='chain'
                 name='chain'
                 type='text'
-                defaultValue={state.submitFailed
-                  ? state.chain
-                  : editedGym?.chain}
+                value={gym.chain}
+                onChange={(event) => {
+                  setGym({ ...gym, chain: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
@@ -406,9 +352,10 @@ export default function GymForm (
                 id='street'
                 name='street'
                 type='text'
-                defaultValue={state.submitFailed
-                  ? state.street
-                  : editedGym?.street}
+                value={gym.street}
+                onChange={(event) => {
+                  setGym({ ...gym, street: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 required
               />
@@ -422,9 +369,10 @@ export default function GymForm (
                 id='streetNumber'
                 name='streetNumber'
                 type='text'
-                defaultValue={state.submitFailed
-                  ? state.streetNumber
-                  : editedGym?.streetNumber}
+                value={gym.streetNumber}
+                onChange={(event) => {
+                  setGym({ ...gym, streetNumber: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 required
               />
@@ -438,9 +386,10 @@ export default function GymForm (
                 id='city'
                 name='city'
                 type='text'
-                defaultValue={state.submitFailed
-                  ? state.city
-                  : editedGym?.city}
+                value={gym.city}
+                onChange={(event) => {
+                  setGym({ ...gym, city: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 required
               />
@@ -454,9 +403,10 @@ export default function GymForm (
                 id='district'
                 name='district'
                 type='text'
-                defaultValue={state.submitFailed
-                  ? state.district
-                  : editedGym?.district}
+                value={gym.district}
+                onChange={(event) => {
+                  setGym({ ...gym, district: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 required
               />
@@ -470,9 +420,10 @@ export default function GymForm (
                 id='url'
                 name='url'
                 type='url'
-                defaultValue={state.submitFailed
-                  ? state.url
-                  : editedGym?.url}
+                value={gym.url}
+                onChange={(event) => {
+                  setGym({ ...gym, url: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
@@ -484,9 +435,10 @@ export default function GymForm (
               <textarea
                 id='notes'
                 name='notes'
-                defaultValue={state.submitFailed
-                  ? state.notes
-                  : editedGym?.notes}
+                value={gym.notes}
+                onChange={(event) => {
+                  setGym({ ...gym, notes: event.target.value });
+                }}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
@@ -605,9 +557,10 @@ export default function GymForm (
                 name='equipmentVisibility'
                 type='checkbox'
                 value='visible'
-                defaultChecked={state.submitFailed
-                  ? state.equipmentVisible
-                  : editedGym?.equipmentVisible}
+                checked={gym.equipmentVisible}
+                onChange={() => {
+                  setGym({ ...gym, equipmentVisible: !gym.equipmentVisible });
+                }}
                 hidden={formMode === 'create'}
               />
             </div>
@@ -624,9 +577,12 @@ export default function GymForm (
                 name='membershipsVisibility'
                 type='checkbox'
                 value='visible'
-                defaultChecked={state.submitFailed
-                  ? state.membershipsVisible
-                  : editedGym?.membershipsVisible}
+                checked={gym.membershipsVisible}
+                onChange={() => {
+                  setGym({
+                    ...gym, membershipsVisible: !gym.membershipsVisible
+                  });
+                }}
                 hidden={formMode === 'create'}
               />
             </div>
@@ -639,9 +595,12 @@ export default function GymForm (
                 name='openingHoursVisibility'
                 type='checkbox'
                 value='visible'
-                defaultChecked={state.submitFailed
-                  ? state.openingHoursVisible
-                  : editedGym?.openingHoursVisible}
+                checked={gym.openingHoursVisible}
+                onChange={() => {
+                  setGym({
+                    ...gym, openingHoursVisible: !gym.openingHoursVisible
+                  });
+                }}
               />
             </div>
           </div>

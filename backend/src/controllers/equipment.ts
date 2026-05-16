@@ -17,6 +17,17 @@ equipmentRouter.get('/', async (_req, res) => {
   return res.json(equipment);
 });
 
+// GET a piece of equipment
+// targetEquipmentExtractor returns same includes as the above GET all route
+equipmentRouter.get('/:id', targetEquipmentExtractor, (req, res) => {
+  if (!req.targetEquipment) {
+    throw new Error('Gym missing from request.');
+  }  // Should never trigger after middleware.
+
+  const equipment = req.targetEquipment;
+  return res.json(equipment);
+});
+
 // POST a new equipment
 equipmentRouter.post(
   '/',
