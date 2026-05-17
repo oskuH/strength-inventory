@@ -24,7 +24,7 @@ export default function OpeningHoursDayInput (
 
   return (
     <div className='flex gap-1'>
-      <span className='w-5'>{day}</span>
+      <span className='p-1 w-7'>{day}</span>
       <input
         id={`${group}${day}Open`}
         name={`${group}${day}Open`}
@@ -36,7 +36,7 @@ export default function OpeningHoursDayInput (
           setOpenTime(event.target.value);
         }}
         className='
-        flex flex-1 md:flex-none bg-background dark:bg-background-dark md:w-10'
+        flex bg-background dark:bg-background-dark w-10'
       />
       <span>-</span>
       <input
@@ -50,7 +50,7 @@ export default function OpeningHoursDayInput (
           setCloseTime(event.target.value);
         }}
         className='
-        flex flex-1 md:flex-none bg-background dark:bg-background-dark md:w-10'
+        flex bg-background dark:bg-background-dark w-10'
       />
     </div>
   );

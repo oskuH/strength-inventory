@@ -181,7 +181,8 @@ export type UserFrontend = z.infer<typeof UserFrontendSchema>
 export const EquipmentCategoryEnum = z.enum(['accessoryOrTool', 'cardio', 'freeWeight', 'handleAttachment', 'strengthMachine', 'system']);
 export type EquipmentCategory = z.infer<typeof EquipmentCategoryEnum>;
 
-export const EquipmentWeightUnitEnum = z.enum(['kg', 'lbs']).optional();
+export const EquipmentWeightUnitEnum = z.preprocess((val) =>
+(val === '' ? undefined : val), z.enum(['kg', 'lbs']).nullish())
 export type EquipmentWeightUnit = z.infer<typeof EquipmentWeightUnitEnum>;
 
 export const EquipmentSchema = z.object({
@@ -190,7 +191,7 @@ export const EquipmentSchema = z.object({
   category: EquipmentCategoryEnum,
   manufacturer: z.string().min(1),
   code: z.string().min(1),
-  weightUnit: EquipmentWeightUnitEnum,
+  weightUnit: EquipmentWeightUnitEnum,  // TODO: custom validator for this and the three below
   weight: z.preprocess((val) => {
     if (!val) {
       return undefined
@@ -203,7 +204,7 @@ export const EquipmentSchema = z.object({
       }
     }
     return val;
-  }, z.float32().nullish()),  // TODO: custom validator for this and the three below
+  }, z.float32().nullish()),
   startingWeight: z.preprocess((val) => {
     if (typeof val === 'string') {
       if (val) {

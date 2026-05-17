@@ -40,19 +40,19 @@ function Exception ({
   );
 }
 
-interface ExceptionCreateFormProps {
+interface ExceptionAddFormProps {
   exceptions: OpeningHoursException[] | undefined
   setExceptions:
   React.Dispatch<React.SetStateAction<OpeningHoursException[] | undefined>>
-  setCreateException: React.Dispatch<React.SetStateAction<boolean>>
+  setAddException: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function ExceptionCreateForm ({
-  exceptions, setExceptions, setCreateException
-}: ExceptionCreateFormProps) {
+function ExceptionAddForm ({
+  exceptions, setExceptions, setAddException
+}: ExceptionAddFormProps) {
   const [date, setDate] = useState('');
-  const [from, setFrom] = useState(0);
-  const [to, setTo] = useState(0);
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
   const [members, setMembers] = useState(false);
   const [reason, setReason] = useState('');
 
@@ -64,7 +64,7 @@ function ExceptionCreateForm ({
         ...exceptions, {
           id: uuidv4(),
           date: new Date(date),
-          hours: [from, to],
+          hours: [Number(from), Number(to)],
           concernsMembers: members,
           reason: reason
         }
@@ -74,57 +74,62 @@ function ExceptionCreateForm ({
         {
           id: uuidv4(),
           date: new Date(date),
-          hours: [from, to],
+          hours: [Number(from), Number(to)],
           concernsMembers: members,
           reason: reason
         }
       ];
     }
     setExceptions(newExceptions);
-    setCreateException(false);
+    setAddException(false);
   }
 
   return (
     <form onSubmit={handleSubmit} className='flex flex-col gap-1 border p-1'>
-      <input
-        id='date'
-        name='date'
-        type='date'
-        value={date}
-        onChange={(event) => {
-          setDate(event.target.value);
-        }}
-        className='w-26'
-      />
+      <h5 className='font-bold'>add new exception</h5>
+
       <div className='flex gap-1'>
         <input
-          id='from'
-          name='from'
-          type='number'
-          min='0'
-          max='24'
-          value={from}
+          id='date'
+          name='date'
+          type='date'
+          value={date}
           onChange={(event) => {
-            setFrom(Number(event.target.value));
+            setDate(event.target.value);
           }}
-          className='bg-secondary dark:bg-secondary-dark w-11'
+          className='bg-tertiary dark:bg-tertiary-dark p-1 w-30'
         />
-        <span>-</span>
-        <input
-          id='to'
-          name='to'
-          type='number'
-          min='0'
-          max='24'
-          value={to}
-          onChange={(event) => {
-            setTo(Number(event.target.value));
-          }}
-          className='bg-secondary dark:bg-secondary-dark w-11'
-        />
+        <div className='flex gap-1'>
+          <input
+            id='from'
+            name='from'
+            type='number'
+            min='0'
+            max={to}
+            value={from}
+            onChange={(event) => {
+              setFrom(event.target.value);
+            }}
+            className='bg-background dark:bg-background-dark w-10'
+          />
+          <span>-</span>
+          <input
+            id='to'
+            name='to'
+            type='number'
+            min={from}
+            max='24'
+            value={to}
+            onChange={(event) => {
+              setTo(event.target.value);
+            }}
+            className='bg-background dark:bg-background-dark w-10'
+          />
+        </div>
       </div>
+
       <div className='flex gap-1'>
-        <label htmlFor='members'>Members</label>
+        <label htmlFor='members'>applies to members</label>
         <input
           id='members'
           name='members'
@@ -136,25 +141,40 @@ function ExceptionCreateForm ({
           }}
         />
       </div>
-      <label htmlFor='reason' className='self-center'>Reason</label>
-      <textarea
-        id='reason'
-        name='reason'
-        defaultValue={reason}
-        onChange={(event) => {
-          setReason(event.target.value);
-        }}
-        className='border'
-      />
-      <div className='flex justify-around'>
-        <button type='submit' className='cursor-pointer'>
-          create
+
+      <div className='flex flex-col'>
+        <label htmlFor='reason'>reason</label>
+        <textarea
+          id='reason'
+          name='reason'
+          defaultValue={reason}
+          onChange={(event) => {
+            setReason(event.target.value);
+          }}
+          className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+        />
+      </div>
+      <div className='flex justify-around mt-2'>
+        <button
+          type='submit'
+          className='
+          mr-0.5 border border-black dark:border-white
+          bg-green-500 dark:bg-green-700 w-1/2
+          hover:border-white hover:dark:border-black
+          active:border-white active:dark:border-black active:font-bold
+          cursor-pointer'
+        >
+          add
         </button>
         <button
           onClick={() => {
-            setCreateException(false);
+            setAddException(false);
           }}
-          className='cursor-pointer'
+          className='ml-0.5 border border-black dark:border-white
+          bg-red-400 dark:bg-red-800 w-1/2
+          hover:border-white hover:dark:border-black
+          active:border-white active:dark:border-black active:font-bold
+          cursor-pointer'
         >
           cancel
         </button>
@@ -201,6 +221,8 @@ function ExceptionEditForm ({
 
   return (
     <form onSubmit={handleSubmit} className='flex flex-col gap-1 border p-1'>
+      <h5 className='font-bold'>edit exception</h5>
+
       <input
         id='date'
         name='date'
@@ -218,7 +240,7 @@ function ExceptionEditForm ({
           name='from'
           type='number'
           min='0'
-          max='24'
+          max={to}
           value={from}
           onChange={(event) => {
             setFrom(Number(event.target.value));
@@ -231,7 +253,7 @@ function ExceptionEditForm ({
           id='to'
           name='to'
           type='number'
-          min='0'
+          min={from}
           max='24'
           value={to}
           onChange={(event) => {
@@ -292,7 +314,7 @@ export default function Exceptions ({
   exceptions, setExceptions
 }: ExceptionsProps) {
   const [selectedExceptionId, setSelectedExceptionId] = useState('');
-  const [createException, setCreateException] = useState(false);
+  const [addException, setAddException] = useState(false);
   const [editedException, setEditedException] = useState('');
 
   const iconMode = use(IconContext);
@@ -303,9 +325,9 @@ export default function Exceptions ({
       <div className='flex justify-around'>
         <button
           onClick={() => {
-            setCreateException(true);
+            setAddException(true);
           }}
-          disabled={createException}
+          disabled={addException}
           className='
           border border-dotted
           bg-primary dark:bg-primary-dark p-1 text-xs
@@ -314,7 +336,7 @@ export default function Exceptions ({
         >
           {iconMode
             ? <TbPlus className='text-base' />
-            : 'create'}
+            : 'add'}
         </button>
         <button
           onClick={() => {
@@ -352,15 +374,15 @@ export default function Exceptions ({
         >
           {iconMode
             ? <TbMinus className='text-base' />
-            : 'delete'}
+            : 'remove'}
         </button>
       </div>
-      {createException
+      {addException
         ? (
-          <ExceptionCreateForm
+          <ExceptionAddForm
             exceptions={exceptions}
             setExceptions={setExceptions}
-            setCreateException={setCreateException}
+            setAddException={setAddException}
           />
         )
         : ''}

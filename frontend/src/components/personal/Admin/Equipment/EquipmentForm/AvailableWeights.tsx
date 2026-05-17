@@ -27,9 +27,9 @@ export default function AvailableWeights ({
   }
 
   function handleAddWeight () {
-    const updatedMockWeights = [...availableWeights, Number(newWeight)];
-    updatedMockWeights.sort(compareNumbers);
-    setAvailableWeights(updatedMockWeights);
+    const updatedWeights = [...availableWeights, Number(newWeight)];
+    updatedWeights.sort(compareNumbers);
+    setAvailableWeights(updatedWeights);
   }
 
   return (

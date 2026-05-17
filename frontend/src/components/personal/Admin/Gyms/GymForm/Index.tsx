@@ -450,7 +450,7 @@ export default function GymForm (
             <h4 className='text-sm font-bold'>regular opening hours</h4>
             <div>
               <h5>everyone</h5>
-              <div className='flex flex-col gap-1 md:gap-10 md:flex-row'>
+              <div className='flex flex-row gap-10'>
                 <div className='flex flex-col gap-1'>
                   <OpeningHoursDayInput
                     group='everyone'
@@ -467,20 +467,18 @@ export default function GymForm (
                     day='WE'
                     editedHours={editedGym?.openingHoursEveryone}
                   />
-                </div>
-                <div className='flex flex-col gap-1 md:justify-center'>
                   <OpeningHoursDayInput
                     group='everyone'
                     day='TH'
                     editedHours={editedGym?.openingHoursEveryone}
                   />
+                </div>
+                <div className='flex flex-col justify-center gap-1'>
                   <OpeningHoursDayInput
                     group='everyone'
                     day='FR'
                     editedHours={editedGym?.openingHoursEveryone}
                   />
-                </div>
-                <div className='flex flex-col gap-1 md:justify-center'>
                   <OpeningHoursDayInput
                     group='everyone'
                     day='SA'
@@ -496,7 +494,7 @@ export default function GymForm (
             </div>
             <div>
               <h5>members</h5>
-              <div className='flex flex-col gap-1 md:gap-10 md:flex-row'>
+              <div className='flex flex-row gap-10'>
                 <div className='flex flex-col gap-1'>
                   <OpeningHoursDayInput
                     group='members'
@@ -513,20 +511,18 @@ export default function GymForm (
                     day='WE'
                     editedHours={editedGym?.openingHoursMembers}
                   />
-                </div>
-                <div className='flex flex-col gap-1 md:justify-center'>
                   <OpeningHoursDayInput
                     group='members'
                     day='TH'
                     editedHours={editedGym?.openingHoursMembers}
                   />
+                </div>
+                <div className='flex flex-col justify-center gap-1'>
                   <OpeningHoursDayInput
                     group='members'
                     day='FR'
                     editedHours={editedGym?.openingHoursMembers}
                   />
-                </div>
-                <div className='flex flex-col gap-1 md:justify-center'>
                   <OpeningHoursDayInput
                     group='members'
                     day='SA'
@@ -624,7 +620,8 @@ export default function GymForm (
           flex justify-center border border-black dark:border-white
           bg-green-700 dark:bg-green-500 px-3 w-full
           text-primary-text-dark dark:text-primary-text text-base
-          hover:border-white hover:dark:border-black active:font-bold
+          hover:border-white hover:dark:border-black
+          active:border-white active:dark:border-black active:font-bold
           ${!isPending
       ? 'cursor-pointer'
       : 'cursor-progress'
@@ -652,7 +649,7 @@ export default function GymForm (
           ? <hr />
           : null}
 
-        <div className='flex flex-col gap-1'>
+        <div className='flex flex-col gap-1 pb-3'>
           {formMode === 'edit'
             ? (
               <>

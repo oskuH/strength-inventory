@@ -24,27 +24,6 @@ export default function EquipmentForm (
   { formMode, setFormMode, selectedPieceId, setSelectedPieceId }:
   EquipmentFormProps
 ) {
-  /* React 19's useActionState has had a bug since its 2024 release
-  where <select> fields to get reset after <form> submission.
-  The useEffect below is a workaround by GitHub user danieltott:
-  https://github.com/facebook/react/issues/29034#issuecomment-2843233452
-
-  A PR fixing this issue has been open since November 2025:
-  https://github.com/facebook/react/pull/35168 */
-  const formRef = useRef<HTMLFormElement>(null);
-  useEffect(() => {
-    function watchReset (e: Event) {
-      console.log('reset in react', e);
-      e.preventDefault();
-    }
-    const form = formRef.current;
-    form?.addEventListener('reset', watchReset);
-
-    return () => {
-      form?.removeEventListener('reset', watchReset);
-    };
-  }, []);
-
   const queryClient = useQueryClient();
 
   const pieceQuery = useQuery({
@@ -78,6 +57,27 @@ export default function EquipmentForm (
     error: null
   });
 
+  /* React 19's useActionState has had a bug since its 2024 release
+  where <select> fields to get reset after <form> submission.
+  The useEffect below is a workaround by GitHub user danieltott:
+  https://github.com/facebook/react/issues/29034#issuecomment-2843233452
+
+  A PR fixing this issue has been open since November 2025:
+  https://github.com/facebook/react/pull/35168 */
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    function watchReset (e: Event) {
+      /* console.log('reset in react', e); */
+      e.preventDefault();
+    }
+    const form = formRef.current;
+    form?.addEventListener('reset', watchReset);
+
+    return () => {
+      form?.removeEventListener('reset', watchReset);
+    };
+  }, []);
+
   interface PieceProps {
     name: string,
     category: string,
@@ -104,6 +104,9 @@ export default function EquipmentForm (
     notes: ''
   });
 
+  /* Available weights are rendered as part of the form,
+  but logically they have their separate state which is merged
+  with the form data in submit() */
   const [availableWeights, setAvailableWeights]
     = useState<number[] | undefined>();
 
@@ -116,12 +119,21 @@ export default function EquipmentForm (
     const req = Object.fromEntries(formData.entries());
 
     try {
-      const validatedEquipment = EquipmentPostAndPutSchema.parse(req);
-      if (!validatedEquipment.weightUnit
-        && (validatedEquipment.weight
-          || (availableWeights && availableWeights.length > 0)
-          || validatedEquipment.startingWeight
-          || validatedEquipment.maximumWeight
+      const validatedFormData
+        = EquipmentPostAndPutSchema.omit({ availableWeights: true })
+          .parse(req);
+      const validatedAvailableWeights
+        = EquipmentPostAndPutSchema.pick({ availableWeights: true })
+          .parse({ availableWeights: availableWeights });
+      const validatedPiece
+        = { ...validatedFormData, ...validatedAvailableWeights };
+
+      if (!validatedPiece.weightUnit
+        && (validatedPiece.weight
+          || (validatedPiece.availableWeights
+            && validatedPiece.availableWeights.length > 0)
+          || validatedPiece.startingWeight
+          || validatedPiece.maximumWeight
         )) {
         return {
           success: false,
@@ -130,7 +142,7 @@ export default function EquipmentForm (
       }
       if (formMode === 'create') {
         try {
-          await postMutation.mutateAsync(validatedEquipment);
+          await postMutation.mutateAsync(validatedPiece);
           return {
             success: true,
             error: null
@@ -150,7 +162,7 @@ export default function EquipmentForm (
       } else {  // formMode === 'edit'
         try {
           await putMutation.mutateAsync({
-            id: selectedPieceId, updatedPiece: validatedEquipment
+            id: selectedPieceId, updatedPiece: validatedPiece
           });
           return {
             success: true,
@@ -197,7 +209,7 @@ export default function EquipmentForm (
   selectedPieceId is only defined in edit mode.
   Moreover, !availableWeights evaluates truthy only on the first render
   because a few lines below it is guaranteed to be defined. */
-  if (selectedPieceId && pieceQuery.isSuccess && !availableWeights) {
+  if (pieceQuery.isSuccess && !availableWeights) {
     const {
       name,
       category,
@@ -236,6 +248,10 @@ export default function EquipmentForm (
     } else {
       setAvailableWeights([]);
     }
+  }
+
+  if (!selectedPieceId && !availableWeights) {
+    setAvailableWeights([]);
   }
 
   const editedPiece = pieceQuery.data;

@@ -25,7 +25,7 @@ class Equipment extends Model<
   declare category: EquipmentCategory;
   declare manufacturer: string;
   declare code: string;
-  declare weightUnit: EquipmentWeightUnit | undefined;
+  declare weightUnit: EquipmentWeightUnit | null | undefined;
   declare weight: number | null | undefined;
   declare startingWeight: number | null | undefined;
   declare availableWeights: number[] | null | undefined;
