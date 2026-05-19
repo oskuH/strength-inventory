@@ -89,14 +89,14 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
         flex relative justify-center items-center'
       >
         <input
-          type='checkbox'
           id={membersOnlyCheckboxId}
+          type='checkbox'
+          disabled={disableMembersOnlySwitch}
+          checked={membersOnly}
           className='order-2 peer hidden'
           onChange={() => {
             setMembersOnly(!membersOnly);
           }}
-          checked={membersOnly}
-          disabled={disableMembersOnlySwitch}
         />
         <label
           htmlFor={membersOnlyCheckboxId}

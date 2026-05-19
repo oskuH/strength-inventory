@@ -78,8 +78,8 @@ export default function Login () {
               name='username'
               type='text'
               defaultValue={state.enteredUsername}
-              className='border bg-background dark:bg-background-dark'
               required
+              className='border bg-background dark:bg-background-dark'
             />
           </div>
 
@@ -93,8 +93,8 @@ export default function Login () {
               id='password'
               name='password'
               type='password'
-              className='border bg-background dark:bg-background-dark'
               required
+              className='border bg-background dark:bg-background-dark'
             />
           </div>
 

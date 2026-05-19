@@ -2,13 +2,11 @@
 **Web application for comparing gym equipment, memberships, and opening hours.**
 
 ## Status
-Ongoing and advanced pre-alpha development. Frontend is still missing some essential features.
+First Alpha release planned in June 26. Some essential frontend features still under development.
 
 ## Stack
-Frontend: **React** with **TanStack Router** and **TanStack Query**. **Zod** for runtime validation and **Vite** as the build tool.
+Frontend: **React** with **TanStack Router** and **TanStack Query**. **Vite** as the build tool.
 
-Backend: **Express** with **Sequelize** for ORM and **Zod** for runtime validation.
+Backend: **Express** with **Sequelize** for ORM.
 
-Compatible databases: PostgreSQL, SQLite (presumed), MySQL (presumed), MariaDB (presumed), and Oracle (presumed).
-
-Node v24.13.0.
+General: Runtime validation is performed with **Zod**, and **Node v24.13.0** is currently being used as the runtime environment. The app is intended to be run with **PostgreSQL** as its database, but there is an underlying principle to keep things as plug-and-play as possible with other databases. 

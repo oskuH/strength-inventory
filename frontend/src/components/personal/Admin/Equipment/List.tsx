@@ -20,13 +20,13 @@ export default function List (
       {data.map((item) => (
         <li key={item.id}>
           <button
-            onClick={() => {
-              setSelectedItemId(item.id);
-            }}
             aria-pressed={item.id === selectedItemId}
             className='
             flex px-1 min-w-full whitespace-nowrap
             aria-pressed:bg-gray-300 dark:aria-pressed:bg-gray-600'
+            onClick={() => {
+              setSelectedItemId(item.id);
+            }}
           >
             <p>{item.name}</p>
           </button>

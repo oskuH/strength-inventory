@@ -1,12 +1,14 @@
-import { useActionState, useEffect, useRef, useState } from 'react';
+import { use, useActionState, useEffect, useRef, useState } from 'react';
 
 import {
   skipToken, useMutation, useQuery, useQueryClient
 } from '@tanstack/react-query';
+import { TbEdit, TbPlus } from 'react-icons/tb';
 import { z } from 'zod';
 
 import { getPiece, postEquipment, putEquipment }
   from '../../../../../utils/api';
+import { IconContext } from '../../../../../utils/contexts';
 
 import AvailableWeights from './AvailableWeights';
 
@@ -109,6 +111,8 @@ export default function EquipmentForm (
   with the form data in submit() */
   const [availableWeights, setAvailableWeights]
     = useState<number[] | undefined>();
+
+  const iconMode = use(IconContext);
 
   interface State {
     success: boolean
@@ -254,17 +258,23 @@ export default function EquipmentForm (
     setAvailableWeights([]);
   }
 
-  const editedPiece = pieceQuery.data;
-
   return (
     <div className='flex flex-col min-h-0'>
       {/* second-highest <div> with px-3 ensures that
       the scrollbar stays clear of content */}
-      <div className='flex flex-col gap-3 px-3 text-xs'>
+      <div className='flex flex-col gap-3 px-3 pb-3 text-xs'>
         <h3 className='flex justify-center text-base'>
           {formMode === 'create'
-            ? 'create new equipment'
-            : <span>editing {editedPiece?.name}</span>}
+            ? iconMode
+              ? <TbPlus className='text-2xl' />
+              : 'create new equipment'
+            : iconMode
+              ? (
+                <span className='flex gap-1'>
+                  <TbEdit className='text-2xl' /> {piece.name}
+                </span>
+              )
+              : <span>editing {piece.name}</span>}
         </h3>
 
         <form
@@ -282,11 +292,11 @@ export default function EquipmentForm (
                 name='name'
                 type='text'
                 value={piece.name}
+                required
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setPiece({ ...piece, name: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
-                required
               />
             </div>
 
@@ -298,12 +308,12 @@ export default function EquipmentForm (
                 id='category'
                 name='category'
                 value={piece.category}
+                required
+                className='
+                border bg-tertiary dark:bg-tertiary-dark pl-1 cursor-pointer'
                 onChange={(event) => {
                   setPiece({ ...piece, category: event.target.value });
                 }}
-                className='
-                border bg-tertiary dark:bg-tertiary-dark pl-1 cursor-pointer'
-                required
               >
                 <option value=''>-- please choose a category --</option>
                 <option value='system'>system</option>
@@ -324,11 +334,11 @@ export default function EquipmentForm (
                 name='manufacturer'
                 type='text'
                 value={piece.manufacturer}
+                required
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setPiece({ ...piece, manufacturer: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
-                required
               />
             </div>
 
@@ -341,11 +351,11 @@ export default function EquipmentForm (
                 name='code'
                 type='text'
                 value={piece.code}
+                required
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setPiece({ ...piece, code: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
-                required
               />
             </div>
 
@@ -357,11 +367,11 @@ export default function EquipmentForm (
                 id='weightUnit'
                 name='weightUnit'
                 value={piece.weightUnit}
+                className='
+                border bg-tertiary dark:bg-tertiary-dark pl-1 cursor-pointer'
                 onChange={(event) => {
                   setPiece({ ...piece, weightUnit: event.target.value });
                 }}
-                className='
-                border bg-tertiary dark:bg-tertiary-dark pl-1 cursor-pointer'
               >
                 <option value=''>-- weight unit for values below --</option>
                 <option value='kg'>kilograms</option>
@@ -378,10 +388,10 @@ export default function EquipmentForm (
                 name='weight'
                 type='number'
                 value={piece.weight}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setPiece({ ...piece, weight: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
 
@@ -405,10 +415,10 @@ export default function EquipmentForm (
                 name='startingWeight'
                 type='number'
                 value={piece.startingWeight}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setPiece({ ...piece, startingWeight: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
 
@@ -421,10 +431,10 @@ export default function EquipmentForm (
                 name='maximumWeight'
                 type='number'
                 value={piece.maximumWeight}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setPiece({ ...piece, maximumWeight: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
 
@@ -437,10 +447,10 @@ export default function EquipmentForm (
                 name='url'
                 type='url'
                 value={piece.url}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setPiece({ ...piece, url: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
 
@@ -452,10 +462,10 @@ export default function EquipmentForm (
                 id='notes'
                 name='notes'
                 value={piece.notes}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setPiece({ ...piece, notes: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
 
@@ -476,12 +486,14 @@ export default function EquipmentForm (
                 flex justify-center border border-black dark:border-white
                 bg-green-700 dark:bg-green-500 px-3 w-full
                 text-primary-text-dark dark:text-primary-text text-base
-                hover:border-white hover:dark:border-black active:font-bold
+                hover:border-white hover:dark:border-black
+                active:border-white active:dark:border-black active:font-bold
                 ${!isPending
       ? 'cursor-pointer'
       : 'cursor-progress'
     }`}
               />
+
               {state.error
                 ? (
                   <div className='self-center text-red-700 dark:text-red-400'>
@@ -493,12 +505,6 @@ export default function EquipmentForm (
           </div>
         </form>
         <button
-          onClick={() => {
-            void queryClient.invalidateQueries(
-              { queryKey: ['equipmentIdAndName'] }
-            );
-            setFormMode('hidden');
-          }}
           className={`
           self-center border bg-tertiary dark:bg-tertiary-dark py-1
           w-9/10 cursor-pointer
@@ -508,6 +514,12 @@ export default function EquipmentForm (
       ? 'mt-3'
       : ''
     }`}
+          onClick={() => {
+            void queryClient.invalidateQueries(
+              { queryKey: ['equipmentIdAndName'] }
+            );
+            setFormMode('hidden');
+          }}
         >
           return without saving
         </button>

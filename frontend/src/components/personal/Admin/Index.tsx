@@ -1,11 +1,35 @@
+import { use } from 'react';
+
 import { Link, Outlet, useLocation } from '@tanstack/react-router';
+import { CgGym } from 'react-icons/cg';
+import { MdOutlineLocationOn } from 'react-icons/md';
+
+import { IconContext } from '../../../utils/contexts';
+
+function Icon ({ pathname }: { pathname: string }) {
+  if (pathname === 'gyms') {
+    return (
+      <MdOutlineLocationOn className='text-base' />
+    );
+  }
+
+  if (pathname === 'equipment') {
+    return (
+      <CgGym className='text-base' />
+    );
+  }
+
+  return '';
+}
 
 function AdminLink ({ pathname }: { pathname: string }) {
   const currentPathname = useLocation({
     select: (location) => location.pathname
   });
 
-  const validPaths = ['equipment', 'gyms'];
+  const iconMode = use(IconContext);
+
+  const validPaths = ['equipment', 'gyms'];  /* TODO: keep updated */
   let to: string;
   if (validPaths.includes(pathname)) {
     to = `/admin/${pathname}`;
@@ -27,7 +51,9 @@ function AdminLink ({ pathname }: { pathname: string }) {
       : ''
     }`}
     >
-      {pathname}
+      {iconMode
+        ? <Icon pathname={pathname} />
+        : pathname}
     </Link>
   );
 }

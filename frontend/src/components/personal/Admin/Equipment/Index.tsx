@@ -38,7 +38,7 @@ export default function AdminEquipment () {
       <h2 className='self-center font-bold'>
         {iconMode
           ? <CgGym className='text-2xl' />
-          : 'Equipment'}
+          : 'equipment'}
       </h2>
       {formMode === 'hidden'
         ? (

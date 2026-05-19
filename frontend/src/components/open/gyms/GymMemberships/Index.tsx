@@ -29,15 +29,15 @@ function LeftArrow ({ membershipIndex, setMembershipIndex }: LeftArrowProps) {
 
   return (
     <button
-      onClick={() => {
-        setMembershipIndex(membershipIndex - 1);
-      }}
       className='
       flex justify-end border
       bg-secondary dark:bg-secondary-dark w-25
       cursor-pointer
       hover:scale-105 hover:bg-primary dark:hover:bg-background-dark
       active:scale-100'
+      onClick={() => {
+        setMembershipIndex(membershipIndex - 1);
+      }}
     >
       <FaCaretLeft />
     </button>
@@ -72,15 +72,15 @@ function RightArrow ({
 
   return (
     <button
-      onClick={() => {
-        setMembershipIndex(membershipIndex + 1);
-      }}
       className='
       flex border
       bg-secondary dark:bg-secondary-dark w-25
       cursor-pointer
       hover:bg-primary dark:hover:bg-background-dark hover:scale-105
       active:scale-100'
+      onClick={() => {
+        setMembershipIndex(membershipIndex + 1);
+      }}
     >
       <FaCaretRight />
     </button>
@@ -99,7 +99,7 @@ function LastMembership () {
         href=''
         target='_blank'
         className='border text-center hover:text-blue-600'
-      > Send a report!
+      > Send a report! {/* TODO */}
       </a>
     </div>
   );

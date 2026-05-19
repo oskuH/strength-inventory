@@ -1,4 +1,3 @@
-// work in progress
 import { useState } from 'react';
 
 import {
@@ -150,21 +149,21 @@ export default function GymEquipment (
           type='search'
           value={search}
           placeholder='search to add new equipment'
+          className='bg-background dark:bg-background-dark pl-1'
           onChange={(event) => {
             setSearch(event.target.value);
           }}
-          className='bg-background dark:bg-background-dark pl-1'
         />
       </div>
       <button
-        onClick={() => {
-          setEditForm('');
-        }}
         className='
         self-center border bg-tertiary dark:bg-tertiary-dark py-1
         w-9/10 text-xs cursor-pointer
         hover:bg-background dark:hover:bg-background-dark
         active:font-bold'
+        onClick={() => {
+          setEditForm('');
+        }}
       >
         return
       </button>

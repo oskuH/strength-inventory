@@ -22,7 +22,7 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
   } = equipment;
 
   let notNullUrl: string | undefined;
-  if (url !== null) {
+  if (url) {
     notNullUrl = url;
   }
 
@@ -38,7 +38,8 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
           setClickedEquipment(null);
         }}
         className='flex justify-center cursor-pointer'
-      >CLOSE
+      >
+        CLOSE
       </button>
       <h3 className='font-bold'>
         {notNullUrl

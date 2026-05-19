@@ -1,6 +1,5 @@
-import { type UseMutationResult } from '@tanstack/react-query';
-
 import { MdOutlinePlaylistAddCheckCircle } from 'react-icons/md';
+import { type UseMutationResult } from '@tanstack/react-query';
 
 import { type GymGetEquipment } from '@strength-inventory/schemas';
 
@@ -37,13 +36,13 @@ export default function AvailableList (
         {filteredEquipment.map((piece) => (
           <li key={piece.id}>
             <button
-              onClick={() => {
-                addEquipmentMutation.mutate({ gymId, equipmentId: piece.id });
-              }}
               disabled={currentEquipmentIds.includes(piece.id)}
               className='
               flex gap-1 pl-1 min-w-full whitespace-nowrap
               enabled:cursor-pointer'
+              onClick={() => {
+                addEquipmentMutation.mutate({ gymId, equipmentId: piece.id });
+              }}
             >
               <span className='flex w-5'>
                 {currentEquipmentIds.includes(piece.id)

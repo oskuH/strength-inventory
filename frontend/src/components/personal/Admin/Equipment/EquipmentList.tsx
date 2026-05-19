@@ -47,51 +47,51 @@ export default function EquipmentList (
         type='text'
         value={search}
         placeholder='search'
+        className='bg-background dark:bg-background-dark pl-1'
         onChange={(event) => {
           setSearch(event.target.value);
         }}
-        className='bg-background dark:bg-background-dark pl-1'
       />
       <div className='flex justify-around'>
         <button
-          onClick={() => {
-            setSelectedPieceId('');
-            setFormMode('create');
-          }}
           className='
           border border-dotted
           bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
           cursor-pointer hover:border-solid'
+          onClick={() => {
+            setSelectedPieceId('');
+            setFormMode('create');
+          }}
         >
           {iconMode
             ? <TbPlus className='text-xl md:text-2xl' />
             : 'create'}
         </button>
         <button
-          onClick={() => {
-            setFormMode('edit');
-          }}
           disabled={!selectedPieceId}
           className='
           border border-dotted
           bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
           enabled:cursor-pointer enabled:hover:border-solid
           disabled:text-secondary dark:disabled:text-secondary-dark'
+          onClick={() => {
+            setFormMode('edit');
+          }}
         >
           {iconMode
             ? <TbEdit className='text-xl md:text-2xl' />
             : 'edit'}
         </button>
         <button
-          onClick={() => {
-            deleteEquipmentMutation.mutate(selectedPieceId);
-          }}
           disabled={!selectedPieceId}
           className='
           border border-dotted
           bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
           enabled:cursor-pointer enabled:hover:border-solid
           disabled:text-secondary dark:disabled:text-secondary-dark'
+          onClick={() => {
+            deleteEquipmentMutation.mutate(selectedPieceId);
+          }}
         >
           {iconMode
             ? <TbMinus className='text-xl md:text-2xl' />

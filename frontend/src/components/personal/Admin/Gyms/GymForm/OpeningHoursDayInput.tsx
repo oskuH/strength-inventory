@@ -29,28 +29,28 @@ export default function OpeningHoursDayInput (
         id={`${group}${day}Open`}
         name={`${group}${day}Open`}
         type='number'
+        value={openTime}
         min='0'
         max={closeTime}
-        value={openTime}
+        className='
+        flex bg-background dark:bg-background-dark w-10'
         onChange={(event) => {
           setOpenTime(event.target.value);
         }}
-        className='
-        flex bg-background dark:bg-background-dark w-10'
       />
       <span>-</span>
       <input
         id={`${group}${day}Close`}
         name={`${group}${day}Close`}
         type='number'
+        value={closeTime}
         min={openTime}
         max='24'
-        value={closeTime}
+        className='
+        flex bg-background dark:bg-background-dark w-10'
         onChange={(event) => {
           setCloseTime(event.target.value);
         }}
-        className='
-        flex bg-background dark:bg-background-dark w-10'
       />
     </div>
   );

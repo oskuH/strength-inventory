@@ -14,18 +14,14 @@ export default function OpeningHours ({
   const openingHoursEveryone = Object.fromEntries(
     Object.entries(gym.openingHoursEveryone).map(([day, range]) => [
       day,
-      range
-        ? range.join('-')
-        : ''
+      range.join('-')
     ])
   );
 
   const openingHoursMembers = Object.fromEntries(
     Object.entries(gym.openingHoursMembers).map(([day, range]) => [
       day,
-      range
-        ? range.join('-')
-        : ''
+      range.join('-')
     ])
   );
 

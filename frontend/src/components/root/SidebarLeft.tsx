@@ -1,5 +1,4 @@
 import { Link, useLocation } from '@tanstack/react-router';
-
 import { MdDarkMode, MdLightMode, MdOutlineLocationOn } from 'react-icons/md';
 import { TbClock, TbContract } from 'react-icons/tb';
 import { CgGym } from 'react-icons/cg';
@@ -33,9 +32,9 @@ function IconToggle ({ iconMode, handleChange }: IconToggleProps) {
       <input
         type='checkbox'
         id='icon-mode-checkbox'
+        checked={iconMode}
         className='peer hidden'
         onChange={handleChange}
-        checked={iconMode}
       />
       <label
         htmlFor='icon-mode-checkbox'
@@ -85,9 +84,9 @@ function ThemeToggle ({ iconMode, darkMode, handleChange }: ThemeToggleProps) {
       <input
         type='checkbox'
         id='dark-mode-checkbox'
+        checked={darkMode}
         className='peer hidden'
         onChange={handleChange}
-        checked={darkMode}
       />
       <label
         htmlFor='dark-mode-checkbox'

@@ -42,15 +42,15 @@ export default function AvailableWeights ({
           {availableWeights.map((weight) => (
             <button
               key={weight}
+              className='
+              border px-1 cursor-pointer
+              hover:bg-red-400 hover:dark:bg-red-800'
               onClick={() => {
                 const newWeights
                   = availableWeights
                     .filter((availableWeight) => availableWeight !== weight);
                 setAvailableWeights(newWeights);
               }}
-              className='
-              border px-1 cursor-pointer
-              hover:bg-red-400 hover:dark:bg-red-800'
             >
               {weight}
             </button>
@@ -65,19 +65,16 @@ export default function AvailableWeights ({
             value={newWeight}
             min={0}
             step={0.001}
+            className='bg-secondary dark:bg-secondary-dark w-20'
             onChange={(event) => {
               setNewWeight(event.target.value);
               const isMismatch
                 = newWeightInputRef.current?.validity.stepMismatch;
               setIsInvalidStep(!!isMismatch);
             }}
-            className='bg-secondary dark:bg-secondary-dark w-20'
           />
           <button
             type='button'
-            onClick={() => {
-              handleAddWeight();
-            }}
             disabled={
               !newWeight || isNewWeightInvalid() || isInvalidStep
             }
@@ -87,6 +84,9 @@ export default function AvailableWeights ({
             enabled:border-black enabled:dark:border-white
             enabled:bg-green-700 enabled:dark:bg-green-500
             enabled:text-primary-text-dark enabled:dark:text-primary-text'
+            onClick={() => {
+              handleAddWeight();
+            }}
           >
             add
           </button>

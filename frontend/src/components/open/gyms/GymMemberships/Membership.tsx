@@ -44,7 +44,7 @@ export default function Membership (
   } = membership;
 
   let notNullUrl: string | undefined;
-  if (url !== null) {
+  if (url) {
     notNullUrl = url;
   }
 

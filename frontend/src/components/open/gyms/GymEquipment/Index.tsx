@@ -1,5 +1,3 @@
-// work in progress
-
 import { useState } from 'react';
 
 import Piece from './Piece';
@@ -17,10 +15,10 @@ function Category ({ name, equipment, setClickedEquipment }: CategoryProps) {
     (piece) => (
       <li key={piece.id}>
         <button
+          className='cursor-pointer text-left'
           onClick={() => {
             setClickedEquipment(piece);
           }}
-          className='cursor-pointer text-left'
         >
           {piece.name}
         </button>

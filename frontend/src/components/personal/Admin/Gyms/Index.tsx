@@ -38,7 +38,7 @@ export default function AdminGyms () {
       <h2 className='self-center font-bold'>
         {iconMode
           ? <MdOutlineLocationOn className='text-2xl' />
-          : 'Gyms'}
+          : 'gyms'}
       </h2>
       {formMode === 'hidden'
         ? (

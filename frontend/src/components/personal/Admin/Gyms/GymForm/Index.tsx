@@ -1,15 +1,17 @@
-import { useActionState, useState } from 'react';
+import { use, useActionState, useState } from 'react';
 
 import {
   skipToken, useMutation, useQuery, useQueryClient
 } from '@tanstack/react-query';
+import { TbEdit, TbPlus } from 'react-icons/tb';
 import { z } from 'zod';
 
 import { getGym, postGym, putGym } from '../../../../../utils/api';
+import { IconContext } from '../../../../../utils/contexts';
 
-import Exceptions from './Exceptions';
 import GymEquipment from './GymEquipment/Index';
 import OpeningHoursDayInput from './OpeningHoursDayInput';
+import OpeningHoursExceptions from './OpeningHoursExceptions/Index';
 
 import {
   type GymPost,
@@ -162,6 +164,8 @@ export default function GymForm (
   /* editForm denotes the subform opened on top of this form. */
   const [editForm, setEditForm] = useState('');
 
+  const iconMode = use(IconContext);
+
   interface State {
     success: boolean
     error: string | null
@@ -280,13 +284,11 @@ export default function GymForm (
     }
   }
 
-  const editedGym = gymQuery.data;
-
-  if (editedGym && editForm === 'equipment') {
+  if (editForm === 'equipment') {
     return (
       <GymEquipment
         gymId={selectedGymId}
-        gymName={editedGym.name}
+        gymName={gym.name}
         setEditForm={setEditForm}
       />
     );
@@ -302,8 +304,16 @@ export default function GymForm (
         <h3 className='flex justify-center text-base'>
           {/* formMode is either 'create' or 'edit' */}
           {formMode === 'create'
-            ? 'create new gym'
-            : <span>editing {editedGym?.name}</span>}
+            ? iconMode
+              ? <TbPlus className='text-2xl' />
+              : 'create new gym'
+            : iconMode
+              ? (
+                <span className='flex gap-1'>
+                  <TbEdit className='text-2xl' /> {gym.name}
+                </span>
+              )
+              : <span>editing {gym.name}</span>}
         </h3>
 
         <form
@@ -320,11 +330,11 @@ export default function GymForm (
                 name='name'
                 type='text'
                 value={gym.name}
+                required
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setGym({ ...gym, name: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
-                required
               />
             </div>
 
@@ -337,10 +347,10 @@ export default function GymForm (
                 name='chain'
                 type='text'
                 value={gym.chain}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setGym({ ...gym, chain: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
 
@@ -353,11 +363,11 @@ export default function GymForm (
                 name='street'
                 type='text'
                 value={gym.street}
+                required
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setGym({ ...gym, street: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
-                required
               />
             </div>
 
@@ -370,11 +380,11 @@ export default function GymForm (
                 name='streetNumber'
                 type='text'
                 value={gym.streetNumber}
+                required
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setGym({ ...gym, streetNumber: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
-                required
               />
             </div>
 
@@ -387,11 +397,11 @@ export default function GymForm (
                 name='city'
                 type='text'
                 value={gym.city}
+                required
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setGym({ ...gym, city: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
-                required
               />
             </div>
 
@@ -404,11 +414,11 @@ export default function GymForm (
                 name='district'
                 type='text'
                 value={gym.district}
+                required
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setGym({ ...gym, district: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
-                required
               />
             </div>
 
@@ -421,10 +431,10 @@ export default function GymForm (
                 name='url'
                 type='url'
                 value={gym.url}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setGym({ ...gym, url: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
 
@@ -436,10 +446,10 @@ export default function GymForm (
                 id='notes'
                 name='notes'
                 value={gym.notes}
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setGym({ ...gym, notes: event.target.value });
                 }}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
               />
             </div>
 
@@ -455,39 +465,39 @@ export default function GymForm (
                   <OpeningHoursDayInput
                     group='everyone'
                     day='MO'
-                    editedHours={editedGym?.openingHoursEveryone}
+                    editedHours={gymQuery.data?.openingHoursEveryone}
                   />
                   <OpeningHoursDayInput
                     group='everyone'
                     day='TU'
-                    editedHours={editedGym?.openingHoursEveryone}
+                    editedHours={gymQuery.data?.openingHoursEveryone}
                   />
                   <OpeningHoursDayInput
                     group='everyone'
                     day='WE'
-                    editedHours={editedGym?.openingHoursEveryone}
+                    editedHours={gymQuery.data?.openingHoursEveryone}
                   />
                   <OpeningHoursDayInput
                     group='everyone'
                     day='TH'
-                    editedHours={editedGym?.openingHoursEveryone}
+                    editedHours={gymQuery.data?.openingHoursEveryone}
                   />
                 </div>
                 <div className='flex flex-col justify-center gap-1'>
                   <OpeningHoursDayInput
                     group='everyone'
                     day='FR'
-                    editedHours={editedGym?.openingHoursEveryone}
+                    editedHours={gymQuery.data?.openingHoursEveryone}
                   />
                   <OpeningHoursDayInput
                     group='everyone'
                     day='SA'
-                    editedHours={editedGym?.openingHoursEveryone}
+                    editedHours={gymQuery.data?.openingHoursEveryone}
                   />
                   <OpeningHoursDayInput
                     group='everyone'
                     day='SU'
-                    editedHours={editedGym?.openingHoursEveryone}
+                    editedHours={gymQuery.data?.openingHoursEveryone}
                   />
                 </div>
               </div>
@@ -499,39 +509,39 @@ export default function GymForm (
                   <OpeningHoursDayInput
                     group='members'
                     day='MO'
-                    editedHours={editedGym?.openingHoursMembers}
+                    editedHours={gymQuery.data?.openingHoursMembers}
                   />
                   <OpeningHoursDayInput
                     group='members'
                     day='TU'
-                    editedHours={editedGym?.openingHoursMembers}
+                    editedHours={gymQuery.data?.openingHoursMembers}
                   />
                   <OpeningHoursDayInput
                     group='members'
                     day='WE'
-                    editedHours={editedGym?.openingHoursMembers}
+                    editedHours={gymQuery.data?.openingHoursMembers}
                   />
                   <OpeningHoursDayInput
                     group='members'
                     day='TH'
-                    editedHours={editedGym?.openingHoursMembers}
+                    editedHours={gymQuery.data?.openingHoursMembers}
                   />
                 </div>
                 <div className='flex flex-col justify-center gap-1'>
                   <OpeningHoursDayInput
                     group='members'
                     day='FR'
-                    editedHours={editedGym?.openingHoursMembers}
+                    editedHours={gymQuery.data?.openingHoursMembers}
                   />
                   <OpeningHoursDayInput
                     group='members'
                     day='SA'
-                    editedHours={editedGym?.openingHoursMembers}
+                    editedHours={gymQuery.data?.openingHoursMembers}
                   />
                   <OpeningHoursDayInput
                     group='members'
                     day='SU'
-                    editedHours={editedGym?.openingHoursMembers}
+                    editedHours={gymQuery.data?.openingHoursMembers}
                   />
                 </div>
               </div>
@@ -554,10 +564,10 @@ export default function GymForm (
                 type='checkbox'
                 value='visible'
                 checked={gym.equipmentVisible}
+                hidden={formMode === 'create'}
                 onChange={() => {
                   setGym({ ...gym, equipmentVisible: !gym.equipmentVisible });
                 }}
-                hidden={formMode === 'create'}
               />
             </div>
             <div className='flex gap-1'>
@@ -574,12 +584,12 @@ export default function GymForm (
                 type='checkbox'
                 value='visible'
                 checked={gym.membershipsVisible}
+                hidden={formMode === 'create'}
                 onChange={() => {
                   setGym({
                     ...gym, membershipsVisible: !gym.membershipsVisible
                   });
                 }}
-                hidden={formMode === 'create'}
               />
             </div>
             <div className='flex gap-1'>
@@ -600,19 +610,21 @@ export default function GymForm (
               />
             </div>
           </div>
-          {/* actual submit button is below <Exceptions /> */}
+          {/* Actual submit button is below <OpeningHoursExceptions />. */}
           <input
             type='submit'
             id='submit-form'
-            className='hidden'
             disabled={isPending}
+            className='hidden'
           />
         </form>
 
-        <Exceptions exceptions={exceptions} setExceptions={setExceptions} />
+        <OpeningHoursExceptions
+          exceptions={exceptions} setExceptions={setExceptions}
+        />
 
-        {/* actual submit button outside the <form>
-        to have <Exceptions /> appear as part of the form */}
+        {/* Actual submit button outside the <form>
+        to have <OpeningHoursExceptions /> appear as part of the form. */}
         <label
           htmlFor='submit-form'
           tabIndex={0} /* make this tab-selectable */
@@ -654,47 +666,43 @@ export default function GymForm (
             ? (
               <>
                 <button
-                  onClick={() => {
-                    setEditForm('equipment');
-                  }}
                   className='
                   border bg-tertiary dark:bg-tertiary-dark py-1 cursor-pointer
                   hover:bg-background dark:hover:bg-background-dark
                   active:font-bold'
+                  onClick={() => {
+                    setEditForm('equipment');
+                  }}
                 >
                   edit equipment
                 </button>
                 <button
+                  disabled /* TODO: upcoming alpha feature */
                   className='
                   border bg-tertiary dark:bg-tertiary-dark py-1
-                  text-red-700 dark:text-red-400 cursor-pointer
+                  text-red-700 dark:text-red-400
+                  cursor-not-allowed enabled:cursor-pointer
                   hover:bg-background dark:hover:bg-background-dark
                   active:font-bold'
-                  disabled
                 >
-                  edit memberships {/* todo */}
+                  edit memberships
                 </button>
                 <button
+                  disabled /* TODO: upcoming beta feature */
                   className='
                   border bg-tertiary dark:bg-tertiary-dark py-1
-                  text-red-700 dark:text-red-400 enabled:cursor-pointer
+                  text-red-700 dark:text-red-400
+                  cursor-not-allowed enabled:cursor-pointer
                   enabled:hover:bg-background
                   enabled:dark:hover:bg-background-dark
                   enabled:active:font-bold'
-                  disabled
                 >
-                  edit managers {/* todo */}
+                  edit managers
                 </button>
               </>
             )
             : null}
           <button
-            onClick={() => {
-              void queryClient.invalidateQueries(
-                { queryKey: ['gymsIdAndName'] }
-              );
-              setFormMode('hidden');
-            }}
             className={`
             self-center border bg-tertiary dark:bg-tertiary-dark py-1
             w-9/10 cursor-pointer
@@ -704,6 +712,12 @@ export default function GymForm (
       ? 'mt-3'
       : ''
     }`}
+            onClick={() => {
+              void queryClient.invalidateQueries(
+                { queryKey: ['gymsIdAndName'] }
+              );
+              setFormMode('hidden');
+            }}
           >
             return without saving
           </button>

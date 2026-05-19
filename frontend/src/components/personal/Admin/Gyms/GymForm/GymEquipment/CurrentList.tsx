@@ -5,7 +5,6 @@ import {
   IoRemoveCircleOutline
 } from 'react-icons/io5';
 import { TiDelete, TiDeleteOutline } from 'react-icons/ti';
-
 import { type UseMutationResult } from '@tanstack/react-query';
 
 import { type GymGetEquipment } from '@strength-inventory/schemas';
@@ -56,6 +55,7 @@ export default function CurrentList ({
                 className='flex justify-center gap-1 w-20'
               >
                 <button
+                  className='group relative flex cursor-pointer'
                   onClick={() => {
                     if (piece.gymequipment.count > 1) {
                       setEquipmentCountMutation.mutate({
@@ -64,7 +64,6 @@ export default function CurrentList ({
                       });
                     }
                   }}
-                  className='group relative flex cursor-pointer'
                 >
                   <IoRemoveCircleOutline
                     className='
@@ -79,13 +78,13 @@ export default function CurrentList ({
                 </button>
                 <span>{piece.gymequipment.count}</span>
                 <button
+                  className='group relative flex cursor-pointer'
                   onClick={() => {
                     setEquipmentCountMutation.mutate({
                       relationshipId: piece.gymequipment.id,
                       count: piece.gymequipment.count + 1
                     });
                   }}
-                  className='group relative flex cursor-pointer'
                 >
                   <IoAddCircleOutline
                     className='
@@ -101,12 +100,12 @@ export default function CurrentList ({
               </div>
               <div className='flex w-5'>
                 <button
+                  className='group relative flex cursor-pointer'
                   onClick={() => {
                     removeEquipmentMutation.mutate({
                       gymId, equipmentId: piece.id
                     });
                   }}
-                  className='group relative flex cursor-pointer'
                 >
                   <TiDeleteOutline
                     className='
