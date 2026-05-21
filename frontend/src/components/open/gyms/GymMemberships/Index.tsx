@@ -106,9 +106,10 @@ function LastMembership () {
 }
 
 export default function GymMemberships ({ gym }: { gym: GymGet }) {
+  const [membershipIndex, setMembershipIndex] = useState(0);
+
   const memberships = gym.memberships;
   const membershipCount = memberships.length;
-  const [membershipIndex, setMembershipIndex] = useState(0);
 
   if (membershipCount === 0) {
     return (

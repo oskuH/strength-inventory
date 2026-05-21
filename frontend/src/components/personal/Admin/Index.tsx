@@ -23,11 +23,11 @@ function Icon ({ pathname }: { pathname: string }) {
 }
 
 function AdminLink ({ pathname }: { pathname: string }) {
+  const iconMode = use(IconContext);
+
   const currentPathname = useLocation({
     select: (location) => location.pathname
   });
-
-  const iconMode = use(IconContext);
 
   const validPaths = ['equipment', 'gyms'];  /* TODO: keep updated */
   let to: string;

@@ -68,7 +68,7 @@ membershipsRouter.put(
     res: Response<FullMembership>
   ) => {
     if (!req.targetMembership) {
-      throw new Error('Membership missing from request.');
+      throw Error('Membership missing from request.');
     }  // Should never trigger after middleware.
 
     const membership = req.targetMembership;
@@ -114,7 +114,7 @@ membershipsRouter.delete( // TODO: add (chain) manager permissions
   ...isAdmin,
   async (req, res) => {
     if (!req.targetMembership) {
-      throw new Error('Membership missing from request.');
+      throw Error('Membership missing from request.');
     }  // Should never trigger after middleware.
 
     const membership = req.targetMembership;

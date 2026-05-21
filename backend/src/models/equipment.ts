@@ -72,11 +72,11 @@ Equipment.init({
     type: DataTypes.ENUM('kg', 'lbs')
   },
   weight: {
-    type: DataTypes.FLOAT
+    type: DataTypes.DECIMAL(5, 2)
     // As per customValidator(), using this field requires weightUnit !== null.
   },
   startingWeight: {
-    type: DataTypes.FLOAT
+    type: DataTypes.DECIMAL(5, 2)
     // As per customValidator(), using this field requires weightUnit !== null.
   },
   availableWeights: {
@@ -84,7 +84,7 @@ Equipment.init({
     // As per customValidator(), using this field requires weightUnit !== null.
   },
   maximumWeight: {
-    type: DataTypes.FLOAT
+    type: DataTypes.DECIMAL(5, 2)
     // As per customValidator(), using this field requires weightUnit !== null.
   },
   url: {
@@ -112,7 +112,7 @@ Equipment.init({
           || instance.maximumWeight
         )
       ) {
-        throw new Error(
+        throw Error(
           'weight unit must be selected if other weight data is used'
         );
       }

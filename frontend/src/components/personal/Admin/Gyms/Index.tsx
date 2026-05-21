@@ -11,22 +11,22 @@ import GymForm from './GymForm/Index.tsx';
 import GymList from './GymList.tsx';
 
 export default function AdminGyms () {
-  const [selectedGymId, setSelectedGymId] = useState('');
-  const [formMode, setFormMode] = useState('hidden');
-
   const iconMode = use(IconContext);
 
-  const gymsQuery = useQuery({
+  const [formMode, setFormMode] = useState('hidden');
+  const [selectedGymId, setSelectedGymId] = useState('');
+
+  const { isPending, isError, data, error } = useQuery({
     queryKey: ['gymsIdAndName'],
     queryFn: () => getGymsIdAndName()
   });
 
-  if (gymsQuery.isPending) {
+  if (isPending) {
     return <p>Loading...</p>;
   }
 
-  if (gymsQuery.isError) {
-    return <p>Error: {gymsQuery.error.message}</p>;
+  if (isError) {
+    return <p>Error: {error.message}</p>;
   }
 
   return (
@@ -43,7 +43,7 @@ export default function AdminGyms () {
       {formMode === 'hidden'
         ? (
           <GymList
-            data={gymsQuery.data}
+            data={data}
             selectedGymId={selectedGymId}
             setSelectedGymId={setSelectedGymId}
             setFormMode={setFormMode}

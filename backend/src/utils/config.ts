@@ -9,7 +9,7 @@ if (NODE_ENV === 'test' && typeof TEST_DATABASE_URI === 'string') {
 } else if (typeof DATABASE_URI === 'string') {
   DB_URI = DATABASE_URI;
 } else {
-  throw new Error('A database URI environment variable is not defined.');
+  throw Error('A database URI environment variable is not defined.');
 }
 const PORT = process.env.PORT ?? 3000;
 

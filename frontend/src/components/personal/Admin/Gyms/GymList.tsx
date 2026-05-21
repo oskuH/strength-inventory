@@ -18,9 +18,8 @@ interface GymListProps {
 export default function GymList (
   { data, selectedGymId, setSelectedGymId, setFormMode }: GymListProps
 ) {
-  const [search, setSearch] = useState('');
-
   const iconMode = use(IconContext);
+
   const queryClient = useQueryClient();
 
   const deleteGymMutation = useMutation({
@@ -31,6 +30,8 @@ export default function GymList (
       setSelectedGymId('');
     }
   });
+
+  const [search, setSearch] = useState('');
 
   let filteredItems: { id: string, name: string }[] | undefined = data;
   if (search !== '' && data) {

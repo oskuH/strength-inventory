@@ -68,10 +68,15 @@ beforeEach(async () => {
   await Gym.create({
     id: mayorId,
     name: 'Mayor\'s gym',
+    chain: '',
     street: 'Porkkalankatu',
     streetNumber: '13N',
     district: 'Ruoholahti',
-    city: 'Helsinki'
+    city: 'Helsinki',
+    equipmentVisible: false,
+    membershipsVisible: false,
+    openingHoursVisible: false,
+    notes: ''
   });
 
   await Gym.create({
@@ -81,7 +86,11 @@ beforeEach(async () => {
     street: 'Kaivokatu',
     streetNumber: '8',
     district: 'Kluuvi',
-    city: 'Helsinki'
+    city: 'Helsinki',
+    equipmentVisible: false,
+    membershipsVisible: false,
+    openingHoursVisible: false,
+    notes: ''
   });
 
   await GymManagers.create({

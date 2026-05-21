@@ -44,7 +44,7 @@ gymsRouter.get('/', async (_req, res) => {
 // targetGymExtractor returns same includes as the above GET all route
 gymsRouter.get('/:id', targetGymExtractor, (req, res) => {
   if (!req.targetGym) {
-    throw new Error('Gym missing from request.');
+    throw Error('Gym missing from request.');
   }  // Should never trigger after middleware.
 
   const gym = req.targetGym;
@@ -54,7 +54,7 @@ gymsRouter.get('/:id', targetGymExtractor, (req, res) => {
 // GET a gym's equipment
 gymsRouter.get('/:id/equipment', targetGymExtractor, async (req, res) => {
   if (!req.targetGym) {
-    throw new Error('Gym missing from request.');
+    throw Error('Gym missing from request.');
   }  // Should never trigger after middleware.
 
   const equipment = await req.targetGym.getEquipment();
@@ -117,7 +117,7 @@ gymsRouter.post(
     res
   ) => {
     if (!req.targetGym) {
-      throw new Error('Gym missing from request.');
+      throw Error('Gym missing from request.');
     }  // Should never trigger after middleware.
 
     const gym = req.targetGym;
@@ -138,7 +138,7 @@ gymsRouter.put(
     res: Response<FullGym>
   ) => {
     if (!req.targetGym) {
-      throw new Error('Gym missing from request.');
+      throw Error('Gym missing from request.');
     }  // Should never trigger after middleware.
 
     const gym = req.targetGym;
@@ -191,7 +191,7 @@ gymsRouter.patch(
     res: Response<FullGym>
   ) => {
     if (!req.targetGym) {
-      throw new Error('Gym missing from request.');
+      throw Error('Gym missing from request.');
     }  // Should never trigger after middleware.
 
     const gym = req.targetGym;
@@ -222,7 +222,7 @@ gymsRouter.patch(
     res: Response<FullGym>
   ) => {
     if (!req.targetGym) {
-      throw new Error('Gym missing from request.');
+      throw Error('Gym missing from request.');
     }  // Should never trigger after middleware.
 
     const gym = req.targetGym;
@@ -262,7 +262,7 @@ gymsRouter.patch(
 // DELETE for admins to delete a gym
 gymsRouter.delete('/:id', ...isAdmin, targetGymExtractor, async (req, res) => {
   if (!req.targetGym) {
-    throw new Error('Gym missing from request.');
+    throw Error('Gym missing from request.');
   }  // Should never trigger after middleware.
 
   const gym = req.targetGym;
@@ -281,7 +281,7 @@ gymsRouter.delete(
     res
   ) => {
     if (!req.targetGym) {
-      throw new Error('Gym missing from request.');
+      throw Error('Gym missing from request.');
     }  // Should never trigger after middleware.
 
     const gym = req.targetGym;

@@ -18,9 +18,8 @@ interface EquipmentListProps {
 export default function EquipmentList (
   { data, selectedPieceId, setSelectedPieceId, setFormMode }: EquipmentListProps
 ) {
-  const [search, setSearch] = useState('');
-
   const iconMode = use(IconContext);
+
   const queryClient = useQueryClient();
 
   const deleteEquipmentMutation = useMutation({
@@ -31,6 +30,8 @@ export default function EquipmentList (
       setSelectedPieceId('');
     }
   });
+
+  const [search, setSearch] = useState('');
 
   let filteredItems: { id: string, name: string }[] | undefined = data;
   if (search !== '' && data) {

@@ -5,14 +5,16 @@ import { use, useId, useState } from 'react';
 import { BsPeople, BsPeopleFill } from 'react-icons/bs';
 import { FaAddressCard, FaRegAddressCard } from 'react-icons/fa6';
 
+import { IconContext } from '../../../../utils/contexts';
+
 import ModeButton from './ModeButton';
 import OpeningHours from './OpeningHours';
 
 import type { GymGet } from '@strength-inventory/schemas';
 
-import { IconContext } from '../../../../utils/contexts';
-
 export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
+  const iconMode = use(IconContext);
+
   const [hoursMode, setHoursMode] = useState('regular');
   const [membersOnly, setMembersOnly] = useState(
     () => {
@@ -35,8 +37,6 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
       }
     }
   );
-
-  const iconMode = use(IconContext);
 
   function handleHoursModeToggle (title: string) {
     setHoursMode(title);

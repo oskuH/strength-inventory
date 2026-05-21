@@ -64,7 +64,7 @@ usersRouter.patch(
     res: Response<FullUser>
   ) => {
     if (!req.user) {
-      throw new Error('User missing from request.');
+      throw Error('User missing from request.');
     }  // Should never trigger after middleware.
 
     const user = req.user;
@@ -87,7 +87,7 @@ usersRouter.patch(
     res: Response<FullUser>
   ) => {
     if (!req.user) {
-      throw new Error('User missing from request.');
+      throw Error('User missing from request.');
     }  // Should never trigger after middleware.
 
     const user = req.user;
@@ -110,7 +110,7 @@ usersRouter.patch(
     res: Response<FullUser>
   ) => {
     if (!req.user) {
-      throw new Error('User missing from request.');
+      throw Error('User missing from request.');
     }  // Should never trigger after middleware.
 
     const user = req.user;
@@ -137,7 +137,7 @@ usersRouter.patch(
     res: Response<FullUser>
   ) => {
     if (!req.targetUser) {
-      throw new Error('User missing from request.');
+      throw Error('User missing from request.');
     }  // Should never trigger after middleware.
 
     const user = req.targetUser;
@@ -161,7 +161,7 @@ usersRouter.put(
     res: Response<FullUser>
   ) => {
     if (!req.targetUser) {
-      throw new Error('User missing from request.');
+      throw Error('User missing from request.');
     }  // Should never trigger after middleware.
 
     const user = req.targetUser;
@@ -192,7 +192,7 @@ usersRouter.delete(
   targetUserExtractor,
   async (req, res) => {
     if (!req.targetUser) {
-      throw new Error('User missing from request.');
+      throw Error('User missing from request.');
     }  // Should never trigger after middleware.
 
     const user = req.targetUser;

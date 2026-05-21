@@ -21,7 +21,7 @@ equipmentRouter.get('/', async (_req, res) => {
 // targetEquipmentExtractor returns same includes as the above GET all route
 equipmentRouter.get('/:id', targetEquipmentExtractor, (req, res) => {
   if (!req.targetEquipment) {
-    throw new Error('Gym missing from request.');
+    throw Error('Gym missing from request.');
   }  // Should never trigger after middleware.
 
   const equipment = req.targetEquipment;
@@ -78,7 +78,7 @@ equipmentRouter.put(
     res: Response<FullEquipment>
   ) => {
     if (!req.targetEquipment) {
-      throw new Error('Equipment missing from request.');
+      throw Error('Equipment missing from request.');
     }  // Should never trigger after middleware.
 
     const equipment = req.targetEquipment;
@@ -122,7 +122,7 @@ equipmentRouter.delete(
   targetEquipmentExtractor,
   async (req, res) => {
     if (!req.targetEquipment) {
-      throw new Error('Equipment missing from request.');
+      throw Error('Equipment missing from request.');
     }  // Should never trigger after middleware.
 
     const equipment = req.targetEquipment;

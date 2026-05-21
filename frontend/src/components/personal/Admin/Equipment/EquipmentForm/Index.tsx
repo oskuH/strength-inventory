@@ -26,6 +26,8 @@ export default function EquipmentForm (
   { formMode, setFormMode, selectedPieceId, setSelectedPieceId }:
   EquipmentFormProps
 ) {
+  const iconMode = use(IconContext);
+
   const queryClient = useQueryClient();
 
   const pieceQuery = useQuery({
@@ -52,11 +54,6 @@ export default function EquipmentForm (
       queryClient
         .setQueryData(['piece', selectedPieceId], editedPieceFromServer);
     }
-  });
-
-  const [state, submitAction, isPending] = useActionState(submit, {
-    success: true,
-    error: null
   });
 
   /* React 19's useActionState has had a bug since its 2024 release
@@ -112,7 +109,10 @@ export default function EquipmentForm (
   const [availableWeights, setAvailableWeights]
     = useState<number[] | undefined>();
 
-  const iconMode = use(IconContext);
+  const [state, submitAction, isPending] = useActionState(submit, {
+    success: true,
+    error: null
+  });
 
   interface State {
     success: boolean

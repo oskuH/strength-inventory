@@ -11,22 +11,22 @@ import EquipmentForm from './EquipmentForm/Index';
 import EquipmentList from './EquipmentList';
 
 export default function AdminEquipment () {
+  const iconMode = use(IconContext);
+
   const [selectedPieceId, setSelectedPieceId] = useState('');
   const [formMode, setFormMode] = useState('hidden');
 
-  const iconMode = use(IconContext);
-
-  const equipmentQuery = useQuery({
+  const { isPending, isError, data, error } = useQuery({
     queryKey: ['equipmentIdAndName'],
     queryFn: () => getEquipmentIdAndName()
   });
 
-  if (equipmentQuery.isPending) {
+  if (isPending) {
     return <p>Loading...</p>;
   }
 
-  if (equipmentQuery.isError) {
-    return <p>Error: {equipmentQuery.error.message}</p>;
+  if (isError) {
+    return <p>Error: {error.message}</p>;
   }
 
   return (
@@ -43,7 +43,7 @@ export default function AdminEquipment () {
       {formMode === 'hidden'
         ? (
           <EquipmentList
-            data={equipmentQuery.data}
+            data={data}
             selectedPieceId={selectedPieceId}
             setSelectedPieceId={setSelectedPieceId}
             setFormMode={setFormMode}

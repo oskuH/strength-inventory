@@ -26,8 +26,6 @@ export default function GymEquipment (
 ) {
   const queryClient = useQueryClient();
 
-  const [search, setSearch] = useState('');
-
   const gymEquipmentQuery = useQuery({
     queryKey: ['gymEquipment', gymId],
     queryFn: () => getGymEquipment({ gymId: gymId })
@@ -90,6 +88,8 @@ export default function GymEquipment (
       }
     }
   });
+
+  const [search, setSearch] = useState('');
 
   if (gymEquipmentQuery.isPending || equipmentQuery.isPending) {
     return <p>Loading...</p>;

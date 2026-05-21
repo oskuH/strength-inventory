@@ -57,7 +57,11 @@ beforeEach(async () => {
     street: 'Albertinkatu',
     streetNumber: '29',
     district: 'Punavuori',
-    city: 'Helsinki'
+    city: 'Helsinki',
+    equipmentVisible: false,
+    membershipsVisible: false,
+    openingHoursVisible: false,
+    notes: ''
   });
 
   await Gym.create({
@@ -67,7 +71,6 @@ beforeEach(async () => {
     streetNumber: '48',
     district: 'Kamppi',
     city: 'Helsinki',
-    notes: 'A lot of natural light',
     openingHoursMembers: {
       MO: [6, 22],
       TU: [6, 22],
@@ -76,7 +79,11 @@ beforeEach(async () => {
       FR: [6, 21],
       SA: [8, 20],
       SU: [8, 20]
-    }
+    },
+    equipmentVisible: false,
+    membershipsVisible: false,
+    openingHoursVisible: false,
+    notes: 'A lot of natural light'
   });
 });
 

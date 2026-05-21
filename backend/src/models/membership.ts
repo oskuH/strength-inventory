@@ -99,7 +99,7 @@ Membership.init({
       const instance = this as unknown as Membership;
 
       if (!instance.commitmentUnit && instance.commitment) {
-        throw new Error(
+        throw Error(
           'commitment unit must be selected if there is commitment'
         );
       }

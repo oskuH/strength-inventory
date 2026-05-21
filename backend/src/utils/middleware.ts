@@ -488,7 +488,7 @@ const adjustUserRole = async (
 ): Promise<void> => {
   const user = await User.findByPk(userId);
   if (!user) {
-    throw new Error(`User with ID ${userId} not found.`);
+    throw Error(`User with ID ${userId} not found.`);
   }
 
   if (user.role === 'ADMIN' || user.role === 'SUPERUSER') {

@@ -110,6 +110,8 @@ export default function GymForm (
     return formattedGym;
   }
 
+  const iconMode = use(IconContext);
+
   const queryClient = useQueryClient();
 
   const gymQuery = useQuery({
@@ -133,11 +135,6 @@ export default function GymForm (
     onSuccess: (editedGymFromServer) => {
       queryClient.setQueryData(['gym', selectedGymId], editedGymFromServer);
     }
-  });
-
-  const [state, submitAction, isPending] = useActionState(submit, {
-    success: false,
-    error: null
   });
 
   const [gym, setGym] = useState({
@@ -164,7 +161,10 @@ export default function GymForm (
   /* editForm denotes the subform opened on top of this form. */
   const [editForm, setEditForm] = useState('');
 
-  const iconMode = use(IconContext);
+  const [state, submitAction, isPending] = useActionState(submit, {
+    success: false,
+    error: null
+  });
 
   interface State {
     success: boolean
@@ -265,7 +265,7 @@ export default function GymForm (
 
     setGym({
       name: name,
-      chain: chain ?? '',
+      chain: chain,
       street: street,
       streetNumber: streetNumber,
       district: district,
@@ -274,7 +274,7 @@ export default function GymForm (
       equipmentVisible: equipmentVisible,
       membershipsVisible: membershipsVisible,
       openingHoursVisible: openingHoursVisible,
-      notes: notes ?? ''
+      notes: notes
     });
 
     if (gymQuery.data.openingHoursExceptions.data) {

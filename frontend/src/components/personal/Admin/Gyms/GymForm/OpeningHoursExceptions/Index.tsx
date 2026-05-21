@@ -19,11 +19,11 @@ interface OpeningHoursExceptionsProps {
 export default function OpeningHoursExceptions ({
   exceptions, setExceptions
 }: OpeningHoursExceptionsProps) {
+  const iconMode = use(IconContext);
+
   const [selectedExceptionId, setSelectedExceptionId] = useState('');
   const [addException, setAddException] = useState(false);
   const [editedException, setEditedException] = useState('');
-
-  const iconMode = use(IconContext);
 
   return (
     <div className='flex flex-col gap-1'>

@@ -27,7 +27,7 @@ loginRouter.get(
   userExtractor,
   (req: Request, res: Response<UserFrontend>) => {
     if (!req.user) {
-      throw new Error('User missing from request.');
+      throw Error('User missing from request.');
     }  // Should never trigger after middleware.
 
     const { id, username, email, emailVerified, name, role } = req.user;

@@ -33,7 +33,7 @@ gymMembershipsRouter.post(
     res: Response<FullGymMembership>
   ) => {
     if (!req.targetGym) {
-      throw new Error('Gym missing from request.');
+      throw Error('Gym missing from request.');
     }  // Should never trigger after middleware.
 
     const gymId = req.targetGym.id;
@@ -54,7 +54,7 @@ gymMembershipsRouter.delete(
   ...isAdmin,
   async (req, res) => {
     if (!req.targetGymMembership) {
-      throw new Error('Association missing from request.');
+      throw Error('Association missing from request.');
     }  // Should never trigger after middleware.
 
     const junction = req.targetGymMembership;
