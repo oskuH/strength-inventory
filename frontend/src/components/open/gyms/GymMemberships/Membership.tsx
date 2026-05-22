@@ -1,7 +1,7 @@
 import { FaEuroSign } from 'react-icons/fa6';
 import { TbWorldWww } from 'react-icons/tb';
 
-import type { MembershipGet } from '@strength-inventory/schemas';
+import type { Membership } from '@strength-inventory/schemas';
 
 interface AvailabilityItemProps {
   itemName: string
@@ -27,7 +27,7 @@ function CurrencySymbol ({ feeCurrency }: { feeCurrency: string }) {
 }
 
 export default function Membership (
-  { membership }: { membership: MembershipGet }
+  { membership }: { membership: Membership }
 ) {
   const {
     name,

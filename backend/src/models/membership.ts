@@ -28,7 +28,7 @@ class Membership extends Model<
   declare validity: number;
   declare validityUnit: MembershipTimeUnit;
   declare commitment: number | null | undefined;
-  declare commitmentUnit: MembershipTimeUnit | undefined;
+  declare commitmentUnit: MembershipTimeUnit | null | undefined;
   declare initiationFee: number | null | undefined;
   declare availability: MembershipAvailability;
   declare url: string | null | undefined;

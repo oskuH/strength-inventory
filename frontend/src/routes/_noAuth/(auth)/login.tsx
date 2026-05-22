@@ -1,8 +1,8 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 
-import Login from '../../components/auth/Login';
+import Login from '../../../components/authentication/Login';
 
-export const Route = createFileRoute('/(auth)/login')({
+export const Route = createFileRoute('/_noAuth/(auth)/login')({
   validateSearch: (search) => ({
     redirect: (search.redirect as string) || '/'
   }),

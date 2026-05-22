@@ -34,7 +34,7 @@ export const MembershipAvailabilitySchema = z.object({
 })
 export type MembershipAvailability = z.infer<typeof MembershipAvailabilitySchema>;
 
-export const MembershipSchema = z.object({
+const MembershipBaseSchema = z.object({
   id: z.uuidv4(),
   chain: z.string(),
   name: z.string().min(1),
@@ -42,8 +42,6 @@ export const MembershipSchema = z.object({
   membershipFee: z.number(),
   validity: z.int(),
   validityUnit: MembershipTimeUnitEnum,
-  commitment: z.int().nullish(),
-  commitmentUnit: MembershipTimeUnitEnum.optional(),  // TODO: custom validator
   initiationFee: z.number().nullish(),
   availability: MembershipAvailabilitySchema,
   url: z.preprocess(
@@ -53,41 +51,48 @@ export const MembershipSchema = z.object({
   notes: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date()
-});
+})
+
+const MembershipWithCommitmentSchema = z.object({
+  commitment: z.preprocess((val) => {
+    if (typeof val === 'string') {
+      if (val) {
+        return Number.parseInt(val)
+      } else {
+        return null
+      }
+    }
+    return val;
+  }, z.int()),
+  commitmentUnit: MembershipTimeUnitEnum
+})
+
+const MembershipWithoutCommitmentSchema = z.object({
+  commitment: z.preprocess((val) => {
+    if (typeof val === 'string') {
+      if (val) {
+        return Number.parseInt(val)
+      } else {
+        return null
+      }
+    }
+    return val;
+  }, z.null()),
+  commitmentUnit: z.preprocess(() => {
+    return null
+  }, z.null())
+})
+
+const MembershipCommitmentSchema = z.discriminatedUnion('commitment', [
+  MembershipWithCommitmentSchema, MembershipWithoutCommitmentSchema
+])
+
+export const MembershipSchema = z.intersection(MembershipBaseSchema, MembershipCommitmentSchema)
 export type Membership = z.infer<typeof MembershipSchema>;
 
-export const MembershipGetSchema = MembershipSchema.pick({
-  chain: true,
-  name: true,
-  feeCurrency: true,
-  validity: true,
-  validityUnit: true,
-  commitment: true,
-  commitmentUnit: true,
-  initiationFee: true,
-  availability: true,
-  url: true,
-  notes: true
-}).extend({
-  membershipFee: z.string().min(1),
-  initiationFee: z.string()
-})
-export type MembershipGet = z.infer<typeof MembershipGetSchema>;
-
-export const MembershipPostAndPutSchema = MembershipSchema.pick({
-  chain: true,
-  name: true,
-  feeCurrency: true,
-  membershipFee: true,
-  validity: true,
-  validityUnit: true,
-  commitment: true,
-  commitmentUnit: true,
-  initiationFee: true,
-  availability: true,
-  url: true,
-  notes: true
-});
+export const MembershipPostAndPutSchema = z.intersection(
+    MembershipBaseSchema.omit({ id: true, createdAt: true, updatedAt: true }),
+    MembershipCommitmentSchema)
 export type MembershipPostAndPut = z.infer<typeof MembershipPostAndPutSchema>;
 
 
@@ -172,7 +177,7 @@ export const UserFrontendQuerySchema = UserSchema.pick({
   name: true,
   role: true
 })
-export const UserFrontendSchema = UserFrontendQuerySchema.optional()
+export const UserFrontendSchema = UserFrontendQuerySchema.nullish()
 export type UserFrontend = z.infer<typeof UserFrontendSchema>
 
 
@@ -181,17 +186,26 @@ export type UserFrontend = z.infer<typeof UserFrontendSchema>
 export const EquipmentCategoryEnum = z.enum(['accessoryOrTool', 'cardio', 'freeWeight', 'handleAttachment', 'strengthMachine', 'system']);
 export type EquipmentCategory = z.infer<typeof EquipmentCategoryEnum>;
 
-export const EquipmentWeightUnitEnum = z.preprocess((val) =>
-(val === '' ? undefined : val), z.enum(['kg', 'lbs']).nullish())
+export const EquipmentWeightUnitEnum = z.enum(['kg', 'lbs'])
 export type EquipmentWeightUnit = z.infer<typeof EquipmentWeightUnitEnum>;
 
-export const EquipmentSchema = z.object({
+const EquipmentBaseSchema = z.object({
   id: z.uuidv4(),
   name: z.string().min(1),
   category: EquipmentCategoryEnum,
   manufacturer: z.string().min(1),
   code: z.string().min(1),
-  weightUnit: EquipmentWeightUnitEnum,  // TODO: custom validator for this and the three below
+  url: z.preprocess(
+    (val) => (val === '' ? undefined : val),
+    z.url().nullish()
+  ),
+  notes: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
+})
+
+const EquipmentWithWeightsSchema = z.object({
+  weightUnit: EquipmentWeightUnitEnum,
   weight: z.preprocess((val) => {
     if (!val) {
       return undefined
@@ -226,29 +240,57 @@ export const EquipmentSchema = z.object({
     }
     return val;
   }, z.float32().nullish()),
-  url: z.preprocess(
-    (val) => (val === '' ? undefined : val),
-    z.url().nullish()
-  ),
-  notes: z.string(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date()
-});
+})
+
+const EquipmentWithoutWeightsSchema = z.object({
+  weightUnit: z.null(),
+  weight: z.preprocess((val) => {
+    if (!val) {
+      return null
+    }
+    if (typeof val === 'string') {
+      if (val) {
+        return Number.parseFloat(val)
+      } else {
+        return null
+      }
+    }
+    return val;
+  }, z.null('Select a weight unit to use weights.')),
+  startingWeight: z.preprocess((val) => {
+    if (typeof val === 'string') {
+      if (val) {
+        return Number.parseFloat(val)
+      } else {
+        return null
+      }
+    }
+    return val;
+  }, z.null('Select a weight unit to use weights.')),
+  availableWeights: z.array(z.float32()).length(0, 'Select a weight unit to use weights.').nullish(),
+  maximumWeight: z.preprocess((val) => {
+    if (typeof val === 'string') {
+      if (val) {
+        return Number.parseFloat(val)
+      } else {
+        return null
+      }
+    }
+    return val;
+  }, z.null('Select a weight unit to use weights.'))
+})
+
+const EquipmentWeightsSchema = z.discriminatedUnion('weightUnit', [
+  EquipmentWithWeightsSchema, EquipmentWithoutWeightsSchema
+])
+
+export const EquipmentSchema = z.intersection(EquipmentBaseSchema, EquipmentWeightsSchema)
 export type Equipment = z.infer<typeof EquipmentSchema>;
 
-export const EquipmentPostAndPutSchema = EquipmentSchema.pick({
-  name: true,
-  category: true,
-  manufacturer: true,
-  code: true,
-  weightUnit: true,
-  weight: true,
-  startingWeight: true,
-  availableWeights: true,
-  maximumWeight: true,
-  url: true,
-  notes: true
-}); export type EquipmentPostAndPut = z.infer<typeof EquipmentPostAndPutSchema>;
+export const EquipmentPostAndPutSchema = z.intersection(
+  EquipmentBaseSchema.omit({ id: true, createdAt: true, updatedAt: true }),
+  EquipmentWeightsSchema)
+export type EquipmentPostAndPut = z.infer<typeof EquipmentPostAndPutSchema>;
 
 
 // gymequipment
@@ -318,14 +360,14 @@ export const GymGetSchema = GymSchema.extend({
   }).extend({
     gymmanagers: GymManagerSchema
   })),
-  memberships: z.array(MembershipGetSchema),
+  memberships: z.array(MembershipSchema),
   equipment: z.array(EquipmentSchema)
 })
 export type GymGet = z.infer<typeof GymGetSchema>;
 
-export const GymGetEquipmentSchema = EquipmentSchema.extend({
-  gymequipment: GymEquipmentSchema
-})
+export const GymGetEquipmentSchema = z.intersection(
+  EquipmentBaseSchema.extend({ gymequipment: GymEquipmentSchema }),
+  EquipmentWeightsSchema)
 export type GymGetEquipment = z.infer<typeof GymGetEquipmentSchema>;
 
 export const GymPostSchema = GymSchema.pick({

@@ -4,9 +4,10 @@ import { isAdmin, targetEquipmentExtractor } from '../utils/middleware.ts';
 
 import { Equipment } from '../models/index.js';
 
-import type {
-  EquipmentPostAndPut,
-  Equipment as FullEquipment
+import {
+  type EquipmentPostAndPut,
+  EquipmentSchema,
+  type Equipment as FullEquipment
 } from '@strength-inventory/schemas';
 
 const equipmentRouter = Express.Router();
@@ -50,7 +51,7 @@ equipmentRouter.post(
       notes
     } = req.body;
 
-    const equipment: FullEquipment = await Equipment.create({
+    const equipment = await Equipment.create({
       name,
       category,
       manufacturer,
@@ -64,7 +65,9 @@ equipmentRouter.post(
       notes
     });
 
-    return res.json(equipment);
+    /* Satisfy TS when it comes to weights' discriminated union. */
+    const validatedEquipment = EquipmentSchema.parse(equipment);
+    return res.json(validatedEquipment);
   }
 );
 
@@ -111,7 +114,9 @@ equipmentRouter.put(
     });
     await equipment.save();
 
-    return res.status(200).json(equipment);
+    /* Satisfy TS when it comes to weights' discriminated union. */
+    const validatedEquipment = EquipmentSchema.parse(equipment);
+    return res.status(200).json(validatedEquipment);
   }
 );
 

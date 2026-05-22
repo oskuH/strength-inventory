@@ -6,7 +6,7 @@ import {
 
 import { AuthContext, IconContext } from '../../utils/contexts';
 
-import { Route } from '../../routes/(auth)/login';
+import { Route } from '../../routes/_noAuth/(auth)/login';
 
 import { LoginRequestSchema } from '@strength-inventory/schemas';
 
@@ -34,6 +34,9 @@ export default function Login () {
     try {
       const validatedReq = LoginRequestSchema.parse(req);
       await auth.login(validatedReq.username, validatedReq.password);
+      navigate({ to: redirect, search: true }).catch((err: unknown) => {
+        console.error('Redirect failed', err);
+      });
       return { success: true, error: null, enteredUsername: '' };
     } catch {
       return {
@@ -42,12 +45,6 @@ export default function Login () {
         enteredUsername: formData.get('username') as string
       };
     }
-  }
-
-  if (state.success) {
-    navigate({ to: redirect, search: true }).catch((err: unknown) => {
-      console.error('Redirect failed', err);
-    });
   }
 
   return (

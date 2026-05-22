@@ -66,7 +66,7 @@ export default function EquipmentForm (
   const formRef = useRef<HTMLFormElement>(null);
   useEffect(() => {
     function watchReset (e: Event) {
-      /* console.log('reset in react', e); */
+      console.log('reset in react', e);
       e.preventDefault();
     }
     const form = formRef.current;
@@ -123,27 +123,21 @@ export default function EquipmentForm (
     const req = Object.fromEntries(formData.entries());
 
     try {
-      const validatedFormData
-        = EquipmentPostAndPutSchema.omit({ availableWeights: true })
-          .parse(req);
-      const validatedAvailableWeights
-        = EquipmentPostAndPutSchema.pick({ availableWeights: true })
-          .parse({ availableWeights: availableWeights });
-      const validatedPiece
-        = { ...validatedFormData, ...validatedAvailableWeights };
+      const preprocessWeightUnit = z.preprocess((val) => {
+        if (val === '') {
+          return null;
+        } else {
+          return val;
+        }
+      }, z.string().nullable());
+      const preprocessedWeightUnit = preprocessWeightUnit.parse(req.weightUnit);
+      const piece = {
+        ...req,
+        weightUnit: preprocessedWeightUnit,
+        availableWeights: availableWeights
+      };
+      const validatedPiece = EquipmentPostAndPutSchema.parse(piece);
 
-      if (!validatedPiece.weightUnit
-        && (validatedPiece.weight
-          || (validatedPiece.availableWeights
-            && validatedPiece.availableWeights.length > 0)
-          || validatedPiece.startingWeight
-          || validatedPiece.maximumWeight
-        )) {
-        return {
-          success: false,
-          error: 'weight unit required'
-        };
-      }
       if (formMode === 'create') {
         try {
           await postMutation.mutateAsync(validatedPiece);

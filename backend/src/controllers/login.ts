@@ -75,7 +75,7 @@ loginRouter.post(
       username: username
     };
 
-    const token = jwt.sign(userForToken, JWT_SECRET);
+    const token = jwt.sign(userForToken, JWT_SECRET, { expiresIn: '15m' });
 
     await Session.create({ userId: user.id, token });
 

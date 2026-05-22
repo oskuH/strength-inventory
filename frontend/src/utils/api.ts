@@ -84,7 +84,7 @@ export const postGym = async ({ gym }: { gym: GymPost }) => {
     const validatedData = GymSchema.parse(data);
     return validatedData;
   } else {
-    throw Error('User authorization token missing.');
+    throw Error('Login expired.');
   }
 };
 
@@ -113,7 +113,7 @@ export const postGymEquipment = async (
     }).parse(data);
     return validatedData;
   } else {
-    throw Error('User authorization token missing.');
+    throw Error('Login expired.');
   }
 };
 
@@ -141,7 +141,7 @@ export const putGym = async (
     const validatedData = GymSchema.parse(data);
     return validatedData;
   } else {
-    throw Error('User authorization token missing.');
+    throw Error('Login expired.');
   }
 };
 
@@ -168,7 +168,7 @@ export const setGymEquipmentCount = async (
     const validatedData = GymEquipmentSchema.parse(data);
     return validatedData;
   } else {
-    throw Error('User authorization token missing.');
+    throw Error('Login expired.');
   }
 };
 
@@ -187,7 +187,7 @@ export const deleteGym = async ({ id }: { id: string }) => {
       throw Error(`Response status: ${res.statusText}`);
     }
   } else {
-    throw Error('User authorization token missing.');
+    throw Error('Login expired.');
   }
 };
 
@@ -216,7 +216,7 @@ export const deleteGymEquipment = async (
     }).parse(data);
     return validatedData;
   } else {
-    throw Error('User authorization token missing.');
+    throw Error('Login expired.');
   }
 };
 
@@ -280,7 +280,7 @@ export const postEquipment = async (
     const validatedData = EquipmentSchema.parse(data);
     return validatedData;
   } else {
-    throw Error('User authorization token missing.');
+    throw Error('Login expired.');
   }
 };
 
@@ -308,7 +308,7 @@ export const putEquipment = async (
     const validatedData = EquipmentSchema.parse(data);
     return validatedData;
   } else {
-    throw Error('User authorization token missing.');
+    throw Error('Login expired.');
   }
 };
 
@@ -327,6 +327,6 @@ export const deleteEquipment = async ({ id }: { id: string }) => {
       throw Error(`Response status: ${res.statusText}`);
     }
   } else {
-    throw Error('User authorization token missing.');
+    throw Error('Login expired.');
   }
 };

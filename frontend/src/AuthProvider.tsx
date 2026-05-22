@@ -18,8 +18,10 @@ export default function AuthProvider (
   useEffect(() => {
     if (!token) return;
 
+    const ctrl = new AbortController();
     fetch(`${baseUrl}/login`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
+      signal: ctrl.signal
     })
       .then((res) => res.json())
       .then((userData) => {
@@ -37,6 +39,9 @@ export default function AuthProvider (
       .finally(() => {
         setIsLoading(false);
       });
+    return () => {
+      ctrl.abort();
+    };
   }, [token]);
 
   if (isLoading) {

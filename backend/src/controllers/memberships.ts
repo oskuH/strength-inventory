@@ -4,9 +4,10 @@ import { isAdmin, targetMembershipExtractor } from '../utils/middleware.ts';
 
 import { Membership } from '../models/index.ts';
 
-import type {
-  Membership as FullMembership,
-  MembershipPostAndPut
+import {
+  type Membership as FullMembership,
+  type MembershipPostAndPut,
+  MembershipSchema
 } from '@strength-inventory/schemas';
 
 const membershipsRouter = Express.Router();
@@ -54,7 +55,9 @@ membershipsRouter.post(
       notes
     });
 
-    return res.status(201).json(membership);
+    /* Satisfy TS when it comes to commitment's discriminated union. */
+    const validatedMembership = MembershipSchema.parse(membership);
+    return res.status(201).json(validatedMembership);
   }
 );
 
@@ -103,7 +106,9 @@ membershipsRouter.put(
     });
     await membership.save();
 
-    return res.status(200).json(membership);
+    /* Satisfy TS when it comes to commitment's discriminated union. */
+    const validatedMembership = MembershipSchema.parse(membership);
+    return res.status(200).json(validatedMembership);
   }
 );
 
