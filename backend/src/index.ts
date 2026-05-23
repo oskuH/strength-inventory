@@ -1,6 +1,7 @@
 import express from 'express';
 const app = express();
 
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import { errorHandler, unknownEndpoint } from './utils/middleware.js';
@@ -19,6 +20,7 @@ import usersRouter from './controllers/users.js';
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.use('/api/equipment', equipmentRouter);
 app.use('/api/gyms', gymsRouter);

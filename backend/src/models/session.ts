@@ -14,7 +14,8 @@ class Session extends Model<
 > {
   declare id: CreationOptional<string>;
   declare userId: string;
-  declare token: string;
+  declare accessToken: string;
+  declare refreshToken: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -30,7 +31,11 @@ Session.init({
     allowNull: false,
     references: { model: 'users', key: 'id' }
   },
-  token: {
+  accessToken: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  refreshToken: {
     type: DataTypes.STRING,
     allowNull: false
   },

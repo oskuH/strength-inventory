@@ -19,7 +19,7 @@ declare global {
       targetMembership?: Membership,
       targetGymEquipment?: GymEquipment,
       targetGymManager?: GymManagers,
-      targetGymMembership?: GymMemberships;
+      targetGymMembership?: GymMemberships
     }
   }
 }

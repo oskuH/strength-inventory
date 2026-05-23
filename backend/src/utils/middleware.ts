@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { ValidationError } from 'sequelize';
 import { z } from 'zod';
 
-import { JWT_SECRET } from './config.ts';
+import { JWT_ACCESS_SECRET } from './config.ts';
 
 import type { NextFunction, Request, Response } from 'express';
 
@@ -79,9 +79,15 @@ const userExtractor = async (
   next: NextFunction
 ): Promise<void> => {
   if (req.token) {
-    const decodedToken = jwt.verify(req.token, JWT_SECRET) as UserTokenPayload;
-    const activeToken = await Session.findOne({ where: { token: req.token } });
-    if (!activeToken) {
+    const decodedToken = jwt.verify(
+      req.token,
+      JWT_ACCESS_SECRET,
+      /* Explicitly request the expected algorithm for security */
+      { algorithms: ['RS256'] }
+    ) as UserTokenPayload;
+    const activeSession
+      = await Session.findOne({ where: { accessToken: req.token } });
+    if (!activeSession) {
       res.status(401).json({ error: 'Token expired.' });
       return;
     }

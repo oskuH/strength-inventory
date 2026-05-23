@@ -34,6 +34,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
 
-    "types": ["cors", "express", "jsonwebtoken", "node", "pg", "sequelize", "supertest"]
+    "types": ["cors", "cookie-parser", "express", "jsonwebtoken", "node", "pg", "sequelize", "supertest"]
   }
 }

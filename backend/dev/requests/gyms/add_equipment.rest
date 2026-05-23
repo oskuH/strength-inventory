@@ -1,8 +1,0 @@
-POST http://localhost:3000/api/gyms/7e7e90d2-990a-4563-ae1e-5cd2812e240c/equipment
-Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4MDJlMmE5LWE3YWUtNDZmMS04OTFjLTdkNWIwNDhjYTRmNiIsInVzZXJuYW1lIjoiVGhlQWRtaW4iLCJpYXQiOjE3NzI3MDc5NDJ9.ryKEDGy6eD9qLbx_MBwTN_t1SpC2VSHLcYQ89r_iKDs
-// admins and managers only
-
-{
-  "equipmentId": "786b3220-6321-46a7-a12f-9616ccaffca1"
-}
