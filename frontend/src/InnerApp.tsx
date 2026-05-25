@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { routeTree } from './routeTree.gen';
 
 import { AuthContext } from './utils/contexts';
-// import { useAuth } from './utils/contexts';
 
 const queryClient = new QueryClient();
 

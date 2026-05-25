@@ -50,7 +50,11 @@ const errorHandler = (
     return;
   } else if (err instanceof Error) {
     console.error(err.name);
-    res.status(400).json({ error: err.message });
+    if (err.name === 'AuthenticationError') {
+      res.status(401).json({ error: err.message });
+    } else {
+      res.status(400).json({ error: err.message });
+    }
     return;
   } else {
     console.error('Unhandled error type.');
@@ -83,7 +87,7 @@ const userExtractor = async (
       req.token,
       JWT_ACCESS_SECRET,
       /* Explicitly request the expected algorithm for security */
-      { algorithms: ['RS256'] }
+      { algorithms: ['HS256'] }
     ) as UserTokenPayload;
     const activeSession
       = await Session.findOne({ where: { accessToken: req.token } });

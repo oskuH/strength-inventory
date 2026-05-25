@@ -204,6 +204,9 @@ const EquipmentBaseSchema = z.object({
   updatedAt: z.coerce.date()
 })
 
+// global variable that corresponds to defined database limitations
+export const maxWeight: number = 999;
+
 const EquipmentWithWeightsSchema = z.object({
   weightUnit: EquipmentWeightUnitEnum,
   weight: z.preprocess((val) => {
@@ -474,6 +477,11 @@ export const LoginResponseSchema = UserSchema.pick({
   token: z.string().min(1)
 })
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
+
+export const LoginRefreshResponseSchema = z.object({
+  token: z.jwt()
+})
+export type LoginRefreshResponse = z.infer<typeof LoginRefreshResponseSchema>;
 
 
 // gymmemberships

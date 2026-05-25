@@ -12,7 +12,7 @@ import { IconContext } from '../../../../../utils/contexts';
 
 import AvailableWeights from './AvailableWeights';
 
-import { type EquipmentPostAndPut, EquipmentPostAndPutSchema }
+import { type EquipmentPostAndPut, EquipmentPostAndPutSchema, maxWeight }
   from '@strength-inventory/schemas';
 
 interface EquipmentFormProps {
@@ -382,6 +382,9 @@ export default function EquipmentForm (
                 name='weight'
                 type='number'
                 value={piece.weight}
+                min={0.01}
+                max={maxWeight}
+                step={0.01}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setPiece({ ...piece, weight: event.target.value });
@@ -409,6 +412,9 @@ export default function EquipmentForm (
                 name='startingWeight'
                 type='number'
                 value={piece.startingWeight}
+                min={0.01}
+                max={maxWeight}
+                step={0.01}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setPiece({ ...piece, startingWeight: event.target.value });
@@ -425,6 +431,9 @@ export default function EquipmentForm (
                 name='maximumWeight'
                 type='number'
                 value={piece.maximumWeight}
+                min={0.01}
+                max={maxWeight}
+                step={0.01}
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setPiece({ ...piece, maximumWeight: event.target.value });

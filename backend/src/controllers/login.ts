@@ -12,6 +12,7 @@ import { loginParser, tokenExtractor, userExtractor }
 import { Session, User } from '../models/index.ts';
 
 import type {
+  LoginRefreshResponse,
   LoginRequest,
   LoginResponse,
   UserFrontend,
@@ -76,7 +77,7 @@ loginRouter.post(
     };
 
     const accessToken
-      = jwt.sign(userForTokens, JWT_ACCESS_SECRET, { expiresIn: '15m' });
+      = jwt.sign(userForTokens, JWT_ACCESS_SECRET, { expiresIn: '10s' });
 
     const refreshToken
       = jwt.sign(userForTokens, JWT_REFRESH_SECRET, { expiresIn: '7d' });
@@ -101,27 +102,33 @@ interface RequestWithRefreshToken extends Request {
 }
 
 
-loginRouter.post('/refresh', async (req: RequestWithRefreshToken, res) => {
+loginRouter.post('/refresh', async (
+  req: RequestWithRefreshToken,
+  res: Response<LoginRefreshResponse>
+) => {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
-    return res.status(401)
-      .json({ error: 'Refresh token missing from request.' });
+    const error = Error('Refresh token missing from request.');
+    error.name = 'AuthenticationError';
+    throw error;
   }
 
   const decodedToken = jwt.verify(
     refreshToken,
     JWT_REFRESH_SECRET,
     /* Explicitly request the expected algorithm for security */
-    { algorithms: ['RS256'] }
+    { algorithms: ['HS256'] }
   ) as UserTokenPayload;
 
   const activeSession
     = await Session.findOne({ where: { refreshToken: refreshToken } });
-  /* There is no session despite a successful token verification
-  if the frontend's logout function has somehow been called
-  before this route. */
+  /* In practice, this route should not receive calls with sessionless tokens.
+  In theory, though, tokens only get invalidated through timeouts,
+  so this check acts as a safeguard in addition to satisfying TS.*/
   if (!activeSession) {
-    return res.status(401).json({ error: 'Refresh token expired.' });
+    const error = Error('Refresh token expired.');
+    error.name = 'AuthenticationError';
+    throw error;
   }
 
   const userForToken = {

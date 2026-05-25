@@ -6,6 +6,7 @@ interface AuthState {
   isAuthenticated: boolean
   user: UserFrontend
   login: (username: string, password: string) => Promise<void>
+  refresh: () => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -13,6 +14,9 @@ export const AuthContext = createContext<AuthState>({
   isAuthenticated: false,
   user: null,
   login: async () => {
+    await Promise.resolve();
+  },
+  refresh: async () => {
     await Promise.resolve();
   },
   logout: async () => {

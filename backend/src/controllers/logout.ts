@@ -11,7 +11,8 @@ logoutRouter.delete(
   '/',
   tokenExtractor,
   async (req: Request, res: Response) => {
-    const session = await Session.findOne({ where: { token: req.token } });
+    const session
+      = await Session.findOne({ where: { accessToken: req.token } });
 
     if (session) {
       await session.destroy();

@@ -18,7 +18,7 @@ import logoutRouter from './controllers/logout.ts';
 import membershipsRouter from './controllers/memberships.ts';
 import usersRouter from './controllers/users.js';
 
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 

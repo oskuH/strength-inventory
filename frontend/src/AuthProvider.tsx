@@ -4,7 +4,10 @@ import { AuthContext } from './utils/contexts';
 import { baseUrl } from './utils/api';
 
 import {
-  LoginResponseSchema, type UserFrontend, UserFrontendQuerySchema
+  LoginRefreshResponseSchema,
+  LoginResponseSchema,
+  type UserFrontend,
+  UserFrontendQuerySchema
 } from '@strength-inventory/schemas';
 
 export default function AuthProvider (
@@ -52,7 +55,8 @@ export default function AuthProvider (
     const res = await fetch(`${baseUrl}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username, password }),
+      credentials: 'include'
     });
 
     if (res.ok) {
@@ -71,27 +75,45 @@ export default function AuthProvider (
         setIsAuthenticated(true);
         localStorage.setItem('auth-token', validatedUserData.token);
       } catch {
-        throw new Error('Authentication failed.');
+        throw Error('Authentication failed.');
       }
     } else {
-      throw new Error('Authentication failed.');
+      throw Error('Authentication failed.');
+    }
+  }
+
+  async function refresh () {
+    const res = await fetch(`${baseUrl}/login/refresh`, {
+      method: 'POST',
+      credentials: 'include'
+    });
+
+    if (res.ok) {
+      const tokenData: unknown = await res.json();
+      try {
+        const validatedTokenData
+          = LoginRefreshResponseSchema.parse(tokenData);
+        localStorage.setItem('auth-token', validatedTokenData.token);
+      } catch {
+        throw Error('Access token refresh failed.');
+      }
     }
   }
 
   async function logout () {
+    setUser(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem('auth-token');
     if (token) {
       await fetch(`${baseUrl}/logout`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
     }
-    setUser(null);
-    setIsAuthenticated(false);
-    localStorage.removeItem('auth-token');
   }
 
   return (
-    <AuthContext value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext value={{ isAuthenticated, user, login, refresh, logout }}>
       {children}
     </AuthContext>
   );
