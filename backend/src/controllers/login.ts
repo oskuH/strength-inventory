@@ -77,7 +77,7 @@ loginRouter.post(
     };
 
     const accessToken
-      = jwt.sign(userForTokens, JWT_ACCESS_SECRET, { expiresIn: '10s' });
+      = jwt.sign(userForTokens, JWT_ACCESS_SECRET, { expiresIn: '15m' });
 
     const refreshToken
       = jwt.sign(userForTokens, JWT_REFRESH_SECRET, { expiresIn: '7d' });

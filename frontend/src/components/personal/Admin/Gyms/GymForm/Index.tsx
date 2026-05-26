@@ -6,8 +6,8 @@ import {
 import { TbEdit, TbPlus } from 'react-icons/tb';
 import { z } from 'zod';
 
+import { AuthContext, IconContext } from '../../../../../utils/contexts';
 import { getGym, postGym, putGym } from '../../../../../utils/api';
-import { IconContext } from '../../../../../utils/contexts';
 
 import GymEquipment from './GymEquipment/Index';
 import OpeningHoursDayInput from './OpeningHoursDayInput';
@@ -110,6 +110,7 @@ export default function GymForm (
     return formattedGym;
   }
 
+  const auth = use(AuthContext);
   const iconMode = use(IconContext);
 
   const queryClient = useQueryClient();
@@ -122,7 +123,8 @@ export default function GymForm (
   });
 
   const postMutation = useMutation({
-    mutationFn: (newGym: GymPost) => postGym({ gym: newGym }),
+    mutationFn: (newGym: GymPost) =>
+      postGym({ gym: newGym, refresh: auth.refresh, logout: auth.logout }),
     onSuccess: (newGymFromServer) => {
       setSelectedGymId(newGymFromServer.id);
       setFormMode('edit');
@@ -131,7 +133,9 @@ export default function GymForm (
 
   const putMutation = useMutation({
     mutationFn: ({ id, updatedGym }: { id: string, updatedGym: GymPost; }) =>
-      putGym({ id: id, gym: updatedGym }),
+      putGym({
+        id: id, gym: updatedGym, refresh: auth.refresh, logout: auth.logout
+      }),
     onSuccess: (editedGymFromServer) => {
       queryClient.setQueryData(['gym', selectedGymId], editedGymFromServer);
     }

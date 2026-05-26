@@ -1,4 +1,4 @@
-import { use, useActionState, useEffect, useRef, useState } from 'react';
+import { use, useActionState, useState } from 'react';
 
 import {
   skipToken, useMutation, useQuery, useQueryClient
@@ -6,9 +6,9 @@ import {
 import { TbEdit, TbPlus } from 'react-icons/tb';
 import { z } from 'zod';
 
+import { AuthContext, IconContext } from '../../../../../utils/contexts';
 import { getPiece, postEquipment, putEquipment }
   from '../../../../../utils/api';
-import { IconContext } from '../../../../../utils/contexts';
 
 import AvailableWeights from './AvailableWeights';
 
@@ -26,6 +26,7 @@ export default function EquipmentForm (
   { formMode, setFormMode, selectedPieceId, setSelectedPieceId }:
   EquipmentFormProps
 ) {
+  const auth = use(AuthContext);
   const iconMode = use(IconContext);
 
   const queryClient = useQueryClient();
@@ -39,7 +40,9 @@ export default function EquipmentForm (
 
   const postMutation = useMutation({
     mutationFn: (newPiece: EquipmentPostAndPut) =>
-      postEquipment({ piece: newPiece }),
+      postEquipment({
+        piece: newPiece, refresh: auth.refresh, logout: auth.logout
+      }),
     onSuccess: (newPieceFromServer) => {
       setSelectedPieceId(newPieceFromServer.id);
       setFormMode('edit');
@@ -49,7 +52,9 @@ export default function EquipmentForm (
   const putMutation = useMutation({
     mutationFn: ({ id, updatedPiece }:
     { id: string, updatedPiece: EquipmentPostAndPut }) =>
-      putEquipment({ id: id, piece: updatedPiece }),
+      putEquipment({
+        id: id, piece: updatedPiece, refresh: auth.refresh, logout: auth.logout
+      }),
     onSuccess: (editedPieceFromServer) => {
       queryClient
         .setQueryData(['piece', selectedPieceId], editedPieceFromServer);
@@ -57,25 +62,26 @@ export default function EquipmentForm (
   });
 
   /* React 19's useActionState has had a bug since its 2024 release
-  where <select> fields to get reset after <form> submission.
-  The useEffect below is a workaround by GitHub user danieltott:
+  where <select> fields get reset after <form> submission.
+  This watchReser + formRef is a workaround adapted from a solution
+  by GitHub user danieltott:
   https://github.com/facebook/react/issues/29034#issuecomment-2843233452
 
-  A PR fixing this issue has been open since November 2025:
+  A PR fixing the bug has been open since November 2025:
   https://github.com/facebook/react/pull/35168 */
-  const formRef = useRef<HTMLFormElement>(null);
-  useEffect(() => {
-    function watchReset (e: Event) {
-      console.log('reset in react', e);
-      e.preventDefault();
+  function watchReset (e: Event) {
+    // console.log('reset in react', e)
+    e.preventDefault();
+  }
+  function formRef (node: HTMLFormElement | null) {
+    if (node) {
+      node.addEventListener('reset', watchReset);
     }
-    const form = formRef.current;
-    form?.addEventListener('reset', watchReset);
 
     return () => {
-      form?.removeEventListener('reset', watchReset);
+      node?.removeEventListener('reset', watchReset);
     };
-  }, []);
+  }
 
   interface PieceProps {
     name: string,

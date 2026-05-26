@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { AuthContext } from './utils/contexts';
 import { baseUrl } from './utils/api';
+import { isTokenValid } from './utils/syncToken';
 
 import {
   LoginRefreshResponseSchema,
@@ -13,7 +14,7 @@ import {
 export default function AuthProvider (
   { children }: { children: React.ReactNode }
 ) {
-  const [token] = useState(() => localStorage.getItem('auth-token'));
+  const [token, setToken] = useState(() => localStorage.getItem('auth-token'));
   const [user, setUser] = useState<UserFrontend>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(!!token);
@@ -22,29 +23,48 @@ export default function AuthProvider (
     if (!token) return;
 
     const ctrl = new AbortController();
-    fetch(`${baseUrl}/login`, {
-      headers: { Authorization: `Bearer ${token}` },
-      signal: ctrl.signal
-    })
-      .then((res) => res.json())
-      .then((userData) => {
-        try {
-          const validatedUserData = UserFrontendQuerySchema.parse(userData);
-          setUser(validatedUserData);
-          setIsAuthenticated(true);
-        } catch {
+
+    const syncTokenAndLogin = async () => {
+      let accessToken = token;
+      if (!isTokenValid(token)) {
+        await refresh()
+          .then((newAccessToken) => {
+            accessToken = newAccessToken;
+          })
+          .catch(() => {
+            localStorage.removeItem('auth-token');
+          });
+      }
+
+      fetch(`${baseUrl}/login`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        signal: ctrl.signal
+      })
+        .then((res) => res.json())
+        .then((userData) => {
+          try {
+            const validatedUserData = UserFrontendQuerySchema.parse(userData);
+            setUser(validatedUserData);
+            setIsAuthenticated(true);
+          } catch {
+            localStorage.removeItem('auth-token');
+          }
+        })
+        .catch(() => {
           localStorage.removeItem('auth-token');
-        }
-      })
-      .catch(() => {
-        localStorage.removeItem('auth-token');
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-    return () => {
-      ctrl.abort();
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+      return () => {
+        ctrl.abort();
+      };
     };
+
+    syncTokenAndLogin()
+      .catch(() => {
+        console.error('Something went wrong.');
+      });
   }, [token]);
 
   if (isLoading) {
@@ -94,9 +114,13 @@ export default function AuthProvider (
         const validatedTokenData
           = LoginRefreshResponseSchema.parse(tokenData);
         localStorage.setItem('auth-token', validatedTokenData.token);
+        setToken(validatedTokenData.token);
+        return validatedTokenData.token;
       } catch {
         throw Error('Access token refresh failed.');
       }
+    } else {
+      throw Error('Access token refresh failed.');
     }
   }
 

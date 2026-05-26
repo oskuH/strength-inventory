@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { use, useState } from 'react';
 
 import {
   useMutation, useQuery, useQueryClient
@@ -11,6 +11,7 @@ import {
   postGymEquipment,
   setGymEquipmentCount
 } from '../../../../../../utils/api';
+import { AuthContext } from '../../../../../../utils/contexts';
 
 import AvailableList from './AvailableList';
 import CurrentList from './CurrentList';
@@ -24,6 +25,8 @@ interface GymEquipmentProps {
 export default function GymEquipment (
   { gymId, gymName, setEditForm }: GymEquipmentProps
 ) {
+  const auth = use(AuthContext);
+
   const queryClient = useQueryClient();
 
   const gymEquipmentQuery = useQuery({
@@ -39,7 +42,12 @@ export default function GymEquipment (
   const addEquipmentMutation = useMutation({
     mutationFn: ({ gymId, equipmentId }:
     { gymId: string, equipmentId: string }) =>
-      postGymEquipment({ gymId: gymId, equipmentId: equipmentId }),
+      postGymEquipment({
+        gymId: gymId,
+        equipmentId: equipmentId,
+        refresh: auth.refresh,
+        logout: auth.logout
+      }),
     onSuccess: async (responseFromServer) => {
       await queryClient.invalidateQueries({
         queryKey: ['gymEquipment', responseFromServer.gymId]
@@ -50,7 +58,12 @@ export default function GymEquipment (
   const setEquipmentCountMutation = useMutation({
     mutationFn: ({ relationshipId, count }:
     { relationshipId: string, count: number }) =>
-      setGymEquipmentCount({ relationshipId: relationshipId, count: count }),
+      setGymEquipmentCount({
+        relationshipId: relationshipId,
+        count: count,
+        refresh: auth.refresh,
+        logout: auth.logout
+      }),
     onSuccess: async (editedRelationshipFromServer) => {
       if (gymEquipmentQuery.data) {
         const updatedGymEquipment = gymEquipmentQuery.data.map((equipment) => {
@@ -73,7 +86,12 @@ export default function GymEquipment (
   const removeEquipmentMutation = useMutation({
     mutationFn: ({ gymId, equipmentId }:
     { gymId: string, equipmentId: string }) =>
-      deleteGymEquipment({ gymId: gymId, equipmentId: equipmentId }),
+      deleteGymEquipment({
+        gymId: gymId,
+        equipmentId: equipmentId,
+        refresh: auth.refresh,
+        logout: auth.logout
+      }),
     onSuccess: async (responseFromServer) => {
       if (gymEquipmentQuery.data) {
         const updatedGymEquipment

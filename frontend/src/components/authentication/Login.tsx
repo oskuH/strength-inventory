@@ -6,7 +6,7 @@ import {
 
 import { AuthContext, IconContext } from '../../utils/contexts';
 
-import { Route } from '../../routes/_noAuth/(auth)/login';
+import { Route } from '../../routes/(auth)/login';
 
 import { LoginRequestSchema } from '@strength-inventory/schemas';
 

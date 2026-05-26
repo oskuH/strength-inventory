@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
-/* .coerce in timestamps should not cause any issues 
-as long as timestamps can only be modified by Sequelize.  */
-
 /* z.string().min(1) = required string
 z.string() = optional string i.e. empty strings accepted */
+
+
+// utility schemas for opening hours
 
 const TimeSchema = z.array(z.number().min(0).max(24).optional()).length(2);
 const TimeSchemaExceptions = z.array(z.number().min(0).max(24)).length(2);
@@ -391,6 +391,7 @@ export const GymPostSchema = GymSchema.pick({
 });
 export type GymPost = z.infer<typeof GymPostSchema>;
 
+const GymPostFrontendHour = z.coerce.number().min(0).max(24).optional()
 export const GymPostFrontendSchema = GymSchema.pick({
   name: true,
   chain: true,
@@ -404,34 +405,34 @@ export const GymPostFrontendSchema = GymSchema.pick({
   equipmentVisibility: z.string().optional(),
   membershipsVisibility: z.string().optional(),
   openingHoursVisibility: z.string().optional(),
-  everyoneMOOpen: z.coerce.number().min(0).max(24).optional(),
-  everyoneMOClose: z.coerce.number().min(0).max(24).optional(),
-  everyoneTUOpen: z.coerce.number().min(0).max(24).optional(),
-  everyoneTUClose: z.coerce.number().min(0).max(24).optional(),
-  everyoneWEOpen: z.coerce.number().min(0).max(24).optional(),
-  everyoneWEClose: z.coerce.number().min(0).max(24).optional(),
-  everyoneTHOpen: z.coerce.number().min(0).max(24).optional(),
-  everyoneTHClose: z.coerce.number().min(0).max(24).optional(),
-  everyoneFROpen: z.coerce.number().min(0).max(24).optional(),
-  everyoneFRClose: z.coerce.number().min(0).max(24).optional(),
-  everyoneSAOpen: z.coerce.number().min(0).max(24).optional(),
-  everyoneSAClose: z.coerce.number().min(0).max(24).optional(),
-  everyoneSUOpen: z.coerce.number().min(0).max(24).optional(),
-  everyoneSUClose: z.coerce.number().min(0).max(24).optional(),
-  membersMOOpen: z.coerce.number().min(0).max(24).optional(),
-  membersMOClose: z.coerce.number().min(0).max(24).optional(),
-  membersTUOpen: z.coerce.number().min(0).max(24).optional(),
-  membersTUClose: z.coerce.number().min(0).max(24).optional(),
-  membersWEOpen: z.coerce.number().min(0).max(24).optional(),
-  membersWEClose: z.coerce.number().min(0).max(24).optional(),
-  membersTHOpen: z.coerce.number().min(0).max(24).optional(),
-  membersTHClose: z.coerce.number().min(0).max(24).optional(),
-  membersFROpen: z.coerce.number().min(0).max(24).optional(),
-  membersFRClose: z.coerce.number().min(0).max(24).optional(),
-  membersSAOpen: z.coerce.number().min(0).max(24).optional(),
-  membersSAClose: z.coerce.number().min(0).max(24).optional(),
-  membersSUOpen: z.coerce.number().min(0).max(24).optional(),
-  membersSUClose: z.coerce.number().min(0).max(24).optional()
+  everyoneMOOpen: GymPostFrontendHour,
+  everyoneMOClose: GymPostFrontendHour,
+  everyoneTUOpen: GymPostFrontendHour,
+  everyoneTUClose: GymPostFrontendHour,
+  everyoneWEOpen: GymPostFrontendHour,
+  everyoneWEClose: GymPostFrontendHour,
+  everyoneTHOpen: GymPostFrontendHour,
+  everyoneTHClose: GymPostFrontendHour,
+  everyoneFROpen: GymPostFrontendHour,
+  everyoneFRClose: GymPostFrontendHour,
+  everyoneSAOpen: GymPostFrontendHour,
+  everyoneSAClose: GymPostFrontendHour,
+  everyoneSUOpen: GymPostFrontendHour,
+  everyoneSUClose: GymPostFrontendHour,
+  membersMOOpen: GymPostFrontendHour,
+  membersMOClose: GymPostFrontendHour,
+  membersTUOpen: GymPostFrontendHour,
+  membersTUClose: GymPostFrontendHour,
+  membersWEOpen: GymPostFrontendHour,
+  membersWEClose: GymPostFrontendHour,
+  membersTHOpen: GymPostFrontendHour,
+  membersTHClose: GymPostFrontendHour,
+  membersFROpen: GymPostFrontendHour,
+  membersFRClose: GymPostFrontendHour,
+  membersSAOpen: GymPostFrontendHour,
+  membersSAClose: GymPostFrontendHour,
+  membersSUOpen: GymPostFrontendHour,
+  membersSUClose: GymPostFrontendHour
 })
 export type GymPostFrontend = z.infer<typeof GymPostFrontendSchema>;
 
@@ -459,6 +460,15 @@ export type GymPatch = z.infer<typeof GymPatchSchema>;
 
 
 // login
+
+// Auth types for the frontend's AuthContext and root route.
+export interface AuthState {
+  isAuthenticated: boolean
+  user: UserFrontend
+  login: (username: string, password: string) => Promise<void>
+  refresh: () => Promise<string>
+  logout: () => Promise<void>
+}
 
 export const LoginRequestSchema = z.object({
   username: z.string().min(1),

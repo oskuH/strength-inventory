@@ -1,14 +1,6 @@
 import { createContext } from 'react';
 
-import { type UserFrontend } from '@strength-inventory/schemas';
-
-interface AuthState {
-  isAuthenticated: boolean
-  user: UserFrontend
-  login: (username: string, password: string) => Promise<void>
-  refresh: () => Promise<void>
-  logout: () => Promise<void>
-}
+import { type AuthState } from '@strength-inventory/schemas';
 
 export const AuthContext = createContext<AuthState>({
   isAuthenticated: false,
@@ -17,7 +9,7 @@ export const AuthContext = createContext<AuthState>({
     await Promise.resolve();
   },
   refresh: async () => {
-    await Promise.resolve();
+    return await Promise.resolve('');
   },
   logout: async () => {
     await Promise.resolve();

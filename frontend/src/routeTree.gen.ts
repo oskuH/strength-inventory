@@ -13,9 +13,9 @@ import { Route as NoAuthRouteImport } from './routes/_noAuth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as NoAuthIndexRouteImport } from './routes/_noAuth/index'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as NoAuthopenGymsRouteImport } from './routes/_noAuth/(open)/gyms'
 import { Route as NoAuthopenEquipmentRouteImport } from './routes/_noAuth/(open)/equipment'
-import { Route as NoAuthauthLoginRouteImport } from './routes/_noAuth/(auth)/login'
 import { Route as AuthenticatedAdminGymsRouteImport } from './routes/_authenticated/admin.gyms'
 import { Route as AuthenticatedAdminEquipmentRouteImport } from './routes/_authenticated/admin.equipment'
 
@@ -37,6 +37,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const authLoginRoute = authLoginRouteImport.update({
+  id: '/(auth)/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NoAuthopenGymsRoute = NoAuthopenGymsRouteImport.update({
   id: '/(open)/gyms',
   path: '/gyms',
@@ -45,11 +50,6 @@ const NoAuthopenGymsRoute = NoAuthopenGymsRouteImport.update({
 const NoAuthopenEquipmentRoute = NoAuthopenEquipmentRouteImport.update({
   id: '/(open)/equipment',
   path: '/equipment',
-  getParentRoute: () => NoAuthRoute,
-} as any)
-const NoAuthauthLoginRoute = NoAuthauthLoginRouteImport.update({
-  id: '/(auth)/login',
-  path: '/login',
   getParentRoute: () => NoAuthRoute,
 } as any)
 const AuthenticatedAdminGymsRoute = AuthenticatedAdminGymsRouteImport.update({
@@ -66,19 +66,19 @@ const AuthenticatedAdminEquipmentRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof NoAuthIndexRoute
+  '/login': typeof authLoginRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/equipment': typeof AuthenticatedAdminEquipmentRoute
   '/admin/gyms': typeof AuthenticatedAdminGymsRoute
-  '/login': typeof NoAuthauthLoginRoute
   '/equipment': typeof NoAuthopenEquipmentRoute
   '/gyms': typeof NoAuthopenGymsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof NoAuthIndexRoute
+  '/login': typeof authLoginRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/equipment': typeof AuthenticatedAdminEquipmentRoute
   '/admin/gyms': typeof AuthenticatedAdminGymsRoute
-  '/login': typeof NoAuthauthLoginRoute
   '/equipment': typeof NoAuthopenEquipmentRoute
   '/gyms': typeof NoAuthopenGymsRoute
 }
@@ -86,11 +86,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/_noAuth': typeof NoAuthRouteWithChildren
+  '/(auth)/login': typeof authLoginRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_noAuth/': typeof NoAuthIndexRoute
   '/_authenticated/admin/equipment': typeof AuthenticatedAdminEquipmentRoute
   '/_authenticated/admin/gyms': typeof AuthenticatedAdminGymsRoute
-  '/_noAuth/(auth)/login': typeof NoAuthauthLoginRoute
   '/_noAuth/(open)/equipment': typeof NoAuthopenEquipmentRoute
   '/_noAuth/(open)/gyms': typeof NoAuthopenGymsRoute
 }
@@ -98,30 +98,30 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
     | '/admin'
     | '/admin/equipment'
     | '/admin/gyms'
-    | '/login'
     | '/equipment'
     | '/gyms'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
     | '/admin'
     | '/admin/equipment'
     | '/admin/gyms'
-    | '/login'
     | '/equipment'
     | '/gyms'
   id:
     | '__root__'
     | '/_authenticated'
     | '/_noAuth'
+    | '/(auth)/login'
     | '/_authenticated/admin'
     | '/_noAuth/'
     | '/_authenticated/admin/equipment'
     | '/_authenticated/admin/gyms'
-    | '/_noAuth/(auth)/login'
     | '/_noAuth/(open)/equipment'
     | '/_noAuth/(open)/gyms'
   fileRoutesById: FileRoutesById
@@ -129,6 +129,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   NoAuthRoute: typeof NoAuthRouteWithChildren
+  authLoginRoute: typeof authLoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -161,6 +162,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/(auth)/login': {
+      id: '/(auth)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_noAuth/(open)/gyms': {
       id: '/_noAuth/(open)/gyms'
       path: '/gyms'
@@ -173,13 +181,6 @@ declare module '@tanstack/react-router' {
       path: '/equipment'
       fullPath: '/equipment'
       preLoaderRoute: typeof NoAuthopenEquipmentRouteImport
-      parentRoute: typeof NoAuthRoute
-    }
-    '/_noAuth/(auth)/login': {
-      id: '/_noAuth/(auth)/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof NoAuthauthLoginRouteImport
       parentRoute: typeof NoAuthRoute
     }
     '/_authenticated/admin/gyms': {
@@ -226,14 +227,12 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 
 interface NoAuthRouteChildren {
   NoAuthIndexRoute: typeof NoAuthIndexRoute
-  NoAuthauthLoginRoute: typeof NoAuthauthLoginRoute
   NoAuthopenEquipmentRoute: typeof NoAuthopenEquipmentRoute
   NoAuthopenGymsRoute: typeof NoAuthopenGymsRoute
 }
 
 const NoAuthRouteChildren: NoAuthRouteChildren = {
   NoAuthIndexRoute: NoAuthIndexRoute,
-  NoAuthauthLoginRoute: NoAuthauthLoginRoute,
   NoAuthopenEquipmentRoute: NoAuthopenEquipmentRoute,
   NoAuthopenGymsRoute: NoAuthopenGymsRoute,
 }
@@ -244,6 +243,7 @@ const NoAuthRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   NoAuthRoute: NoAuthRouteWithChildren,
+  authLoginRoute: authLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

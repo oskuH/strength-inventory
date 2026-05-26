@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import syncToken from './syncToken';
+
 import {
   type EquipmentPostAndPut,
   EquipmentSchema,
@@ -14,6 +16,11 @@ export const baseUrl
   = import.meta.env.VITE_API_URL
     ? `${import.meta.env.VITE_API_URL}/api`
     : '/api';
+
+interface TokenValidationProps {
+  refresh: () => Promise<string>
+  logout: () => Promise<void>
+}
 
 
 // gyms
@@ -62,10 +69,14 @@ export const getGymEquipment = async ({ gymId }: { gymId: string }) => {
   return validatedData;
 };
 
+interface postGymProps extends TokenValidationProps {
+  gym: GymPost
+}
+
 // input has been validated before this function is called
-export const postGym = async ({ gym }: { gym: GymPost }) => {
+export const postGym = async ({ gym, refresh, logout }: postGymProps) => {
   /* only admins and managers have permission */
-  const token = localStorage.getItem('auth-token');
+  const token = await syncToken({ refresh, logout });
   if (token) {
     const res = await fetch(`${baseUrl}/gyms`, {
       method: 'POST',
@@ -88,11 +99,16 @@ export const postGym = async ({ gym }: { gym: GymPost }) => {
   }
 };
 
+interface postGymEquipmentProps extends TokenValidationProps {
+  gymId: string
+  equipmentId: string
+}
+
 export const postGymEquipment = async (
-  { gymId, equipmentId }: { gymId: string, equipmentId: string }
+  { gymId, equipmentId, refresh, logout }: postGymEquipmentProps
 ) => {
   /* only admins and managers have permission */
-  const token = localStorage.getItem('auth-token');
+  const token = await syncToken({ refresh, logout });
   if (token) {
     const res = await fetch(`${baseUrl}/gyms/${gymId}/equipment`, {
       method: 'POST',
@@ -117,39 +133,48 @@ export const postGymEquipment = async (
   }
 };
 
+interface putGymProps extends TokenValidationProps {
+  id: string
+  gym: GymPost
+}
+
 // input has been validated before this function is called
-export const putGym = async (
-  { id, gym }: { id: string, gym: GymPost }
-) => {
+export const putGym
+  = async ({ id, gym, refresh, logout }: putGymProps) => {
   /* only admins have permission */
-  const token = localStorage.getItem('auth-token');
-  if (token) {
-    const res = await fetch(`${baseUrl}/gyms/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `bearer ${token}`
-      },
-      body: JSON.stringify(gym)
-    });
+    const token = await syncToken({ refresh, logout });
+    if (token) {
+      const res = await fetch(`${baseUrl}/gyms/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `bearer ${token}`
+        },
+        body: JSON.stringify(gym)
+      });
 
-    if (!res.ok) {
-      throw Error(`Response status: ${res.statusText}`);
+      if (!res.ok) {
+        throw Error(`Response status: ${res.statusText}`);
+      }
+
+      const data: unknown = await res.json();
+      const validatedData = GymSchema.parse(data);
+      return validatedData;
+    } else {
+      throw Error('Login expired.');
     }
+  };
 
-    const data: unknown = await res.json();
-    const validatedData = GymSchema.parse(data);
-    return validatedData;
-  } else {
-    throw Error('Login expired.');
-  }
-};
+interface setEquipmentCountProps extends TokenValidationProps {
+  relationshipId: string
+  count: number
+}
 
 export const setGymEquipmentCount = async (
-  { relationshipId, count }: { relationshipId: string, count: number }
+  { relationshipId, count, refresh, logout }: setEquipmentCountProps
 ) => {
   /* only admins and managers have permission */
-  const token = localStorage.getItem('auth-token');
+  const token = await syncToken({ refresh, logout });
   if (token) {
     const res = await fetch(`${baseUrl}/gymequipment/${relationshipId}`, {
       method: 'PATCH',
@@ -172,9 +197,13 @@ export const setGymEquipmentCount = async (
   }
 };
 
-export const deleteGym = async ({ id }: { id: string }) => {
+interface deleteItemProps extends TokenValidationProps {
+  id: string
+}
+
+export const deleteGym = async ({ id, refresh, logout }: deleteItemProps) => {
   /* only admins have permission */
-  const token = localStorage.getItem('auth-token');
+  const token = await syncToken({ refresh, logout });
   if (token) {
     const res = await fetch(`${baseUrl}/gyms/${id}`, {
       method: 'DELETE',
@@ -191,11 +220,16 @@ export const deleteGym = async ({ id }: { id: string }) => {
   }
 };
 
+interface deleteGymEquipmentProps extends TokenValidationProps {
+  gymId: string
+  equipmentId: string
+}
+
 export const deleteGymEquipment = async (
-  { gymId, equipmentId }: { gymId: string, equipmentId: string }
+  { gymId, equipmentId, refresh, logout }: deleteGymEquipmentProps
 ) => {
   /* only admins and managers have permission */
-  const token = localStorage.getItem('auth-token');
+  const token = await syncToken({ refresh, logout });
   if (token) {
     const res = await fetch(`${baseUrl}/gyms/${gymId}/equipment`, {
       method: 'DELETE',
@@ -256,77 +290,85 @@ export const getPiece = async ({ id }: { id: string }) => {
   return validatedData;
 };
 
-// input has been validated before this function is called
-export const postEquipment = async (
-  { piece }: { piece: EquipmentPostAndPut }
-) => {
-  /* only admins and managers have permission */
-  const token = localStorage.getItem('auth-token');
-  if (token) {
-    const res = await fetch(`${baseUrl}/equipment`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `bearer ${token}`
-      },
-      body: JSON.stringify(piece)
-    });
-
-    if (!res.ok) {
-      throw Error(`Response status: ${res.statusText}`);
-    }
-
-    const data: unknown = await res.json();
-    const validatedData = EquipmentSchema.parse(data);
-    return validatedData;
-  } else {
-    throw Error('Login expired.');
-  }
-};
+interface postEquipmentProps extends TokenValidationProps {
+  piece: EquipmentPostAndPut
+}
 
 // input has been validated before this function is called
-export const putEquipment = async (
-  { id, piece }: { id: string, piece: EquipmentPostAndPut }
-) => {
-  /* only admins have permission */
-  const token = localStorage.getItem('auth-token');
-  if (token) {
-    const res = await fetch(`${baseUrl}/equipment/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `bearer ${token}`
-      },
-      body: JSON.stringify(piece)
-    });
+export const postEquipment
+  = async ({ piece, refresh, logout }: postEquipmentProps) => {
+    /* only admins and managers have permission */
+    const token = await syncToken({ refresh, logout });
+    if (token) {
+      const res = await fetch(`${baseUrl}/equipment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `bearer ${token}`
+        },
+        body: JSON.stringify(piece)
+      });
 
-    if (!res.ok) {
-      throw Error(`Response status: ${res.statusText}`);
-    }
-
-    const data: unknown = await res.json();
-    const validatedData = EquipmentSchema.parse(data);
-    return validatedData;
-  } else {
-    throw Error('Login expired.');
-  }
-};
-
-export const deleteEquipment = async ({ id }: { id: string }) => {
-  /* only admins have permission */
-  const token = localStorage.getItem('auth-token');
-  if (token) {
-    const res = await fetch(`${baseUrl}/equipment/${id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `bearer ${token}`
+      if (!res.ok) {
+        throw Error(`Response status: ${res.statusText}`);
       }
-    });
 
-    if (!res.ok) {
-      throw Error(`Response status: ${res.statusText}`);
+      const data: unknown = await res.json();
+      const validatedData = EquipmentSchema.parse(data);
+      return validatedData;
+    } else {
+      throw Error('Login expired.');
     }
-  } else {
-    throw Error('Login expired.');
-  }
-};
+  };
+
+interface putEquipmentProps extends TokenValidationProps {
+  id: string
+  piece: EquipmentPostAndPut
+}
+
+// input has been validated before this function is called
+export const putEquipment
+  = async ({ id, piece, refresh, logout }: putEquipmentProps) => {
+    /* only admins have permission */
+    const token = await syncToken({ refresh, logout });
+    if (token) {
+      const res = await fetch(`${baseUrl}/equipment/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `bearer ${token}`
+        },
+        body: JSON.stringify(piece)
+      });
+
+      if (!res.ok) {
+        throw Error(`Response status: ${res.statusText}`);
+      }
+
+      const data: unknown = await res.json();
+      const validatedData = EquipmentSchema.parse(data);
+      return validatedData;
+    } else {
+      throw Error('Login expired.');
+    }
+  };
+
+export const deleteEquipment
+  = async ({ id, refresh, logout }: deleteItemProps) => {
+    /* only admins have permission */
+    const token = await syncToken({ refresh, logout });
+    if (token) {
+      const res = await fetch(`${baseUrl}/equipment/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        throw Error(`Response status: ${res.statusText}`);
+      }
+    } else {
+      throw Error('Login expired.');
+    }
+  };
