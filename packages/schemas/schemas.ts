@@ -161,6 +161,8 @@ export type UserPut = z.infer<typeof UserPutSchema>;
 export const UserTokenPayloadSchema = UserSchema.pick({
   id: true,
   username: true
+}).extend({
+  userContext: z.string().min(1)
 });
 export type UserTokenPayload = z.infer<typeof UserTokenPayloadSchema>;
 

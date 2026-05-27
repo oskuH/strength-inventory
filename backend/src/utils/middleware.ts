@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { ValidationError } from 'sequelize';
 import { z } from 'zod';
@@ -77,18 +78,41 @@ const tokenExtractor = (
   next();
 };
 
+interface RequestWithUserContext extends Request {
+  cookies: { userContext?: string };
+}
+
 const userExtractor = async (
-  req: Request,
+  req: RequestWithUserContext,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  if (req.token) {
+  if (req.token && req.cookies.userContext) {
     const decodedToken = jwt.verify(
       req.token,
       JWT_ACCESS_SECRET,
-      /* Explicitly request the expected algorithm for security */
+      /* Explicitly request the expected algorithm for security.
+      Inspired by "JSON Web Token for Java" from OWASP Cheat Sheet Series. */
+      // eslint-disable-next-line @stylistic/max-len
+      // https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html
       { algorithms: ['HS256'] }
     ) as UserTokenPayload;
+
+
+    /* Prevent token sidejacking by adding random user context to the token.
+    Inspired by "JSON Web Token for Java" from OWASP Cheat Sheet Series. */
+    // eslint-disable-next-line @stylistic/max-len
+    // https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html
+    const userContextFromCookies
+      = crypto.createHash('sha256').update(req.cookies.userContext)
+        .digest('hex');
+
+    const bufferFromToken = Buffer.from(decodedToken.userContext);
+    const bufferFromCookies = Buffer.from(userContextFromCookies);
+    if (!crypto.timingSafeEqual(bufferFromToken, bufferFromCookies)) {
+      res.status(401).json({ error: 'Invalid user context.' });
+    }
+
     const activeSession
       = await Session.findOne({ where: { accessToken: req.token } });
     if (!activeSession) {
@@ -110,7 +134,7 @@ const userExtractor = async (
       return;
     }
   } else {
-    res.status(401).json({ error: 'Token missing.' });
+    res.status(401).json({ error: 'Token or user context missing.' });
     return;
   }
   next();

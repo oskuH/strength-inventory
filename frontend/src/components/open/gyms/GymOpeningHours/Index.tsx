@@ -25,7 +25,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
       }
     }
   );
-  const [disableMembersOnlySwitch, setDisableMembersOnlySwitch] = useState(
+  const [disableMembersOnlySwitch/* setDisableMembersOnlySwitch */] = useState(
     () => {
       if (
         Object.keys(gym.openingHoursEveryone).length === 0

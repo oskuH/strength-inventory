@@ -3,8 +3,8 @@ import { use, useState } from 'react';
 import { TbEdit, TbMinus, TbPlus } from 'react-icons/tb';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { AuthContext, IconContext } from '../../../../utils/contexts';
 import { deleteGym } from '../../../../utils/api';
-import { IconContext } from '../../../../utils/contexts';
 
 import List from './List';
 
@@ -18,12 +18,14 @@ interface GymListProps {
 export default function GymList (
   { data, selectedGymId, setSelectedGymId, setFormMode }: GymListProps
 ) {
+  const auth = use(AuthContext);
   const iconMode = use(IconContext);
 
   const queryClient = useQueryClient();
 
   const deleteGymMutation = useMutation({
-    mutationFn: (id: string) => deleteGym({ id: id }),
+    mutationFn: (id: string) =>
+      deleteGym({ id: id, refresh: auth.refresh, logout: auth.logout }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['gyms'] });
       void queryClient.invalidateQueries({ queryKey: ['gymsIdAndName'] });

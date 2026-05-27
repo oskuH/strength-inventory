@@ -8,9 +8,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:deploy": "tsc -b && vite build && cp -r dist ../backend/src",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "server": "json-server ./src/tests/json-server/db.cjs --routes ./src/tests/json-server/routes.json --watch ./src/tests/json-server/db.json"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@strength-inventory/schemas": "*",

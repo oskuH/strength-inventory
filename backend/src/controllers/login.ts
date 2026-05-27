@@ -1,6 +1,7 @@
 import Express, { type Request, type Response } from 'express';
 
 import { compare } from 'bcrypt-ts';
+import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 
 import { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, NODE_ENV }
@@ -71,18 +72,39 @@ loginRouter.post(
 
     const { id, email, emailVerified, name, role } = user;
 
-    const userForTokens: UserTokenPayload = {
+    const userForTokens = {
       id: id,
       username: username
     };
 
+    /* Prevent token sidejacking by adding random user context to the token.
+    Inspired by "JSON Web Token for Java" from OWASP Cheat Sheet Series. */
+    // eslint-disable-next-line @stylistic/max-len
+    // https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html
+    const userContextRaw = crypto.randomBytes(50).toString('hex');
+    const userContextHash
+      = crypto.createHash('sha256').update(userContextRaw)
+        .digest('hex');
+
     const accessToken
-      = jwt.sign(userForTokens, JWT_ACCESS_SECRET, { expiresIn: '15m' });
+      = jwt.sign(
+        { ...userForTokens, userContext: userContextHash },
+        JWT_ACCESS_SECRET,
+        { expiresIn: '15m' }
+      );
+    console.log(accessToken);
 
     const refreshToken
       = jwt.sign(userForTokens, JWT_REFRESH_SECRET, { expiresIn: '7d' });
 
     await Session.create({ userId: user.id, accessToken, refreshToken });
+
+    res.cookie('userContext', userContextRaw, {
+      httpOnly: true,
+      /* secure: NODE_ENV === 'production', */
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000  // 15 minutes
+    });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
@@ -136,8 +158,21 @@ loginRouter.post('/refresh', async (
     username: decodedToken.username
   };
 
+  /* Prevent token sidejacking by adding random user context to the token.
+  Inspired by "JSON Web Token for Java" from OWASP Cheat Sheet Series. */
+  // eslint-disable-next-line @stylistic/max-len
+  // https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html
+  const userContextRaw = crypto.randomBytes(50).toString('hex');
+  const userContextHash
+    = crypto.createHash('sha256').update(userContextRaw)
+      .digest('hex');
+
   const newAccessToken
-    = jwt.sign(userForToken, JWT_ACCESS_SECRET, { expiresIn: '15m' });
+    = jwt.sign(
+      { ...userForToken, userContext: userContextHash },
+      JWT_ACCESS_SECRET,
+      { expiresIn: '15m' }
+    );
 
   await activeSession.update({
     accessToken: newAccessToken

@@ -84,7 +84,8 @@ export const postGym = async ({ gym, refresh, logout }: postGymProps) => {
         'Content-Type': 'application/json',
         Authorization: `bearer ${token}`
       },
-      body: JSON.stringify(gym)
+      body: JSON.stringify(gym),
+      credentials: 'include'
     });
 
     if (!res.ok) {
@@ -116,7 +117,8 @@ export const postGymEquipment = async (
         'Content-Type': 'application/json',
         Authorization: `bearer ${token}`
       },
-      body: JSON.stringify({ equipmentId: equipmentId })
+      body: JSON.stringify({ equipmentId: equipmentId }),
+      credentials: 'include'
     });
 
     if (!res.ok) {
@@ -150,7 +152,8 @@ export const putGym
           'Content-Type': 'application/json',
           Authorization: `bearer ${token}`
         },
-        body: JSON.stringify(gym)
+        body: JSON.stringify(gym),
+        credentials: 'include'
       });
 
       if (!res.ok) {
@@ -182,7 +185,8 @@ export const setGymEquipmentCount = async (
         'Content-Type': 'application/json',
         Authorization: `bearer ${token}`
       },
-      body: JSON.stringify({ count: count })
+      body: JSON.stringify({ count: count }),
+      credentials: 'include'
     });
 
     if (!res.ok) {
@@ -209,7 +213,8 @@ export const deleteGym = async ({ id, refresh, logout }: deleteItemProps) => {
       method: 'DELETE',
       headers: {
         Authorization: `bearer ${token}`
-      }
+      },
+      credentials: 'include'
     });
 
     if (!res.ok) {
@@ -237,7 +242,8 @@ export const deleteGymEquipment = async (
         'Content-Type': 'application/json',
         Authorization: `bearer ${token}`
       },
-      body: JSON.stringify({ equipmentId: equipmentId })
+      body: JSON.stringify({ equipmentId: equipmentId }),
+      credentials: 'include'
     });
 
     if (!res.ok) {
@@ -306,7 +312,8 @@ export const postEquipment
           'Content-Type': 'application/json',
           Authorization: `bearer ${token}`
         },
-        body: JSON.stringify(piece)
+        body: JSON.stringify(piece),
+        credentials: 'include'
       });
 
       if (!res.ok) {
@@ -338,7 +345,8 @@ export const putEquipment
           'Content-Type': 'application/json',
           Authorization: `bearer ${token}`
         },
-        body: JSON.stringify(piece)
+        body: JSON.stringify(piece),
+        credentials: 'include'
       });
 
       if (!res.ok) {
@@ -362,7 +370,8 @@ export const deleteEquipment
         method: 'DELETE',
         headers: {
           Authorization: `bearer ${token}`
-        }
+        },
+        credentials: 'include'
       });
 
       if (!res.ok) {

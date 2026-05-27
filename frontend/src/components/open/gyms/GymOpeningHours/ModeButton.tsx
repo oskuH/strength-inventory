@@ -1,3 +1,5 @@
+// work in progress
+
 import { use } from 'react';
 
 import { BiCalendarWeek } from 'react-icons/bi';
@@ -41,6 +43,8 @@ export default function ModeButton (
     title
   }: ModeButtonProps
 ) {
+  // HOX! This is only here to use membersOnly at least once.
+  console.log(membersOnly);
   const iconMode = use(IconContext);
 
   return (

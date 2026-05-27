@@ -3,8 +3,8 @@ import { use, useState } from 'react';
 import { TbEdit, TbMinus, TbPlus } from 'react-icons/tb';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { AuthContext, IconContext } from '../../../../utils/contexts';
 import { deleteEquipment } from '../../../../utils/api';
-import { IconContext } from '../../../../utils/contexts';
 
 import List from './List';
 
@@ -18,12 +18,14 @@ interface EquipmentListProps {
 export default function EquipmentList (
   { data, selectedPieceId, setSelectedPieceId, setFormMode }: EquipmentListProps
 ) {
+  const auth = use(AuthContext);
   const iconMode = use(IconContext);
 
   const queryClient = useQueryClient();
 
   const deleteEquipmentMutation = useMutation({
-    mutationFn: (id: string) => deleteEquipment({ id: id }),
+    mutationFn: (id: string) =>
+      deleteEquipment({ id: id, refresh: auth.refresh, logout: auth.logout }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['equipment'] });
       void queryClient.invalidateQueries({ queryKey: ['equipmentIdAndName'] });

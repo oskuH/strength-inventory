@@ -32,11 +32,11 @@ Session.init({
     references: { model: 'users', key: 'id' }
   },
   accessToken: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(510),
     allowNull: false
   },
   refreshToken: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(510),
     allowNull: false
   },
   createdAt: DataTypes.DATE,

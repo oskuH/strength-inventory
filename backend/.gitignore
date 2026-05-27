@@ -1,5 +1,5 @@
 node_modules
-build
+dist
 .env
 docker-compose.yml
 todo.md
