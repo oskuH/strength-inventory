@@ -61,6 +61,7 @@ export default function GymForm (
       streetNumber,
       district,
       city,
+      country,
       url,
       equipmentVisibility,
       membershipsVisibility,
@@ -97,6 +98,7 @@ export default function GymForm (
       streetNumber: streetNumber,
       district: district,
       city: city,
+      country: country,
       openingHoursEveryone: openingHoursEveryone,
       openingHoursMembers: openingHoursMembers,
       openingHoursExceptions: { data: exceptions },
@@ -148,6 +150,7 @@ export default function GymForm (
     streetNumber: '',
     district: '',
     city: '',
+    country: '',
     url: '',
     equipmentVisible: false,
     membershipsVisible: false,
@@ -260,6 +263,7 @@ export default function GymForm (
       streetNumber,
       district,
       city,
+      country,
       url,
       equipmentVisible,
       membershipsVisible,
@@ -274,6 +278,7 @@ export default function GymForm (
       streetNumber: streetNumber,
       district: district,
       city: city,
+      country: country,
       url: url ?? '',
       equipmentVisible: equipmentVisible,
       membershipsVisible: membershipsVisible,
@@ -422,6 +427,23 @@ export default function GymForm (
                 className='border bg-tertiary dark:bg-tertiary-dark pl-1'
                 onChange={(event) => {
                   setGym({ ...gym, district: event.target.value });
+                }}
+              />
+            </div>
+
+            <div className='flex flex-col'>
+              <label htmlFor='country'>
+                country*
+              </label>
+              <input
+                id='country'
+                name='country'
+                type='text'
+                value={gym.country}
+                required
+                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                onChange={(event) => {
+                  setGym({ ...gym, country: event.target.value });
                 }}
               />
             </div>

@@ -16,6 +16,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as NoAuthopenGymsRouteImport } from './routes/_noAuth/(open)/gyms'
 import { Route as NoAuthopenEquipmentRouteImport } from './routes/_noAuth/(open)/equipment'
+import { Route as AuthenticatedAdminMembershipsRouteImport } from './routes/_authenticated/admin.memberships'
 import { Route as AuthenticatedAdminGymsRouteImport } from './routes/_authenticated/admin.gyms'
 import { Route as AuthenticatedAdminEquipmentRouteImport } from './routes/_authenticated/admin.equipment'
 
@@ -52,6 +53,12 @@ const NoAuthopenEquipmentRoute = NoAuthopenEquipmentRouteImport.update({
   path: '/equipment',
   getParentRoute: () => NoAuthRoute,
 } as any)
+const AuthenticatedAdminMembershipsRoute =
+  AuthenticatedAdminMembershipsRouteImport.update({
+    id: '/memberships',
+    path: '/memberships',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminGymsRoute = AuthenticatedAdminGymsRouteImport.update({
   id: '/gyms',
   path: '/gyms',
@@ -70,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/equipment': typeof AuthenticatedAdminEquipmentRoute
   '/admin/gyms': typeof AuthenticatedAdminGymsRoute
+  '/admin/memberships': typeof AuthenticatedAdminMembershipsRoute
   '/equipment': typeof NoAuthopenEquipmentRoute
   '/gyms': typeof NoAuthopenGymsRoute
 }
@@ -79,6 +87,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/equipment': typeof AuthenticatedAdminEquipmentRoute
   '/admin/gyms': typeof AuthenticatedAdminGymsRoute
+  '/admin/memberships': typeof AuthenticatedAdminMembershipsRoute
   '/equipment': typeof NoAuthopenEquipmentRoute
   '/gyms': typeof NoAuthopenGymsRoute
 }
@@ -91,6 +100,7 @@ export interface FileRoutesById {
   '/_noAuth/': typeof NoAuthIndexRoute
   '/_authenticated/admin/equipment': typeof AuthenticatedAdminEquipmentRoute
   '/_authenticated/admin/gyms': typeof AuthenticatedAdminGymsRoute
+  '/_authenticated/admin/memberships': typeof AuthenticatedAdminMembershipsRoute
   '/_noAuth/(open)/equipment': typeof NoAuthopenEquipmentRoute
   '/_noAuth/(open)/gyms': typeof NoAuthopenGymsRoute
 }
@@ -102,6 +112,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/equipment'
     | '/admin/gyms'
+    | '/admin/memberships'
     | '/equipment'
     | '/gyms'
   fileRoutesByTo: FileRoutesByTo
@@ -111,6 +122,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/equipment'
     | '/admin/gyms'
+    | '/admin/memberships'
     | '/equipment'
     | '/gyms'
   id:
@@ -122,6 +134,7 @@ export interface FileRouteTypes {
     | '/_noAuth/'
     | '/_authenticated/admin/equipment'
     | '/_authenticated/admin/gyms'
+    | '/_authenticated/admin/memberships'
     | '/_noAuth/(open)/equipment'
     | '/_noAuth/(open)/gyms'
   fileRoutesById: FileRoutesById
@@ -183,6 +196,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NoAuthopenEquipmentRouteImport
       parentRoute: typeof NoAuthRoute
     }
+    '/_authenticated/admin/memberships': {
+      id: '/_authenticated/admin/memberships'
+      path: '/memberships'
+      fullPath: '/admin/memberships'
+      preLoaderRoute: typeof AuthenticatedAdminMembershipsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/gyms': {
       id: '/_authenticated/admin/gyms'
       path: '/gyms'
@@ -203,11 +223,13 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminEquipmentRoute: typeof AuthenticatedAdminEquipmentRoute
   AuthenticatedAdminGymsRoute: typeof AuthenticatedAdminGymsRoute
+  AuthenticatedAdminMembershipsRoute: typeof AuthenticatedAdminMembershipsRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminEquipmentRoute: AuthenticatedAdminEquipmentRoute,
   AuthenticatedAdminGymsRoute: AuthenticatedAdminGymsRoute,
+  AuthenticatedAdminMembershipsRoute: AuthenticatedAdminMembershipsRoute,
 }
 
 const AuthenticatedAdminRouteWithChildren =

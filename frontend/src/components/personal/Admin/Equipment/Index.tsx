@@ -40,6 +40,7 @@ export default function AdminEquipment () {
           ? <CgGym className='text-2xl' />
           : 'equipment'}
       </h2>
+
       {formMode === 'hidden'
         ? (
           <EquipmentList
@@ -56,7 +57,7 @@ export default function AdminEquipment () {
             selectedPieceId={selectedPieceId}
             setSelectedPieceId={setSelectedPieceId}
           />
-        ) }
+        )}
     </div>
   );
 }

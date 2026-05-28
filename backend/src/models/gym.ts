@@ -29,6 +29,7 @@ class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare streetNumber: string;
   declare district: string;
   declare city: string;
+  declare country: string;
   declare openingHoursEveryone: CreationOptional<Hours>;
   declare openingHoursMembers: CreationOptional<Hours>;
   declare openingHoursExceptions: CreationOptional<HoursExceptions>;
@@ -74,6 +75,10 @@ Gym.init({
     allowNull: false
   },
   city: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  country: {
     type: DataTypes.STRING,
     allowNull: false
   },

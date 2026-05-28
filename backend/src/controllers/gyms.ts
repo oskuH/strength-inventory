@@ -76,6 +76,7 @@ gymsRouter.post(
       streetNumber,
       district,
       city,
+      country,
       openingHoursEveryone,
       openingHoursMembers,
       openingHoursExceptions,
@@ -93,6 +94,7 @@ gymsRouter.post(
       streetNumber,
       district,
       city,
+      country,
       openingHoursEveryone,
       openingHoursMembers,
       openingHoursExceptions,
@@ -149,6 +151,7 @@ gymsRouter.put(
       streetNumber,
       district,
       city,
+      country,
       openingHoursEveryone,
       openingHoursMembers,
       openingHoursExceptions,
@@ -166,6 +169,7 @@ gymsRouter.put(
       streetNumber: streetNumber,
       district: district,
       city: city,
+      country: country,
       openingHoursEveryone: openingHoursEveryone,
       openingHoursMembers: openingHoursMembers,
       openingHoursExceptions: openingHoursExceptions,
@@ -212,7 +216,7 @@ gymsRouter.patch(
   }
 );
 
-// PATCH for managers to edit information other than opening hours
+// PATCH for managers to edit information other than country and opening hours
 gymsRouter.patch(
   '/:id',
   targetGymExtractor,

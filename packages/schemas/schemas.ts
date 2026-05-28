@@ -36,13 +36,16 @@ export type MembershipAvailability = z.infer<typeof MembershipAvailabilitySchema
 
 const MembershipBaseSchema = z.object({
   id: z.uuidv4(),
-  chain: z.string(),
   name: z.string().min(1),
   feeCurrency: z.string().min(1),
-  membershipFee: z.number(),
+  membershipFee: z.preprocess((val) => {
+    return(Number(val))
+  }, z.number()),
   validity: z.int(),
   validityUnit: MembershipTimeUnitEnum,
-  initiationFee: z.number().nullish(),
+  initiationFee: z.preprocess((val) => {
+    return(Number(val))
+  }, z.number().nullish()),
   availability: MembershipAvailabilitySchema,
   url: z.preprocess(
     (val) => (val === '' ? undefined : val),
@@ -53,7 +56,22 @@ const MembershipBaseSchema = z.object({
   updatedAt: z.coerce.date()
 })
 
+const MembershipWithChainSchema = z.object({
+  chain: z.literal('Liikku'),
+  country: z.string().min(1)
+})
+
+const MembershipWithoutChainSchema = z.object({
+  chain: z.literal(''),
+  country: z.literal('')
+})
+
+const MembershipChainSchema = z.discriminatedUnion('chain', [
+  MembershipWithChainSchema, MembershipWithoutChainSchema
+])
+
 const MembershipWithCommitmentSchema = z.object({
+  commitmentUnit: MembershipTimeUnitEnum,
   commitment: z.preprocess((val) => {
     if (typeof val === 'string') {
       if (val) {
@@ -63,11 +81,11 @@ const MembershipWithCommitmentSchema = z.object({
       }
     }
     return val;
-  }, z.int()),
-  commitmentUnit: MembershipTimeUnitEnum
+  }, z.int())
 })
 
 const MembershipWithoutCommitmentSchema = z.object({
+  commitmentUnit: z.null(),
   commitment: z.preprocess((val) => {
     if (typeof val === 'string') {
       if (val) {
@@ -77,22 +95,21 @@ const MembershipWithoutCommitmentSchema = z.object({
       }
     }
     return val;
-  }, z.null()),
-  commitmentUnit: z.preprocess(() => {
-    return null
-  }, z.null())
+  }, z.null('Select a commitment unit to add commitment.'))
 })
 
-const MembershipCommitmentSchema = z.discriminatedUnion('commitment', [
+const MembershipCommitmentSchema = z.discriminatedUnion('commitmentUnit', [
   MembershipWithCommitmentSchema, MembershipWithoutCommitmentSchema
 ])
 
-export const MembershipSchema = z.intersection(MembershipBaseSchema, MembershipCommitmentSchema)
+const MembershipUnions = z.intersection(MembershipChainSchema, MembershipCommitmentSchema)
+
+export const MembershipSchema = z.intersection(MembershipBaseSchema, MembershipUnions)
 export type Membership = z.infer<typeof MembershipSchema>;
 
 export const MembershipPostAndPutSchema = z.intersection(
     MembershipBaseSchema.omit({ id: true, createdAt: true, updatedAt: true }),
-    MembershipCommitmentSchema)
+    MembershipUnions)
 export type MembershipPostAndPut = z.infer<typeof MembershipPostAndPutSchema>;
 
 
@@ -340,6 +357,7 @@ export const GymSchema = z.object({
   streetNumber: z.string().min(1),
   district: z.string().min(1),
   city: z.string().min(1),
+  country: z.string().min(1),
   openingHoursEveryone: HoursSchema,
   openingHoursMembers: HoursSchema,
   openingHoursExceptions: HoursExceptionsSchema,
@@ -382,6 +400,7 @@ export const GymPostSchema = GymSchema.pick({
   streetNumber: true,
   district: true,
   city: true,
+  country: true,
   openingHoursEveryone: true,
   openingHoursMembers: true,
   openingHoursExceptions: true,
@@ -401,6 +420,7 @@ export const GymPostFrontendSchema = GymSchema.pick({
   streetNumber: true,
   district: true,
   city: true,
+  country: true,
   url: true,
   notes: true
 }).extend({

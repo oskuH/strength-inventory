@@ -9,7 +9,8 @@ import {
   GymGetEquipmentSchema,
   GymGetSchema,
   type GymPost,
-  GymSchema
+  GymSchema,
+  MembershipSchema
 } from '@strength-inventory/schemas';
 
 export const baseUrl
@@ -380,4 +381,21 @@ export const deleteEquipment
     } else {
       throw Error('Login expired.');
     }
+  };
+
+
+// memberships
+
+export const getMembershipsByCountry
+  = async ({ country }: { country: string }) => {
+    const res = await fetch(`${baseUrl}/memberships/${country}`);
+    if (!res.ok) {
+      throw Error(`Response status: ${res.statusText}`);
+    }
+
+    const data: unknown = await res.json();
+    console.log('UNVALIDATED:', data);
+    const validatedData = z.array(MembershipSchema).parse(data);
+    console.log('VALIDATED:', validatedData);
+    return validatedData;
   };

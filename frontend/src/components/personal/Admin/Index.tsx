@@ -2,6 +2,7 @@ import { use } from 'react';
 
 import { Link, Outlet, useLocation } from '@tanstack/react-router';
 import { CgGym } from 'react-icons/cg';
+import { FaRegAddressCard } from 'react-icons/fa';
 import { MdOutlineLocationOn } from 'react-icons/md';
 
 import { IconContext } from '../../../utils/contexts';
@@ -19,6 +20,12 @@ function Icon ({ pathname }: { pathname: string }) {
     );
   }
 
+  if (pathname === 'memberships') {
+    return (
+      <FaRegAddressCard className='text-base' />
+    );
+  }
+
   return '';
 }
 
@@ -29,7 +36,8 @@ function AdminLink ({ pathname }: { pathname: string }) {
     select: (location) => location.pathname
   });
 
-  const validPaths = ['equipment', 'gyms'];  /* TODO: keep updated */
+  /* TODO: keep updated */
+  const validPaths = ['equipment', 'gyms', 'memberships'];
   let to: string;
   if (validPaths.includes(pathname)) {
     to = `/admin/${pathname}`;
@@ -68,8 +76,8 @@ export default function AdminLayoutComponent () {
         <nav className='flex justify-evenly gap-1'>
           <AdminLink pathname='gyms' />
           <AdminLink pathname='equipment' />
-          {/* <AdminLink pathname='memberships' />
-          <AdminLink pathname='users' /> */} {/* TODO */}
+          <AdminLink pathname='memberships' />
+          {/* <AdminLink pathname='users' /> */} {/* TODO */}
         </nav>
         <Outlet />
       </div>

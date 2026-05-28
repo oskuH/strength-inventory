@@ -40,6 +40,7 @@ export default function AdminGyms () {
           ? <MdOutlineLocationOn className='text-2xl' />
           : 'gyms'}
       </h2>
+
       {formMode === 'hidden'
         ? (
           <GymList
@@ -56,7 +57,7 @@ export default function AdminGyms () {
             selectedGymId={selectedGymId}
             setSelectedGymId={setSelectedGymId}
           />
-        ) }
+        )}
     </div>
   );
 }

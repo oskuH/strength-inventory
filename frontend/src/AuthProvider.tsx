@@ -14,7 +14,7 @@ import {
 export default function AuthProvider (
   { children }: { children: React.ReactNode }
 ) {
-  const [token, setToken] = useState(() => localStorage.getItem('auth-token'));
+  const [token] = useState(() => localStorage.getItem('auth-token'));
   const [user, setUser] = useState<UserFrontend>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(!!token);
@@ -38,7 +38,8 @@ export default function AuthProvider (
 
       fetch(`${baseUrl}/login`, {
         headers: { Authorization: `Bearer ${accessToken}` },
-        signal: ctrl.signal
+        signal: ctrl.signal,
+        credentials: 'include'
       })
         .then((res) => res.json())
         .then((userData) => {
@@ -65,7 +66,7 @@ export default function AuthProvider (
       .catch(() => {
         console.error('Something went wrong.');
       });
-  }, [token]);
+  });
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -114,7 +115,6 @@ export default function AuthProvider (
         const validatedTokenData
           = LoginRefreshResponseSchema.parse(tokenData);
         localStorage.setItem('auth-token', validatedTokenData.token);
-        setToken(validatedTokenData.token);
         return validatedTokenData.token;
       } catch {
         throw Error('Access token refresh failed.');
@@ -125,15 +125,16 @@ export default function AuthProvider (
   }
 
   async function logout () {
+    const authToken = localStorage.getItem('auth-token');
+    if (authToken) {
+      await fetch(`${baseUrl}/logout`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${authToken}` }
+      });
+    }
     setUser(null);
     setIsAuthenticated(false);
     localStorage.removeItem('auth-token');
-    if (token) {
-      await fetch(`${baseUrl}/logout`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-    }
   }
 
   return (

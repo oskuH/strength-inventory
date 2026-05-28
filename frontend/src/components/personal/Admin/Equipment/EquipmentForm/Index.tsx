@@ -315,7 +315,7 @@ export default function EquipmentForm (
                   setPiece({ ...piece, category: event.target.value });
                 }}
               >
-                <option value=''>-- please choose a category --</option>
+                <option value=''>-- please select a category --</option>
                 <option value='system'>system</option>
                 <option value='freeWeight'>free weight</option>
                 <option value='handleAttachment'>handle attachment</option>

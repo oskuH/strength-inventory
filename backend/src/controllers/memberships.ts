@@ -18,6 +18,16 @@ membershipsRouter.get('/', async (_req, res) => {
   return res.json(memberships);
 });
 
+membershipsRouter.get('/:country', async (
+  req: Request<{ country: string }, unknown, unknown>,
+  res
+) => {
+  const { country } = req.params;
+
+  const memberships = await Membership.findAll({ where: { country: country } });
+  return res.json(memberships);
+});
+
 // POST a new membership
 membershipsRouter.post(
   '/',
@@ -27,6 +37,7 @@ membershipsRouter.post(
   ) => {
     const {
       chain,
+      country,
       name,
       feeCurrency,
       membershipFee,
@@ -42,6 +53,7 @@ membershipsRouter.post(
 
     const membership = await Membership.create({
       chain,
+      country,
       name,
       feeCurrency,
       membershipFee,
