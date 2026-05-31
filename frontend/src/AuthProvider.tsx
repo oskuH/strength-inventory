@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { z } from 'zod';
+
 import { AuthContext } from './utils/contexts';
 import { baseUrl } from './utils/api';
 import { isTokenValid } from './utils/syncToken';
@@ -47,12 +49,23 @@ export default function AuthProvider (
             const validatedUserData = UserFrontendQuerySchema.parse(userData);
             setUser(validatedUserData);
             setIsAuthenticated(true);
-          } catch {
+          } catch (err: unknown) {
             localStorage.removeItem('auth-token');
+            if (err instanceof z.ZodError) {
+              const messages = err.issues.map((issue) => issue.message);
+              throw Error(messages[0], { cause: err });
+            } else {
+              console.error(err);
+            }
           }
         })
-        .catch(() => {
+        .catch((err: unknown) => {
           localStorage.removeItem('auth-token');
+          if (err instanceof Error) {
+            throw Error(err.message);
+          } else {
+            console.error(err);
+          }
         })
         .finally(() => {
           setIsLoading(false);
@@ -63,10 +76,10 @@ export default function AuthProvider (
     };
 
     syncTokenAndLogin()
-      .catch(() => {
-        console.error('Something went wrong.');
+      .catch((err: unknown) => {
+        console.error('Something went wrong.', err);
       });
-  });
+  }, [token]);
 
   if (isLoading) {
     return <p>Loading...</p>;

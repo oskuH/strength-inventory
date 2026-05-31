@@ -57,7 +57,7 @@ const MembershipBaseSchema = z.object({
 })
 
 const MembershipWithChainSchema = z.object({
-  chain: z.literal('Liikku'),
+  chain: z.string().min(1),
   country: z.string().min(1)
 })
 
@@ -66,7 +66,7 @@ const MembershipWithoutChainSchema = z.object({
   country: z.literal('')
 })
 
-const MembershipChainSchema = z.discriminatedUnion('chain', [
+const MembershipChainSchema = z.union([
   MembershipWithChainSchema, MembershipWithoutChainSchema
 ])
 

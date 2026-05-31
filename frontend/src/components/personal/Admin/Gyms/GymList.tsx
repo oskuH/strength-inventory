@@ -50,6 +50,7 @@ export default function GymList (
         type='search'
         value={search}
         placeholder='search'
+        autoComplete='off'
         className='bg-background dark:bg-background-dark pl-1'
         onChange={(event) => {
           setSearch(event.target.value);

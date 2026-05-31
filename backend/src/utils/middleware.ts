@@ -103,8 +103,10 @@ const userExtractor = async (
     Inspired by "JSON Web Token for Java" from OWASP Cheat Sheet Series. */
     // eslint-disable-next-line @stylistic/max-len
     // https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html
+    const rawUserContextFromCookies = req.cookies.userContext;
+
     const userContextFromCookies
-      = crypto.createHash('sha256').update(req.cookies.userContext)
+      = crypto.createHash('sha256').update(rawUserContextFromCookies)
         .digest('hex');
 
     const bufferFromToken = Buffer.from(decodedToken.userContext);

@@ -14,6 +14,8 @@ export default function AdminMemberships () {
 
   const [formMode, setFormMode] = useState('hidden');
   const [selectedMembershipId, setSelectedMembershipId] = useState('');
+  const [country, setCountry] = useState('');
+  const [chain, setChain] = useState('');
 
   return (
     <div
@@ -29,7 +31,14 @@ export default function AdminMemberships () {
 
       {formMode === 'hidden'
         ? (
-          <MembershipList />
+          <MembershipList
+            setFormMode={setFormMode}
+            setSelectedMembershipId={setSelectedMembershipId}
+            country={country}
+            setCountry={setCountry}
+            chain={chain}
+            setChain={setChain}
+          />
         )
         : (
           <MembershipForm />
