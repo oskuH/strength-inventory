@@ -284,9 +284,7 @@ export default function EquipmentForm (
         >
           <div className='flex flex-col gap-1'>
             <div className='flex flex-col'>
-              <label htmlFor='name'>
-                name*
-              </label>
+              <label htmlFor='name'>name*</label>
               <input
                 id='name'
                 name='name'
@@ -301,9 +299,7 @@ export default function EquipmentForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='category'>
-                category*
-              </label>
+              <label htmlFor='category'>category*</label>
               <select
                 id='category'
                 name='category'
@@ -326,9 +322,7 @@ export default function EquipmentForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='manufacturer'>
-                manufacturer*
-              </label>
+              <label htmlFor='manufacturer'>manufacturer*</label>
               <input
                 id='manufacturer'
                 name='manufacturer'
@@ -343,9 +337,7 @@ export default function EquipmentForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='code'>
-                code*
-              </label>
+              <label htmlFor='code'>code*</label>
               <input
                 id='code'
                 name='code'
@@ -360,9 +352,7 @@ export default function EquipmentForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='weightUnit'>
-                weight unit
-              </label>
+              <label htmlFor='weightUnit'>weight unit</label>
               <select
                 id='weightUnit'
                 name='weightUnit'
@@ -380,9 +370,7 @@ export default function EquipmentForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='weight'>
-                weight
-              </label>
+              <label htmlFor='weight'>weight</label>
               <input
                 id='weight'
                 name='weight'
@@ -410,9 +398,7 @@ export default function EquipmentForm (
               : null}
 
             <div className='flex flex-col'>
-              <label htmlFor='startingWeight'>
-                starting weight
-              </label>
+              <label htmlFor='startingWeight'>starting weight</label>
               <input
                 id='startingWeight'
                 name='startingWeight'
@@ -429,9 +415,7 @@ export default function EquipmentForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='maximumWeight'>
-                maximum weight
-              </label>
+              <label htmlFor='maximumWeight'>maximum weight</label>
               <input
                 id='maximumWeight'
                 name='maximumWeight'
@@ -448,9 +432,7 @@ export default function EquipmentForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='url'>
-                url
-              </label>
+              <label htmlFor='url'>url</label>
               <input
                 id='url'
                 name='url'
@@ -464,9 +446,7 @@ export default function EquipmentForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='notes'>
-                notes
-              </label>
+              <label htmlFor='notes'>notes</label>
               <textarea
                 id='notes'
                 name='notes'

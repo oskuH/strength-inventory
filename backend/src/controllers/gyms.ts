@@ -41,7 +41,7 @@ gymsRouter.get('/', async (_req, res) => {
 });
 
 // GET a gym
-// targetGymExtractor returns same includes as the above GET all route
+// targetGymExtractor returns same 'include' as the above GET all route
 gymsRouter.get('/:id', targetGymExtractor, (req, res) => {
   if (!req.targetGym) {
     throw Error('Gym missing from request.');
@@ -61,7 +61,7 @@ gymsRouter.get('/:id/equipment', targetGymExtractor, async (req, res) => {
   return res.json(equipment);
 });
 
-// POST a new gym
+// POST for admins to create a new gym
 gymsRouter.post(
   '/',
   ...isAdmin,

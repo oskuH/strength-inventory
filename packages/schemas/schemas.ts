@@ -37,15 +37,15 @@ export type MembershipAvailability = z.infer<typeof MembershipAvailabilitySchema
 const MembershipBaseSchema = z.object({
   id: z.uuidv4(),
   name: z.string().min(1),
-  feeCurrency: z.string().min(1),
-  membershipFee: z.preprocess((val) => {
-    return(Number(val))
-  }, z.number()),
-  validity: z.int(),
-  validityUnit: MembershipTimeUnitEnum,
   initiationFee: z.preprocess((val) => {
     return(Number(val))
   }, z.number().nullish()),
+  membershipFee: z.preprocess((val) => {
+    return(Number(val))
+  }, z.number()),
+  feeCurrency: z.string().min(1),
+  validity: z.int(),
+  validityUnit: MembershipTimeUnitEnum,
   availability: MembershipAvailabilitySchema,
   url: z.preprocess(
     (val) => (val === '' ? undefined : val),

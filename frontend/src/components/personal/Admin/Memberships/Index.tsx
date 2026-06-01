@@ -6,7 +6,7 @@ import { FaRegAddressCard } from 'react-icons/fa';
 
 import { IconContext } from '../../../../utils/contexts';
 
-import MembershipForm from './MembershipForm';
+import MembershipForm from './MembershipForm/Index';
 import MembershipList from './MembershipList';
 
 export default function AdminMemberships () {
@@ -41,7 +41,14 @@ export default function AdminMemberships () {
           />
         )
         : (
-          <MembershipForm />
+          <MembershipForm
+            formMode={formMode}
+            setFormMode={setFormMode}
+            selectedMembershipId={selectedMembershipId}
+            setSelectedMembershipId={setSelectedMembershipId}
+            country={country}
+            chain={chain}
+          />
         )}
     </div>
   );

@@ -1,8 +1,7 @@
 import { use, useActionState, useState } from 'react';
 
-import {
-  skipToken, useMutation, useQuery, useQueryClient
-} from '@tanstack/react-query';
+import { skipToken, useMutation, useQuery, useQueryClient }
+  from '@tanstack/react-query';
 import { TbEdit, TbPlus } from 'react-icons/tb';
 import { z } from 'zod';
 
@@ -331,9 +330,7 @@ export default function GymForm (
         >
           <div className='flex flex-col gap-1'>
             <div className='flex flex-col'>
-              <label htmlFor='name'>
-                name*
-              </label>
+              <label htmlFor='name'>name*</label>
               <input
                 id='name'
                 name='name'
@@ -348,9 +345,7 @@ export default function GymForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='chain'>
-                chain
-              </label>
+              <label htmlFor='chain'>chain</label>
               <input
                 id='chain'
                 name='chain'
@@ -364,9 +359,7 @@ export default function GymForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='street'>
-                street*
-              </label>
+              <label htmlFor='street'>street*</label>
               <input
                 id='street'
                 name='street'
@@ -381,9 +374,7 @@ export default function GymForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='streetNumber'>
-                street number*
-              </label>
+              <label htmlFor='streetNumber'>street number*</label>
               <input
                 id='streetNumber'
                 name='streetNumber'
@@ -398,9 +389,7 @@ export default function GymForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='city'>
-                city*
-              </label>
+              <label htmlFor='city'>city*</label>
               <input
                 id='city'
                 name='city'
@@ -415,9 +404,7 @@ export default function GymForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='district'>
-                district*
-              </label>
+              <label htmlFor='district'>district*</label>
               <input
                 id='district'
                 name='district'
@@ -432,9 +419,7 @@ export default function GymForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='country'>
-                country*
-              </label>
+              <label htmlFor='country'>country*</label>
               <input
                 id='country'
                 name='country'
@@ -449,9 +434,7 @@ export default function GymForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='url'>
-                url
-              </label>
+              <label htmlFor='url'>url</label>
               <input
                 id='url'
                 name='url'
@@ -465,9 +448,7 @@ export default function GymForm (
             </div>
 
             <div className='flex flex-col'>
-              <label htmlFor='notes'>
-                notes
-              </label>
+              <label htmlFor='notes'>notes</label>
               <textarea
                 id='notes'
                 name='notes'

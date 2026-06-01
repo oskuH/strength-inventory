@@ -29,7 +29,7 @@ equipmentRouter.get('/:id', targetEquipmentExtractor, (req, res) => {
   return res.json(equipment);
 });
 
-// POST a new equipment
+// POST for admins to create a new equipment
 equipmentRouter.post(
   '/',
   ...isAdmin,

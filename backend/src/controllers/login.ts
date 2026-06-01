@@ -177,6 +177,13 @@ loginRouter.post('/refresh', async (
     accessToken: newAccessToken
   });
 
+  res.cookie('userContext', userContextRaw, {
+    httpOnly: true,
+    /* secure: NODE_ENV === 'production', */
+    sameSite: 'strict',
+    maxAge: 15 * 60 * 1000  // 15 minutes
+  });
+
   return res.status(200).send({ token: newAccessToken });
 });
 

@@ -18,6 +18,7 @@ membershipsRouter.get('/', async (_req, res) => {
   return res.json(memberships);
 });
 
+// GET all memberships in a selected country
 membershipsRouter.get('/:country', async (
   req: Request<{ country: string }, unknown, unknown>,
   res
@@ -28,9 +29,20 @@ membershipsRouter.get('/:country', async (
   return res.json(memberships);
 });
 
-// POST a new membership
+// GET a membership
+membershipsRouter.get('/:id', targetMembershipExtractor, (req, res) => {
+  if (!req.targetMembership) {
+    throw Error('Membership missing from request.');
+  }  // Should never trigger after middleware.
+
+  const membership = req.targetMembership;
+  return res.json(membership);
+});
+
+// POST for admins to create a new membership
 membershipsRouter.post(
   '/',
+  ...isAdmin,
   async (
     req: Request<unknown, unknown, MembershipPostAndPut>,
     res: Response<FullMembership>
@@ -39,13 +51,13 @@ membershipsRouter.post(
       chain,
       country,
       name,
-      feeCurrency,
+      initiationFee,
       membershipFee,
+      feeCurrency,
       validity,
       validityUnit,
       commitment,
       commitmentUnit,
-      initiationFee,
       availability,
       url,
       notes
@@ -55,13 +67,13 @@ membershipsRouter.post(
       chain,
       country,
       name,
-      feeCurrency,
+      initiationFee,
       membershipFee,
+      feeCurrency,
       validity,
       validityUnit,
       commitment,
       commitmentUnit,
-      initiationFee,
       availability,
       url,
       notes
@@ -90,13 +102,13 @@ membershipsRouter.put(
     const {
       chain,
       name,
-      feeCurrency,
+      initiationFee,
       membershipFee,
+      feeCurrency,
       validity,
       validityUnit,
       commitment,
       commitmentUnit,
-      initiationFee,
       availability,
       url,
       notes
@@ -105,13 +117,13 @@ membershipsRouter.put(
     await membership.update({
       chain: chain,
       name: name,
-      feeCurrency: feeCurrency,
+      initiationFee: initiationFee,
       membershipFee: membershipFee,
+      feeCurrency: feeCurrency,
       validity: validity,
       validityUnit: validityUnit,
       commitment: commitment,
       commitmentUnit: commitmentUnit,
-      initiationFee: initiationFee,
       availability: availability,
       url: url,
       notes: notes

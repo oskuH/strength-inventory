@@ -10,6 +10,7 @@ import {
   GymGetSchema,
   type GymPost,
   GymSchema,
+  type MembershipPostAndPut,
   MembershipSchema
 } from '@strength-inventory/schemas';
 
@@ -76,7 +77,7 @@ interface postGymProps extends TokenValidationProps {
 
 // input has been validated before this function is called
 export const postGym = async ({ gym, refresh, logout }: postGymProps) => {
-  /* only admins and managers have permission */
+  /* only admins have permission */
   const token = await syncToken({ refresh, logout });
   if (token) {
     const res = await fetch(`${baseUrl}/gyms`, {
@@ -304,7 +305,7 @@ interface postEquipmentProps extends TokenValidationProps {
 // input has been validated before this function is called
 export const postEquipment
   = async ({ piece, refresh, logout }: postEquipmentProps) => {
-    /* only admins and managers have permission */
+    /* only admins have permission */
     const token = await syncToken({ refresh, logout });
     if (token) {
       const res = await fetch(`${baseUrl}/equipment`, {
@@ -398,4 +399,101 @@ export const getMembershipsByCountry
     const validatedData = z.array(MembershipSchema).parse(data);
     console.log('VALIDATED:', validatedData);
     return validatedData;
+  };
+
+export const getMembership = async ({ id }: { id: string }) => {
+  const res = await fetch(`${baseUrl}/memberships/${id}`);
+  if (!res.ok) {
+    throw Error(`Response status: ${res.statusText}`);
+  }
+
+  const data: unknown = await res.json();
+  const validatedData = MembershipSchema.parse(data);
+  return validatedData;
+};
+
+interface postMembershipProps extends TokenValidationProps {
+  membership: MembershipPostAndPut
+}
+
+// input has been validated before this function is called
+export const postMembership
+  = async ({ membership, refresh, logout }: postMembershipProps) => {
+    /* only admins have permission */
+    const token = await syncToken({ refresh, logout });
+    if (token) {
+      const res = await fetch(`${baseUrl}/memberships`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `bearer ${token}`
+        },
+        body: JSON.stringify(membership),
+        credentials: 'include'
+      });
+
+      if (!res.ok) {
+        throw Error(`Response status: ${res.statusText}`);
+      }
+
+      const data: unknown = await res.json();
+      const validatedData = MembershipSchema.parse(data);
+      return validatedData;
+    } else {
+      throw Error('Login expired.');
+    }
+  };
+
+interface putMembershipProps extends TokenValidationProps {
+  id: string
+  membership: MembershipPostAndPut
+}
+
+// input has been validated before this function is called
+export const putMembership
+  = async ({ id, membership, refresh, logout }: putMembershipProps) => {
+    /* only admins have permission */
+    const token = await syncToken({ refresh, logout });
+    if (token) {
+      const res = await fetch(`${baseUrl}/memberships/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `bearer ${token}`
+        },
+        body: JSON.stringify(membership),
+        credentials: 'include'
+      });
+
+      if (!res.ok) {
+        throw Error(`Response status: ${res.statusText}`);
+      }
+
+      const data: unknown = await res.json();
+      const validatedData = MembershipSchema.parse(data);
+      return validatedData;
+    } else {
+      throw Error('Login expired.');
+    }
+  };
+
+export const deleteMembership
+  = async ({ id, refresh, logout }: deleteItemProps) => {
+    /* only admins have permission */
+    const token = await syncToken({ refresh, logout });
+    if (token) {
+      const res = await fetch(`${baseUrl}/memberships/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `bearer ${token}`
+        },
+        credentials: 'include'
+      });
+
+      if (!res.ok) {
+        throw Error(`Response status: ${res.statusText}`);
+      }
+    } else {
+      throw Error('Login expired.');
+    }
   };
