@@ -1,24 +1,31 @@
 // work in progress
 
-// todo: invalidate membershipsByCountry upon submit
 import { use, useActionState, useState } from 'react';
 
 import { skipToken, useMutation, useQuery, useQueryClient }
   from '@tanstack/react-query';
 import { TbEdit, TbPlus } from 'react-icons/tb';
+import { z } from 'zod';
 
 import { AuthContext, IconContext } from '../../../../../utils/contexts';
 import {
   deleteMembership, getMembership, postMembership, putMembership
 } from '../../../../../utils/api';
+import handleSubmitError from '../../../../../utils/handleSubmitError';
 
 import AvailabilityButton from './AvailabilityButton';
+import ReturnButton from '../../ReturnButton';
+import SubmitButton from '../../SubmitButton';
+
+import { FORM_INPUT_CLASSES } from '../../../../../constants/theme';
+
+import { type MembershipPostAndPut, MembershipPostAndPutSchema }
+  from '@strength-inventory/schemas';
 
 interface MembershipFormProps {
   formMode: string
   setFormMode: React.Dispatch<React.SetStateAction<string>>
   selectedMembershipId: string
-  setSelectedMembershipId: React.Dispatch<React.SetStateAction<string>>
   country: string
   chain: string
 }
@@ -49,7 +56,6 @@ export default function MembershipForm (
     formMode,
     setFormMode,
     selectedMembershipId,
-    setSelectedMembershipId,
     country,
     chain
   }: MembershipFormProps
@@ -64,6 +70,47 @@ export default function MembershipForm (
     queryFn: selectedMembershipId
       ? () => getMembership({ id: selectedMembershipId })
       : skipToken
+  });
+
+  const postMutation = useMutation({
+    mutationFn: (newMembership: MembershipPostAndPut) =>
+      postMembership({
+        membership: newMembership, refresh: auth.refresh, logout: auth.logout
+      }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries(
+        { queryKey: ['membershipsByCountry', country] }
+      );
+      setFormMode('hidden');
+    }
+  });
+
+  const putMutation = useMutation({
+    mutationFn: ({ id, updatedMembership }:
+    { id: string, updatedMembership: MembershipPostAndPut }) =>
+      putMembership({
+        id: id,
+        membership: updatedMembership,
+        refresh: auth.refresh,
+        logout: auth.logout
+      }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries(
+        { queryKey: ['membershipsByCountry', country] }
+      );
+      setFormMode('hidden');
+    }
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) =>
+      deleteMembership({ id: id, refresh: auth.refresh, logout: auth.logout }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries(
+        { queryKey: ['membershipsByCountry', country] }
+      );
+      setFormMode('hidden');
+    }
   });
 
   const [membership, setMembership] = useState<FormMembership>({
@@ -85,6 +132,8 @@ export default function MembershipForm (
     notes: ''
   });
 
+  const [firstRender, setFirstRender] = useState(true);
+
   const [state, submitAction, isPending] = useActionState(submit, {
     success: false,
     error: null
@@ -97,7 +146,52 @@ export default function MembershipForm (
 
   async function submit (_previousState: State, formData: FormData) {
     const req = Object.fromEntries(formData.entries());
-    console.log(req);
+
+    try {
+      const preprocessCommitmentUnit = z.preprocess((val) => {
+        if (val === '') {
+          return null;
+        } else {
+          return val;
+        }
+      }, z.string().min(1)
+        .nullable());
+      const preprocessedCommitmentUnit
+        = preprocessCommitmentUnit.parse(req.commitmentUnit);
+      const membership = {
+        ...req,
+        commitmentUnit: preprocessedCommitmentUnit,
+        country: country,
+        chain: chain
+      };
+      const validatedMembership = MembershipPostAndPutSchema.parse(membership);
+
+      if (formMode === 'create') {
+        try {
+          await postMutation.mutateAsync(validatedMembership);
+          return {
+            success: true,
+            error: null
+          };
+        } catch (err: unknown) {
+          return handleSubmitError(err);
+        }
+      } else {  // formMode === 'edit'
+        try {
+          await putMutation.mutateAsync({
+            id: selectedMembershipId, updatedMembership: validatedMembership
+          });
+          return {
+            success: true,
+            error: null
+          };
+        } catch (err: unknown) {
+          return handleSubmitError(err);
+        }
+      }
+    } catch (err: unknown) {
+      return handleSubmitError(err);
+    }
   }
 
   if (selectedMembershipId && membershipQuery.isPending) {
@@ -110,7 +204,7 @@ export default function MembershipForm (
 
   /* Initialize the form fields when opened in edit mode.
   selectedMembershipId is only defined in edit mode. */
-  if (selectedMembershipId && membershipQuery.isSuccess) {
+  if (selectedMembershipId && membershipQuery.isSuccess && firstRender) {
     const {
       name,
       initiationFee,
@@ -146,6 +240,8 @@ export default function MembershipForm (
       url: url ?? '',
       notes: notes
     });
+
+    setFirstRender(false);
   }
 
   return (
@@ -167,14 +263,16 @@ export default function MembershipForm (
               )
               : <span>editing {membership.name}</span>}
         </h3>
-        <div className='flex flex-col gap-1'>
-          <p className='flex'>
-            <span className='w-15'>country:</span> {country}
-          </p>
+        <div className='flex flex-col gap-3'>
+          <div className='flex flex-col gap-1'>
+            <p className='flex'>
+              <span className='w-15'>country:</span> {country}
+            </p>
 
-          <p className='flex'>
-            <span className='w-15'>chain:</span> {chain}
-          </p>
+            <p className='flex'>
+              <span className='w-15'>chain:</span> {chain}
+            </p>
+          </div>
 
           <form action={submitAction} className='flex flex-col gap-1'>
             <div className='flex flex-col'>
@@ -185,7 +283,7 @@ export default function MembershipForm (
                 type='text'
                 value={membership.name}
                 required
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setMembership({ ...membership, name: event.target.value });
                 }}
@@ -203,7 +301,7 @@ export default function MembershipForm (
                   required
                   min={0.01}
                   step={0.01}
-                  className='border bg-tertiary dark:bg-tertiary-dark pl-1 w-25'
+                  className={`${FORM_INPUT_CLASSES} w-25`}
                   onChange={(event) => {
                     setMembership(
                       { ...membership, membershipFee: event.target.value }
@@ -221,7 +319,7 @@ export default function MembershipForm (
                   value={membership.initiationFee}
                   min={0.01}
                   step={0.01}
-                  className='border bg-tertiary dark:bg-tertiary-dark pl-1 w-25'
+                  className={`${FORM_INPUT_CLASSES} w-25`}
                   onChange={(event) => {
                     setMembership(
                       { ...membership, initiationFee: event.target.value }
@@ -237,8 +335,7 @@ export default function MembershipForm (
                   name='feeCurrency'
                   value={membership.feeCurrency}
                   required
-                  className='
-                  border bg-tertiary dark:bg-tertiary-dark pl-1 cursor-pointer'
+                  className={`${FORM_INPUT_CLASSES} cursor-pointer`}
                   onChange={(event) => {
                     setMembership(
                       { ...membership, feeCurrency: event.target.value }
@@ -267,8 +364,7 @@ export default function MembershipForm (
                     required
                     min={1}
                     step={1}
-                    className='
-                    border bg-tertiary dark:bg-tertiary-dark pl-1 w-15'
+                    className={`${FORM_INPUT_CLASSES} w-15`}
                     onChange={(event) => {
                       setMembership(
                         { ...membership, validity: event.target.value }
@@ -281,9 +377,7 @@ export default function MembershipForm (
                   name='validityUnit'
                   value={membership.validityUnit}
                   required
-                  className='
-                  self-end border
-                  bg-tertiary dark:bg-tertiary-dark pl-1 cursor-pointer'
+                  className={`${FORM_INPUT_CLASSES} self-end cursor-pointer`}
                   onChange={(event) => {
                     setMembership(
                       { ...membership, validityUnit: event.target.value }
@@ -311,8 +405,7 @@ export default function MembershipForm (
                       required={membership.commitmentUnit !== ''}
                       min={1}
                       step={1}
-                      className='
-                      border bg-tertiary dark:bg-tertiary-dark pl-1 w-15'
+                      className={`${FORM_INPUT_CLASSES} w-15`}
                       onChange={(event) => {
                         setMembership(
                           { ...membership, commitment: event.target.value }
@@ -324,9 +417,9 @@ export default function MembershipForm (
                       name='commitmentUnit'
                       value={membership.commitmentUnit}
                       required={membership.commitment !== ''}
-                      className='
-                      self-end border
-                      bg-tertiary dark:bg-tertiary-dark pl-1 cursor-pointer'
+                      className={
+                        `${FORM_INPUT_CLASSES} self-end cursor-pointer`
+                      }
                       onChange={(event) => {
                         setMembership(
                           { ...membership, commitmentUnit: event.target.value }
@@ -349,29 +442,91 @@ export default function MembershipForm (
               <label>availability</label>
               <div className='flex gap-3'>
                 <AvailabilityButton
-                  availabilityType='desk'
+                  availabilityType='Desk'
                   selected={membership.availability.Desk}
+                  membership={membership}
                   setMembership={setMembership}
                 />
                 <AvailabilityButton
-                  availabilityType='web'
+                  availabilityType='Web'
                   selected={membership.availability.Web}
+                  membership={membership}
                   setMembership={setMembership}
                 />
                 <AvailabilityButton
-                  availabilityType='app'
+                  availabilityType='App'
                   selected={membership.availability.App}
+                  membership={membership}
                   setMembership={setMembership}
                 />
                 <AvailabilityButton
-                  availabilityType='other'
+                  availabilityType='Other'
                   selected={membership.availability.Other}
+                  membership={membership}
                   setMembership={setMembership}
                 />
               </div>
             </div>
+
+            <div className='flex flex-col'>
+              <label htmlFor='name'>url</label>
+              <input
+                id='url'
+                name='url'
+                type='text'
+                value={membership.url}
+                className={FORM_INPUT_CLASSES}
+                onChange={(event) => {
+                  setMembership({ ...membership, url: event.target.value });
+                }}
+              />
+            </div>
+
+            <div className='flex flex-col'>
+              <label htmlFor='notes'>notes</label>
+              <textarea
+                id='url'
+                name='url'
+                value={membership.notes}
+                className={FORM_INPUT_CLASSES}
+                onChange={(event) => {
+                  setMembership({ ...membership, notes: event.target.value });
+                }}
+              />
+            </div>
+
             <p>* = required</p>
+
+            <SubmitButton
+              formMode={formMode} isPending={isPending} error={state.error}
+            />
           </form>
+
+          <button
+            disabled={deleteMutation.isPending}
+            className={`
+            flex justify-center border border-black dark:border-white
+            bg-red dark:bg-red-dark px-3 w-full
+            text-primary-text dark:text-primary-text-dark text-base
+            hover:border-white hover:dark:border-black
+            active:border-white active:dark:border-black active:font-bold
+            ${!deleteMutation.isPending
+      ? 'cursor-pointer'
+      : 'cursor-progress'
+    }`}
+            onClick={() => {
+              deleteMutation.mutate(selectedMembershipId);
+            }}
+          >
+            {!deleteMutation.isPending
+              ? 'delete'
+              : 'deleting...'}
+          </button>
+
+          <ReturnButton
+            queryToInvalidate={['membershipsByCountry', country]}
+            setFormMode={setFormMode}
+          />
         </div>
       </div>
     </div>

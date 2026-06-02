@@ -11,6 +11,10 @@
   --color-primary-text-dark: var(--color-gray-200);
   --color-background: var(--color-orange-50);
   --color-background-dark: var(--color-olive-700);
+  --color-green: var(--color-green-500);
+  --color-green-dark: var(--color-green-700);
+  --color-red: var(--color-red-400);
+  --color-red-dark: var(--color-red-800)
 }
 
 @layer base {

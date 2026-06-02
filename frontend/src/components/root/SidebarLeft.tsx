@@ -40,8 +40,8 @@ function IconToggle ({ iconMode, handleChange }: IconToggleProps) {
         htmlFor='icon-mode-checkbox'
         className='
         flex items-center cursor-pointer
-        before:rounded-md before:bg-red-400 dark:before:bg-red-800
-        peer-checked:before:bg-green-500 dark:peer-checked:before:bg-green-700
+        before:rounded-md before:bg-red dark:before:bg-red-dark
+        peer-checked:before:bg-green dark:peer-checked:before:bg-green-dark
         before:w-10 before:h-5 before:content-[""]
         after:absolute after:right-7
         after:rounded-md after:bg-primary-dark dark:after:bg-primary

@@ -3,14 +3,17 @@ import { use, useActionState, useState } from 'react';
 import { skipToken, useMutation, useQuery, useQueryClient }
   from '@tanstack/react-query';
 import { TbEdit, TbPlus } from 'react-icons/tb';
-import { z } from 'zod';
 
 import { AuthContext, IconContext } from '../../../../../utils/contexts';
 import { getGym, postGym, putGym } from '../../../../../utils/api';
+import handleSubmitError from '../../../../../utils/handleSubmitError';
 
 import GymEquipment from './GymEquipment/Index';
 import OpeningHoursDayInput from './OpeningHoursDayInput';
 import OpeningHoursExceptions from './OpeningHoursExceptions/Index';
+import ReturnButton from '../../ReturnButton';
+
+import { FORM_INPUT_CLASSES } from '../../../../../constants/theme';
 
 import {
   type GymPost,
@@ -193,16 +196,7 @@ export default function GymForm (
             error: null
           };
         } catch (err: unknown) {
-          let errorMessage: string;
-          if (err instanceof Error) {
-            errorMessage = err.message;
-          } else {
-            errorMessage = 'Unknown error!';
-          }
-          return {
-            success: false,
-            error: errorMessage
-          };
+          return handleSubmitError(err);
         }
       } else {  // formMode === 'edit'
         try {
@@ -214,31 +208,11 @@ export default function GymForm (
             error: null
           };
         } catch (err: unknown) {
-          let errorMessage: string;
-          if (err instanceof Error) {
-            errorMessage = err.message;
-          } else {
-            errorMessage = 'Unknown error!';
-          }
-          return {
-            success: false,
-            error: errorMessage
-          };
+          return handleSubmitError(err);
         }
       }
     } catch (err: unknown) {
-      let errorMessage: string;
-      if (err instanceof z.ZodError) {
-        const messages = err.issues.map((issue) => issue.message);
-        console.error(messages);
-        errorMessage = err.issues[0].message;
-      } else {
-        errorMessage = 'Validation error!';
-      }
-      return {
-        success: false,
-        error: errorMessage
-      };
+      return handleSubmitError(err);
     }
   }
 
@@ -263,6 +237,7 @@ export default function GymForm (
       district,
       city,
       country,
+      openingHoursExceptions,
       url,
       equipmentVisible,
       membershipsVisible,
@@ -285,8 +260,8 @@ export default function GymForm (
       notes: notes
     });
 
-    if (gymQuery.data.openingHoursExceptions.data) {
-      setExceptions(gymQuery.data.openingHoursExceptions.data);
+    if (openingHoursExceptions.data) {
+      setExceptions(openingHoursExceptions.data);
     } else {
       setExceptions([]);
     }
@@ -337,7 +312,7 @@ export default function GymForm (
                 type='text'
                 value={gym.name}
                 required
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setGym({ ...gym, name: event.target.value });
                 }}
@@ -351,7 +326,7 @@ export default function GymForm (
                 name='chain'
                 type='text'
                 value={gym.chain}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setGym({ ...gym, chain: event.target.value });
                 }}
@@ -366,7 +341,7 @@ export default function GymForm (
                 type='text'
                 value={gym.street}
                 required
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setGym({ ...gym, street: event.target.value });
                 }}
@@ -381,7 +356,7 @@ export default function GymForm (
                 type='text'
                 value={gym.streetNumber}
                 required
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setGym({ ...gym, streetNumber: event.target.value });
                 }}
@@ -396,7 +371,7 @@ export default function GymForm (
                 type='text'
                 value={gym.city}
                 required
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setGym({ ...gym, city: event.target.value });
                 }}
@@ -411,7 +386,7 @@ export default function GymForm (
                 type='text'
                 value={gym.district}
                 required
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setGym({ ...gym, district: event.target.value });
                 }}
@@ -426,7 +401,7 @@ export default function GymForm (
                 type='text'
                 value={gym.country}
                 required
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setGym({ ...gym, country: event.target.value });
                 }}
@@ -440,7 +415,7 @@ export default function GymForm (
                 name='url'
                 type='url'
                 value={gym.url}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setGym({ ...gym, url: event.target.value });
                 }}
@@ -453,7 +428,7 @@ export default function GymForm (
                 id='notes'
                 name='notes'
                 value={gym.notes}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setGym({ ...gym, notes: event.target.value });
                 }}
@@ -631,14 +606,15 @@ export default function GymForm (
         />
 
         {/* Actual submit button outside the <form>
-        to have <OpeningHoursExceptions /> appear as part of the form. */}
+        to have <OpeningHoursExceptions /> appear as part of the form.
+        Keep this button identical with SubmitButton used by the other forms!*/}
         <label
           htmlFor='submit-form'
           tabIndex={0} /* make this tab-selectable */
           className={`
           flex justify-center border border-black dark:border-white
-          bg-green-700 dark:bg-green-500 px-3 w-full
-          text-primary-text-dark dark:text-primary-text text-base
+          bg-green dark:bg-green-dark px-3 w-full
+          text-primary-text dark:text-primary-text-dark text-base
           hover:border-white hover:dark:border-black
           active:border-white active:dark:border-black active:font-bold
           ${!isPending
@@ -657,7 +633,7 @@ export default function GymForm (
 
         {state.error
           ? (
-            <div className='self-center text-red-700 dark:text-red-400'>
+            <div className='self-center text-red-dark dark:text-red'>
               {state.error}
             </div>
           )
@@ -684,7 +660,7 @@ export default function GymForm (
                   edit equipment
                 </button>
                 <button
-                  disabled /* TODO: upcoming alpha feature */
+                  disabled /* TODO: upcoming 1.0 feature */
                   className='
                   border bg-tertiary dark:bg-tertiary-dark py-1
                   text-red-700 dark:text-red-400
@@ -695,7 +671,7 @@ export default function GymForm (
                   edit memberships
                 </button>
                 <button
-                  disabled /* TODO: upcoming beta feature */
+                  disabled /* TODO: upcoming post-1.0 feature */
                   className='
                   border bg-tertiary dark:bg-tertiary-dark py-1
                   text-red-700 dark:text-red-400
@@ -709,25 +685,10 @@ export default function GymForm (
               </>
             )
             : null}
-          <button
-            className={`
-            self-center border bg-tertiary dark:bg-tertiary-dark py-1
-            w-9/10 cursor-pointer
-            hover:bg-background dark:hover:bg-background-dark
-            active:font-bold
-            ${formMode === 'edit'
-      ? 'mt-3'
-      : ''
-    }`}
-            onClick={() => {
-              void queryClient.invalidateQueries(
-                { queryKey: ['gymsIdAndName'] }
-              );
-              setFormMode('hidden');
-            }}
-          >
-            return without saving
-          </button>
+
+          <ReturnButton
+            queryToInvalidate={['gymsIdAndName']} setFormMode={setFormMode}
+          />
         </div>
       </div>
     </div>

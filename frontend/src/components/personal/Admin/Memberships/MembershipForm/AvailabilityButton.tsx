@@ -15,7 +15,10 @@ export default function AvailabilityButton (
 ) {
   return (
     <button
-      className='border p-1 w-15 cursor-pointer'
+      aria-pressed={selected}
+      className='
+      border bg-red dark:bg-red-dark p-1 w-15 cursor-pointer
+      aria-pressed:bg-green'
       onClick={() => {
         setMembership({
           ...membership,
@@ -26,7 +29,7 @@ export default function AvailabilityButton (
         });
       }}
     >
-      {availabilityType}
+      {availabilityType.toLocaleLowerCase()}
     </button>
   );
 }

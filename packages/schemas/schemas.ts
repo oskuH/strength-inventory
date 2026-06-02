@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-/* z.string().min(1) = required string
+/* NOTE ABOUT STRINGS
+z.string().min(1) = required string
 z.string() = optional string i.e. empty strings accepted */
 
 

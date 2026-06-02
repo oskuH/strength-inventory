@@ -389,15 +389,13 @@ export const deleteEquipment
 
 export const getMembershipsByCountry
   = async ({ country }: { country: string }) => {
-    const res = await fetch(`${baseUrl}/memberships/${country}`);
+    const res = await fetch(`${baseUrl}/memberships/country/${country}`);
     if (!res.ok) {
       throw Error(`Response status: ${res.statusText}`);
     }
 
     const data: unknown = await res.json();
-    console.log('UNVALIDATED:', data);
     const validatedData = z.array(MembershipSchema).parse(data);
-    console.log('VALIDATED:', validatedData);
     return validatedData;
   };
 

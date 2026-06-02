@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AuthContext, IconContext } from '../../../../utils/contexts';
 import { deleteGym } from '../../../../utils/api';
 
-import List from './List';
+import List from '../List';
 
 interface GymListProps {
   data: { id: string, name: string }[] | undefined

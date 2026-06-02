@@ -9,8 +9,13 @@ import { z } from 'zod';
 import { AuthContext, IconContext } from '../../../../../utils/contexts';
 import { getPiece, postEquipment, putEquipment }
   from '../../../../../utils/api';
+import handleSubmitError from '../../../../../utils/handleSubmitError';
 
 import AvailableWeights from './AvailableWeights';
+import ReturnButton from '../../ReturnButton';
+import SubmitButton from '../../SubmitButton';
+
+import { FORM_INPUT_CLASSES } from '../../../../../constants/theme';
 
 import { type EquipmentPostAndPut, EquipmentPostAndPutSchema, maxWeight }
   from '@strength-inventory/schemas';
@@ -63,8 +68,8 @@ export default function EquipmentForm (
 
   /* React 19's useActionState has had a bug since its 2024 release
   where <select> fields get reset after <form> submission.
-  This watchReser + formRef is a workaround adapted from a solution
-  by GitHub user danieltott:
+  This watchReser + formRef is a partially functioning workaround
+  adapted from a solution by GitHub user danieltott:
   https://github.com/facebook/react/issues/29034#issuecomment-2843233452
 
   A PR fixing the bug has been open since November 2025:
@@ -135,7 +140,8 @@ export default function EquipmentForm (
         } else {
           return val;
         }
-      }, z.string().nullable());
+      }, z.string().min(1)
+        .nullable());
       const preprocessedWeightUnit = preprocessWeightUnit.parse(req.weightUnit);
       const piece = {
         ...req,
@@ -152,16 +158,7 @@ export default function EquipmentForm (
             error: null
           };
         } catch (err: unknown) {
-          let errorMessage: string;
-          if (err instanceof Error) {
-            errorMessage = err.message;
-          } else {
-            errorMessage = 'Unknown error!';
-          }
-          return {
-            success: false,
-            error: errorMessage
-          };
+          return handleSubmitError(err);
         }
       } else {  // formMode === 'edit'
         try {
@@ -173,31 +170,11 @@ export default function EquipmentForm (
             error: null
           };
         } catch (err: unknown) {
-          let errorMessage: string;
-          if (err instanceof Error) {
-            errorMessage = err.message;
-          } else {
-            errorMessage = 'Unknown error!';
-          }
-          return {
-            success: false,
-            error: errorMessage
-          };
+          return handleSubmitError(err);
         }
       }
     } catch (err: unknown) {
-      let errorMessage: string;
-      if (err instanceof z.ZodError) {
-        const messages = err.issues.map((issue) => issue.message);
-        console.error(messages);
-        errorMessage = err.issues[0].message;
-      } else {
-        errorMessage = 'Validation error!';
-      }
-      return {
-        success: false,
-        error: errorMessage
-      };
+      return handleSubmitError(err);
     }
   }
 
@@ -213,7 +190,7 @@ export default function EquipmentForm (
   selectedPieceId is only defined in edit mode.
   Moreover, !availableWeights evaluates truthy only on the first render
   because a few lines below it is guaranteed to be defined. */
-  if (pieceQuery.isSuccess && !availableWeights) {
+  if (selectedPieceId && pieceQuery.isSuccess && !availableWeights) {
     const {
       name,
       category,
@@ -291,7 +268,7 @@ export default function EquipmentForm (
                 type='text'
                 value={piece.name}
                 required
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setPiece({ ...piece, name: event.target.value });
                 }}
@@ -305,8 +282,7 @@ export default function EquipmentForm (
                 name='category'
                 value={piece.category}
                 required
-                className='
-                border bg-tertiary dark:bg-tertiary-dark pl-1 cursor-pointer'
+                className={`${FORM_INPUT_CLASSES} cursor-pointer`}
                 onChange={(event) => {
                   setPiece({ ...piece, category: event.target.value });
                 }}
@@ -329,7 +305,7 @@ export default function EquipmentForm (
                 type='text'
                 value={piece.manufacturer}
                 required
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setPiece({ ...piece, manufacturer: event.target.value });
                 }}
@@ -344,7 +320,7 @@ export default function EquipmentForm (
                 type='text'
                 value={piece.code}
                 required
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setPiece({ ...piece, code: event.target.value });
                 }}
@@ -357,8 +333,7 @@ export default function EquipmentForm (
                 id='weightUnit'
                 name='weightUnit'
                 value={piece.weightUnit}
-                className='
-                border bg-tertiary dark:bg-tertiary-dark pl-1 cursor-pointer'
+                className={`${FORM_INPUT_CLASSES} cursor-pointer`}
                 onChange={(event) => {
                   setPiece({ ...piece, weightUnit: event.target.value });
                 }}
@@ -379,7 +354,7 @@ export default function EquipmentForm (
                 min={0.01}
                 max={maxWeight}
                 step={0.01}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setPiece({ ...piece, weight: event.target.value });
                 }}
@@ -407,7 +382,7 @@ export default function EquipmentForm (
                 min={0.01}
                 max={maxWeight}
                 step={0.01}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setPiece({ ...piece, startingWeight: event.target.value });
                 }}
@@ -424,7 +399,7 @@ export default function EquipmentForm (
                 min={0.01}
                 max={maxWeight}
                 step={0.01}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setPiece({ ...piece, maximumWeight: event.target.value });
                 }}
@@ -438,7 +413,7 @@ export default function EquipmentForm (
                 name='url'
                 type='url'
                 value={piece.url}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setPiece({ ...piece, url: event.target.value });
                 }}
@@ -451,7 +426,7 @@ export default function EquipmentForm (
                 id='notes'
                 name='notes'
                 value={piece.notes}
-                className='border bg-tertiary dark:bg-tertiary-dark pl-1'
+                className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setPiece({ ...piece, notes: event.target.value });
                 }}
@@ -460,58 +435,15 @@ export default function EquipmentForm (
 
             <p>* = required</p>
 
-            <div className='flex flex-col'>
-              <input
-                type='submit'
-                value={formMode === 'create'
-                  ? !isPending
-                    ? 'create'
-                    : 'creating...'
-                  : !isPending
-                    ? 'save'
-                    : 'saving...'}
-                disabled={isPending}
-                className={`
-                flex justify-center border border-black dark:border-white
-                bg-green-700 dark:bg-green-500 px-3 w-full
-                text-primary-text-dark dark:text-primary-text text-base
-                hover:border-white hover:dark:border-black
-                active:border-white active:dark:border-black active:font-bold
-                ${!isPending
-      ? 'cursor-pointer'
-      : 'cursor-progress'
-    }`}
-              />
-
-              {state.error
-                ? (
-                  <div className='self-center text-red-700 dark:text-red-400'>
-                    {state.error}
-                  </div>
-                )
-                : null}
-            </div>
+            <SubmitButton
+              formMode={formMode} isPending={isPending} error={state.error}
+            />
           </div>
         </form>
-        <button
-          className={`
-          self-center border bg-tertiary dark:bg-tertiary-dark py-1
-          w-9/10 cursor-pointer
-          hover:bg-background dark:hover:bg-background-dark
-          active:font-bold
-          ${formMode === 'edit'
-      ? 'mt-3'
-      : ''
-    }`}
-          onClick={() => {
-            void queryClient.invalidateQueries(
-              { queryKey: ['equipmentIdAndName'] }
-            );
-            setFormMode('hidden');
-          }}
-        >
-          return without saving
-        </button>
+
+        <ReturnButton
+          queryToInvalidate={['equipmentIdAndName']} setFormMode={setFormMode}
+        />
       </div>
     </div>
   );

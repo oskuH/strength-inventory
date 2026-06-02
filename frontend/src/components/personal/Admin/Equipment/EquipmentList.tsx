@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AuthContext, IconContext } from '../../../../utils/contexts';
 import { deleteEquipment } from '../../../../utils/api';
 
-import List from './List';
+import List from '../List';
 
 interface EquipmentListProps {
   data: { id: string, name: string }[] | undefined
@@ -23,7 +23,7 @@ export default function EquipmentList (
 
   const queryClient = useQueryClient();
 
-  const deleteEquipmentMutation = useMutation({
+  const deleteMutation = useMutation({
     mutationFn: (id: string) =>
       deleteEquipment({ id: id, refresh: auth.refresh, logout: auth.logout }),
     onSuccess: () => {
@@ -94,7 +94,7 @@ export default function EquipmentList (
           enabled:cursor-pointer enabled:hover:border-solid
           disabled:text-secondary dark:disabled:text-secondary-dark'
           onClick={() => {
-            deleteEquipmentMutation.mutate(selectedPieceId);
+            deleteMutation.mutate(selectedPieceId);
           }}
         >
           {iconMode

@@ -1,3 +1,5 @@
+// used by GymList and EquipmentList
+
 interface ListProps {
   data: { id: string, name: string }[] | undefined
   selectedItemId: string

@@ -45,7 +45,6 @@ export default function AdminMemberships () {
             formMode={formMode}
             setFormMode={setFormMode}
             selectedMembershipId={selectedMembershipId}
-            setSelectedMembershipId={setSelectedMembershipId}
             country={country}
             chain={chain}
           />

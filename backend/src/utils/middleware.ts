@@ -447,7 +447,9 @@ const targetMembershipExtractor = async (
   }
 
   const membership = await Membership.findByPk(id);
+  console.log('-- MEMBERSHIP FOUND:', membership);
   if (!membership) {
+    console.log('-- RETURNING ERROR!');
     res.status(404).json({ error: `Membership with ID ${id} not found.` });
     return;
   }

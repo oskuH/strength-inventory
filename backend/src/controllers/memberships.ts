@@ -19,7 +19,7 @@ membershipsRouter.get('/', async (_req, res) => {
 });
 
 // GET all memberships in a selected country
-membershipsRouter.get('/:country', async (
+membershipsRouter.get('/country/:country', async (
   req: Request<{ country: string }, unknown, unknown>,
   res
 ) => {
