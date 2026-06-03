@@ -6,17 +6,17 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AuthContext, IconContext } from '../../../../utils/contexts';
 import { deleteEquipment } from '../../../../utils/api';
 
-import List from '../List';
+import SimpleList from '../SimpleList';
 
-interface EquipmentListProps {
+interface ListProps {
   data: { id: string, name: string }[] | undefined
   selectedPieceId: string
   setSelectedPieceId: React.Dispatch<React.SetStateAction<string>>
   setFormMode: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function EquipmentList (
-  { data, selectedPieceId, setSelectedPieceId, setFormMode }: EquipmentListProps
+export default function List (
+  { data, selectedPieceId, setSelectedPieceId, setFormMode }: ListProps
 ) {
   const auth = use(AuthContext);
   const iconMode = use(IconContext);
@@ -107,7 +107,7 @@ export default function EquipmentList (
         flex flex-1 bg-background dark:bg-background-dark
         overflow-y-scroll overflow-x-scroll'
       >
-        <List
+        <SimpleList
           data={filteredItems}
           selectedItemId={selectedPieceId}
           setSelectedItemId={setSelectedPieceId}

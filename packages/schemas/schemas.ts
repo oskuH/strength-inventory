@@ -45,7 +45,9 @@ const MembershipBaseSchema = z.object({
     return(Number(val))
   }, z.number()),
   feeCurrency: z.string().min(1),
-  validity: z.int(),
+  validity: z.preprocess((val) => {
+    return(Number(val))
+  }, z.int()),
   validityUnit: MembershipTimeUnitEnum,
   availability: MembershipAvailabilitySchema,
   url: z.preprocess(
@@ -334,6 +336,23 @@ export const GymEquipmentPostSchema = GymEquipmentSchema.pick({
 export type GymEquipmentPost = z.infer<typeof GymEquipmentPostSchema>;
 
 
+// gymmemberships
+
+export const GymMembershipSchema = z.object({
+  id: z.uuidv4(),
+  gymId: z.uuidv4(),
+  membershipId: z.uuidv4(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
+});
+export type GymMembership = z.infer<typeof GymMembershipSchema>;
+
+export const GymMembershipPostSchema = GymMembershipSchema.pick({
+  membershipId: true
+});
+export type GymMembershipPost = z.infer<typeof GymMembershipPostSchema>;
+
+
 // gym
 
 export const OpeningHoursExceptionSchema = z.object({
@@ -393,6 +412,11 @@ export const GymGetEquipmentSchema = z.intersection(
   EquipmentBaseSchema.extend({ gymequipment: GymEquipmentSchema }),
   EquipmentWeightsSchema)
 export type GymGetEquipment = z.infer<typeof GymGetEquipmentSchema>;
+
+export const GymGetMembershipsSchema = z.intersection(
+  MembershipBaseSchema.extend({ gymmemberships: GymMembershipSchema }),
+  MembershipUnions)
+export type GymGetMemberships = z.infer<typeof GymGetMembershipsSchema>;
 
 export const GymPostSchema = GymSchema.pick({
   name: true,
@@ -515,20 +539,3 @@ export const LoginRefreshResponseSchema = z.object({
   token: z.jwt()
 })
 export type LoginRefreshResponse = z.infer<typeof LoginRefreshResponseSchema>;
-
-
-// gymmemberships
-
-export const GymMembershipSchema = z.object({
-  id: z.uuidv4(),
-  gymId: z.uuidv4(),
-  membershipId: z.uuidv4(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date()
-});
-export type GymMembership = z.infer<typeof GymMembershipSchema>;
-
-export const GymMembershipPostSchema = GymMembershipSchema.pick({
-  membershipId: true
-});
-export type GymMembershipPost = z.infer<typeof GymMembershipPostSchema>;

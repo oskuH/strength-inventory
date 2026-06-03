@@ -1,13 +1,11 @@
-// work in progress
-
 import { use, useState } from 'react';
 
 import { FaRegAddressCard } from 'react-icons/fa';
 
 import { IconContext } from '../../../../utils/contexts';
 
-import MembershipForm from './MembershipForm/Index';
-import MembershipList from './MembershipList';
+import Form from './Form/Index';
+import List from './List';
 
 export default function AdminMemberships () {
   const iconMode = use(IconContext);
@@ -31,7 +29,7 @@ export default function AdminMemberships () {
 
       {formMode === 'hidden'
         ? (
-          <MembershipList
+          <List
             setFormMode={setFormMode}
             setSelectedMembershipId={setSelectedMembershipId}
             country={country}
@@ -41,7 +39,7 @@ export default function AdminMemberships () {
           />
         )
         : (
-          <MembershipForm
+          <Form
             formMode={formMode}
             setFormMode={setFormMode}
             selectedMembershipId={selectedMembershipId}

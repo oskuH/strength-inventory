@@ -15,6 +15,7 @@ import { AuthContext } from '../../../../../../utils/contexts';
 
 import AvailableList from './AvailableList';
 import CurrentList from './CurrentList';
+import EditFormReturnButton from '../EditFormReturnButton';
 
 interface GymEquipmentProps {
   gymId: string
@@ -143,7 +144,7 @@ export default function GymEquipment (
     <div
       className='flex flex-1 flex-col min-h-0 overflow-y-scroll'
     >
-      <h3 className='self-center mb-3'>Editing equipment for {gymName}</h3>
+      <h3 className='self-center mb-3'>editing equipment for {gymName}</h3>
       <CurrentList
         gymId={gymId}
         gymEquipment={gymEquipmentQuery.data}
@@ -173,18 +174,7 @@ export default function GymEquipment (
           }}
         />
       </div>
-      <button
-        className='
-        self-center border bg-tertiary dark:bg-tertiary-dark py-1
-        w-9/10 text-xs cursor-pointer
-        hover:bg-background dark:hover:bg-background-dark
-        active:font-bold'
-        onClick={() => {
-          setEditForm('');
-        }}
-      >
-        return
-      </button>
+      <EditFormReturnButton setEditForm={setEditForm} />
     </div>
   );
 }

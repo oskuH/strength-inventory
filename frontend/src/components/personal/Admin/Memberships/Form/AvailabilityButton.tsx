@@ -15,6 +15,7 @@ export default function AvailabilityButton (
 ) {
   return (
     <button
+      type='button'
       aria-pressed={selected}
       className='
       border bg-red dark:bg-red-dark p-1 w-15 cursor-pointer

@@ -1,5 +1,3 @@
-// work in progress
-
 import { use, useActionState, useState } from 'react';
 
 import { skipToken, useMutation, useQuery, useQueryClient }
@@ -22,7 +20,7 @@ import { FORM_INPUT_CLASSES } from '../../../../../constants/theme';
 import { type MembershipPostAndPut, MembershipPostAndPutSchema }
   from '@strength-inventory/schemas';
 
-interface MembershipFormProps {
+interface FormProps {
   formMode: string
   setFormMode: React.Dispatch<React.SetStateAction<string>>
   selectedMembershipId: string
@@ -51,14 +49,14 @@ export interface FormMembership {
   notes: string
 }
 
-export default function MembershipForm (
+export default function Form (
   {
     formMode,
     setFormMode,
     selectedMembershipId,
     country,
     chain
-  }: MembershipFormProps
+  }: FormProps
 ) {
   const auth = use(AuthContext);
   const iconMode = use(IconContext);
@@ -94,7 +92,11 @@ export default function MembershipForm (
         refresh: auth.refresh,
         logout: auth.logout
       }),
-    onSuccess: () => {
+    onSuccess: (editedMembershipFromServer) => {
+      void queryClient.setQueryData(
+        ['membership', selectedMembershipId],
+        editedMembershipFromServer
+      );
       void queryClient.invalidateQueries(
         { queryKey: ['membershipsByCountry', country] }
       );
@@ -158,13 +160,17 @@ export default function MembershipForm (
         .nullable());
       const preprocessedCommitmentUnit
         = preprocessCommitmentUnit.parse(req.commitmentUnit);
-      const membership = {
+      const unvalidatedMembership = {
         ...req,
         commitmentUnit: preprocessedCommitmentUnit,
         country: country,
-        chain: chain
+        chain: chain,
+        availability: membership.availability
       };
-      const validatedMembership = MembershipPostAndPutSchema.parse(membership);
+      console.log('UNVALIDATED:', unvalidatedMembership);
+      const validatedMembership
+        = MembershipPostAndPutSchema.parse(unvalidatedMembership);
+      console.log('VALIDATED:', validatedMembership);
 
       if (formMode === 'create') {
         try {
@@ -485,8 +491,8 @@ export default function MembershipForm (
             <div className='flex flex-col'>
               <label htmlFor='notes'>notes</label>
               <textarea
-                id='url'
-                name='url'
+                id='notes'
+                name='notes'
                 value={membership.notes}
                 className={FORM_INPUT_CLASSES}
                 onChange={(event) => {

@@ -61,6 +61,16 @@ gymsRouter.get('/:id/equipment', targetGymExtractor, async (req, res) => {
   return res.json(equipment);
 });
 
+// GET a gym's memberships
+gymsRouter.get('/:id/memberships', targetGymExtractor, async (req, res) => {
+  if (!req.targetGym) {
+    throw Error('Gym missing from request.');
+  }  // Should never trigger after middleware.
+
+  const memberships = await req.targetGym.getMemberships();
+  return res.json(memberships);
+});
+
 // POST for admins to create a new gym
 gymsRouter.post(
   '/',
@@ -127,6 +137,27 @@ gymsRouter.post(
     await gym.addEquipment(equipmentId);
 
     return res.status(201).json({ gymId: gym.id, equipmentId: equipmentId });
+  }
+);
+
+// POST for admins and managers to add a membership
+gymsRouter.post(
+  '/:id/memberships',
+  ...isAdminOrManager,
+  targetGymExtractor,
+  async (
+    req: Request<{ id: string }, unknown, { membershipId: string }>,
+    res
+  ) => {
+    if (!req.targetGym) {
+      throw Error('Gym missing from request.');
+    }  // Should never trigger after middleware.
+
+    const gym = req.targetGym;
+    const { membershipId } = req.body;
+    await gym.addMembership(membershipId);
+
+    return res.status(201).json({ gymId: gym.id, membershipId: membershipId });
   }
 );
 
@@ -293,6 +324,27 @@ gymsRouter.delete(
     await gym.removeEquipment(equipmentId);
 
     return res.status(200).json({ gymId: gym.id, equipmentId: equipmentId });
+  }
+);
+
+// DELETE for admins and managers to remove a membership
+gymsRouter.delete(
+  '/:id/memberships',
+  ...isAdminOrManager,
+  targetGymExtractor,
+  async (
+    req: Request<{ id: string }, unknown, { membershipId: string }>,
+    res
+  ) => {
+    if (!req.targetGym) {
+      throw Error('Gym missing from request.');
+    }  // Should never trigger after middleware.
+
+    const gym = req.targetGym;
+    const { membershipId } = req.body;
+    await gym.removeMembership(membershipId);
+
+    return res.status(200).json({ gymId: gym.id, membershipId: membershipId });
   }
 );
 

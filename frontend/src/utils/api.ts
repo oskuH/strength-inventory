@@ -7,6 +7,7 @@ import {
   EquipmentSchema,
   GymEquipmentSchema,
   GymGetEquipmentSchema,
+  GymGetMembershipsSchema,
   GymGetSchema,
   type GymPost,
   GymSchema,
@@ -71,6 +72,17 @@ export const getGymEquipment = async ({ gymId }: { gymId: string }) => {
   return validatedData;
 };
 
+export const getGymMemberships = async ({ gymId }: { gymId: string }) => {
+  const res = await fetch(`${baseUrl}/gyms/${gymId}/memberships`);
+  if (!res.ok) {
+    throw Error(`Response status: ${res.statusText}`);
+  }
+
+  const data: unknown = await res.json();
+  const validatedData = z.array(GymGetMembershipsSchema).parse(data);
+  return validatedData;
+};
+
 interface postGymProps extends TokenValidationProps {
   gym: GymPost
 }
@@ -102,13 +114,13 @@ export const postGym = async ({ gym, refresh, logout }: postGymProps) => {
   }
 };
 
-interface postGymEquipmentProps extends TokenValidationProps {
+interface GymEquipmentProps extends TokenValidationProps {
   gymId: string
   equipmentId: string
 }
 
 export const postGymEquipment = async (
-  { gymId, equipmentId, refresh, logout }: postGymEquipmentProps
+  { gymId, equipmentId, refresh, logout }: GymEquipmentProps
 ) => {
   /* only admins and managers have permission */
   const token = await syncToken({ refresh, logout });
@@ -130,6 +142,41 @@ export const postGymEquipment = async (
     const data: unknown = await res.json();
     const validatedData = z.object({
       gymId: z.uuidv4(), equipmentId: z.uuidv4()
+    }).parse(data);
+    return validatedData;
+  } else {
+    throw Error('Login expired.');
+  }
+};
+
+interface GymMembershipProps extends TokenValidationProps {
+  gymId: string
+  membershipId: string
+}
+
+export const postGymMembership = async (
+  { gymId, membershipId, refresh, logout }: GymMembershipProps
+) => {
+  /* only admins and managers have permission */
+  const token = await syncToken({ refresh, logout });
+  if (token) {
+    const res = await fetch(`${baseUrl}/gyms/${gymId}/memberships`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `bearer ${token}`
+      },
+      body: JSON.stringify({ membershipId: membershipId }),
+      credentials: 'include'
+    });
+
+    if (!res.ok) {
+      throw Error(`Response status: ${res.statusText}`);
+    }
+
+    const data: unknown = await res.json();
+    const validatedData = z.object({
+      gymId: z.uuidv4(), membershipId: z.uuidv4()
     }).parse(data);
     return validatedData;
   } else {
@@ -227,13 +274,8 @@ export const deleteGym = async ({ id, refresh, logout }: deleteItemProps) => {
   }
 };
 
-interface deleteGymEquipmentProps extends TokenValidationProps {
-  gymId: string
-  equipmentId: string
-}
-
 export const deleteGymEquipment = async (
-  { gymId, equipmentId, refresh, logout }: deleteGymEquipmentProps
+  { gymId, equipmentId, refresh, logout }: GymEquipmentProps
 ) => {
   /* only admins and managers have permission */
   const token = await syncToken({ refresh, logout });
@@ -255,6 +297,36 @@ export const deleteGymEquipment = async (
     const data: unknown = await res.json();
     const validatedData = z.object({
       gymId: z.uuidv4(), equipmentId: z.uuidv4()
+    }).parse(data);
+    return validatedData;
+  } else {
+    throw Error('Login expired.');
+  }
+};
+
+export const deleteGymMembership = async (
+  { gymId, membershipId, refresh, logout }: GymMembershipProps
+) => {
+  /* only admins and managers have permission */
+  const token = await syncToken({ refresh, logout });
+  if (token) {
+    const res = await fetch(`${baseUrl}/gyms/${gymId}/memberships`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `bearer ${token}`
+      },
+      body: JSON.stringify({ membershipId: membershipId }),
+      credentials: 'include'
+    });
+
+    if (!res.ok) {
+      throw Error(`Response status: ${res.statusText}`);
+    }
+
+    const data: unknown = await res.json();
+    const validatedData = z.object({
+      gymId: z.uuidv4(), membershipId: z.uuidv4()
     }).parse(data);
     return validatedData;
   } else {

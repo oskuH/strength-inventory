@@ -1,6 +1,8 @@
-// used by all admin forms
+// used by all admin base forms
 
 import { useQueryClient } from '@tanstack/react-query';
+
+import { FORM_RETURN_BUTTON_CLASSES } from '../../../constants/theme';
 
 interface ReturnButtonProps {
   queryToInvalidate: string[]
@@ -14,11 +16,7 @@ export default function ReturnButton (
 
   return (
     <button
-      className='
-      self-center border bg-tertiary dark:bg-tertiary-dark py-1
-      w-9/10 cursor-pointer
-      hover:bg-background dark:hover:bg-background-dark
-      active:font-bold'
+      className={FORM_RETURN_BUTTON_CLASSES}
       onClick={() => {
         void queryClient.invalidateQueries(
           { queryKey: queryToInvalidate }

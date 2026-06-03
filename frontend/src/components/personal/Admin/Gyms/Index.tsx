@@ -7,8 +7,8 @@ import { getGymsIdAndName } from '../../../../utils/api';
 
 import { IconContext } from '../../../../utils/contexts';
 
-import GymForm from './GymForm/Index.tsx';
-import GymList from './GymList.tsx';
+import Form from './Form/Index.tsx';
+import List from './List.tsx';
 
 export default function AdminGyms () {
   const iconMode = use(IconContext);
@@ -43,7 +43,7 @@ export default function AdminGyms () {
 
       {formMode === 'hidden'
         ? (
-          <GymList
+          <List
             data={data}
             selectedGymId={selectedGymId}
             setSelectedGymId={setSelectedGymId}
@@ -51,7 +51,7 @@ export default function AdminGyms () {
           />
         )
         : (
-          <GymForm
+          <Form
             formMode={formMode}
             setFormMode={setFormMode}
             selectedGymId={selectedGymId}

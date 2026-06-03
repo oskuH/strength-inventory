@@ -42,8 +42,11 @@ class Gym extends Model<InferAttributes<Gym>, InferCreationAttributes<Gym>> {
   declare updatedAt: CreationOptional<Date>;
 
   declare getManagers: BelongsToManyGetAssociationsMixin<User>;
-  declare getEquipment: BelongsToManyGetAssociationsMixin<Equipment>;
   declare getMemberships: BelongsToManyGetAssociationsMixin<Membership>;
+  declare addMembership: BelongsToManyAddAssociationMixin<Membership, string>;
+  declare removeMembership:
+  BelongsToManyRemoveAssociationMixin<Membership, string>;
+  declare getEquipment: BelongsToManyGetAssociationsMixin<Equipment>;
   declare addEquipment: BelongsToManyAddAssociationMixin<Equipment, string>;
   declare removeEquipment:
   BelongsToManyRemoveAssociationMixin<Equipment, string>;

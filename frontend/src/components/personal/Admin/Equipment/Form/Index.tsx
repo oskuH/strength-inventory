@@ -20,16 +20,16 @@ import { FORM_INPUT_CLASSES } from '../../../../../constants/theme';
 import { type EquipmentPostAndPut, EquipmentPostAndPutSchema, maxWeight }
   from '@strength-inventory/schemas';
 
-interface EquipmentFormProps {
+interface FormProps {
   formMode: string;
   setFormMode: React.Dispatch<React.SetStateAction<string>>;
   selectedPieceId: string;
   setSelectedPieceId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function EquipmentForm (
+export default function Form (
   { formMode, setFormMode, selectedPieceId, setSelectedPieceId }:
-  EquipmentFormProps
+  FormProps
 ) {
   const auth = use(AuthContext);
   const iconMode = use(IconContext);

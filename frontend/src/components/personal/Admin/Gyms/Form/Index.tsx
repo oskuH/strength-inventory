@@ -9,6 +9,7 @@ import { getGym, postGym, putGym } from '../../../../../utils/api';
 import handleSubmitError from '../../../../../utils/handleSubmitError';
 
 import GymEquipment from './GymEquipment/Index';
+import GymMemberships from './GymMemberships/Index';
 import OpeningHoursDayInput from './OpeningHoursDayInput';
 import OpeningHoursExceptions from './OpeningHoursExceptions/Index';
 import ReturnButton from '../../ReturnButton';
@@ -23,15 +24,15 @@ import {
   type OpeningHoursException
 } from '@strength-inventory/schemas';
 
-interface GymFormProps {
+interface FormProps {
   formMode: string;
   setFormMode: React.Dispatch<React.SetStateAction<string>>;
   selectedGymId: string;
   setSelectedGymId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function GymForm (
-  { formMode, setFormMode, selectedGymId, setSelectedGymId }: GymFormProps
+export default function Form (
+  { formMode, setFormMode, selectedGymId, setSelectedGymId }: FormProps
 ) {
   interface formatSubmitProps {
     req: GymPostFrontend;
@@ -277,7 +278,19 @@ export default function GymForm (
     );
   }
 
-  // TODO: different returns when editing memberships/managers
+  if (editForm === 'memberships') {
+    return (
+      <GymMemberships
+        gymId={selectedGymId}
+        gymName={gym.name}
+        gymChain={gym.chain}
+        gymCountry={gym.country}
+        setEditForm={setEditForm}
+      />
+    );
+  }
+
+  // TODO post-1.0: return for editing managers
 
   return (
     <div className='flex flex-col min-h-0'>
@@ -660,13 +673,13 @@ export default function GymForm (
                   edit equipment
                 </button>
                 <button
-                  disabled /* TODO: upcoming 1.0 feature */
                   className='
-                  border bg-tertiary dark:bg-tertiary-dark py-1
-                  text-red-700 dark:text-red-400
-                  cursor-not-allowed enabled:cursor-pointer
+                  border bg-tertiary dark:bg-tertiary-dark py-1 cursor-pointer
                   hover:bg-background dark:hover:bg-background-dark
                   active:font-bold'
+                  onClick={() => {
+                    setEditForm('memberships');
+                  }}
                 >
                   edit memberships
                 </button>

@@ -1,13 +1,13 @@
 // used by GymList and EquipmentList
 
-interface ListProps {
+interface SimpleListProps {
   data: { id: string, name: string }[] | undefined
   selectedItemId: string
   setSelectedItemId: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function List (
-  { data, selectedItemId, setSelectedItemId }: ListProps
+export default function SimpleList (
+  { data, selectedItemId, setSelectedItemId }: SimpleListProps
 ) {
   if (!data) {
     return (

@@ -7,8 +7,8 @@ import { getEquipmentIdAndName } from '../../../../utils/api';
 
 import { IconContext } from '../../../../utils/contexts';
 
-import EquipmentForm from './EquipmentForm/Index';
-import EquipmentList from './EquipmentList';
+import Form from './Form/Index';
+import List from './List';
 
 export default function AdminEquipment () {
   const iconMode = use(IconContext);
@@ -43,7 +43,7 @@ export default function AdminEquipment () {
 
       {formMode === 'hidden'
         ? (
-          <EquipmentList
+          <List
             data={data}
             selectedPieceId={selectedPieceId}
             setSelectedPieceId={setSelectedPieceId}
@@ -51,7 +51,7 @@ export default function AdminEquipment () {
           />
         )
         : (
-          <EquipmentForm
+          <Form
             formMode={formMode}
             setFormMode={setFormMode}
             selectedPieceId={selectedPieceId}
