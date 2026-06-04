@@ -1,17 +1,8 @@
-// work in progress
+import { useState } from 'react';
 
-import { use, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
-import {
-  useMutation, useQuery, useQueryClient
-} from '@tanstack/react-query';
-
-import {
-  deleteGymMembership,
-  getGymMemberships,
-  postGymMembership
-} from '../../../../../../utils/api';
-import { AuthContext } from '../../../../../../utils/contexts';
+import { getGymMemberships } from '../../../../../../utils/api';
 
 import Form from './Form';
 import List from './List';
@@ -19,18 +10,14 @@ import List from './List';
 interface GymMembershipsProps {
   gymId: string
   gymName: string
-  gymChain: string
   gymCountry: string
+  gymChain: string
   setEditForm: React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function GymMemberships (
-  { gymId, gymName, gymChain, gymCountry, setEditForm }: GymMembershipsProps
+  { gymId, gymName, gymCountry, gymChain, setEditForm }: GymMembershipsProps
 ) {
-  const auth = use(AuthContext);
-
-  const queryClient = useQueryClient();
-
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['gymMemberships', gymId],
     queryFn: () => getGymMemberships({ gymId: gymId })
@@ -51,7 +38,9 @@ export default function GymMemberships (
     <div
       className='flex flex-1 flex-col gap-3 min-h-0 overflow-y-scroll'
     >
-      <h3 className='self-center'>editing memberships for {gymName}</h3>
+      <h3 className='self-center text-center'>
+        editing memberships for {gymName}
+      </h3>
 
       {formMode === 'hidden'
         ? (
@@ -65,11 +54,12 @@ export default function GymMemberships (
         : (
           <Form
             gymId={gymId}
-            currentMemberships={data}
-            gymChain={gymChain}
             gymCountry={gymCountry}
+            gymChain={gymChain}
+            currentMembershipIds={data.map((membership) => membership.id)}
             formMode={formMode}
             setFormMode={setFormMode}
+            selectedMembershipId={selectedMembershipId}
             setSelectedMembershipId={setSelectedMembershipId}
           />
         )}

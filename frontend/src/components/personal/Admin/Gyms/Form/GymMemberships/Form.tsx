@@ -1,33 +1,54 @@
-// work in progress
-
 import { useState } from 'react';
 
-import ReturnButton from '../../../ReturnButton';
+import { useQuery } from '@tanstack/react-query';
 
-import type { GymGetMemberships } from '@strength-inventory/schemas';
+import { getMembershipsByCountry } from '../../../../../../utils/api';
+
+import { Form as MembershipForm } from '../../../Memberships/Form/Index';
+import MembershipList from '../../../MembershipList';
+import ReturnButton from '../../../ReturnButton';
 
 import { FORM_RETURN_BUTTON_CLASSES } from '../../../../../../constants/theme';
 
 interface FormProps {
   gymId: string
-  currentMemberships: GymGetMemberships[]
-  gymChain: string
   gymCountry: string
+  gymChain: string
+  currentMembershipIds: string[]
   formMode: string
   setFormMode: React.Dispatch<React.SetStateAction<string>>
+  selectedMembershipId: string
   setSelectedMembershipId: React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function Form ({
   gymId,
-  currentMemberships,
-  gymChain,
   gymCountry,
+  gymChain,
+  currentMembershipIds,
   formMode,
   setFormMode,
+  selectedMembershipId,
   setSelectedMembershipId
 }: FormProps) {
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ['membershipsByCountry', gymCountry],
+    queryFn: () => getMembershipsByCountry({ country: gymCountry })
+  });
+
   const [createMode, setCreateMode] = useState('');
+
+  if (isPending) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  const chainMemberships = data.filter((membership) => {
+    return membership.chain === gymChain;
+  });
 
   if (formMode === 'create') {
     if (!createMode) {
@@ -58,22 +79,46 @@ export default function Form ({
       );
     } else if (createMode === 'noChain') {
       return (
-        <div>
-          RETURN THE FORM
-        </div>
+        <MembershipForm
+          formMode={formMode}
+          setFormMode={setFormMode}
+          selectedMembershipId={selectedMembershipId}
+          usedInGymMemberships={true}
+          addToGym={true}
+          gymId={gymId}
+        />
       );
     } else {  // createMode === 'chain'
       return (
-        <div>
-          RETURN CHAIN MEMBERSHIPS
+        <div className='flex flex-col gap-3'>
+          <h3 className='flex justify-center text-base'>
+            select a chain membership to add
+          </h3>
+          <MembershipList
+            memberships={chainMemberships}
+            filterType='chain'
+            setFormMode={setFormMode}
+            setSelectedMembershipId={setSelectedMembershipId}
+            disabledMembershipIds={currentMembershipIds}
+            gymId={gymId}
+          />
+          <ReturnButton
+            queryToInvalidate={['gymMemberships', gymId]}
+            setFormMode={setFormMode}
+          />
         </div>
       );
     }
   }
 
   return (  // formMode === 'edit'
-    <div>
-      RETURN THE FORM, lock edits if chain membership
-    </div>
+    <MembershipForm
+      formMode={formMode}
+      setFormMode={setFormMode}
+      selectedMembershipId={selectedMembershipId}
+      usedInGymMemberships={true}
+      addToGym={false}
+      gymId={gymId}
+    />
   );
 }

@@ -283,8 +283,8 @@ export default function Form (
       <GymMemberships
         gymId={selectedGymId}
         gymName={gym.name}
-        gymChain={gym.chain}
         gymCountry={gym.country}
+        gymChain={gym.chain}
         setEditForm={setEditForm}
       />
     );
@@ -309,7 +309,7 @@ export default function Form (
                   <TbEdit className='text-2xl' /> {gym.name}
                 </span>
               )
-              : <span>editing {gym.name}</span>}
+              : <span className='text-center'>editing {gym.name}</span>}
         </h3>
 
         <form

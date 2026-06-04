@@ -5,21 +5,23 @@ import type { FormMembership } from './Index';
 interface AvailabilityButtonProps {
   availabilityType: 'Desk' | 'Web' | 'App' | 'Other',
   selected: boolean,
+  disabled: boolean,
   membership: FormMembership,
   setMembership: React.Dispatch<React.SetStateAction<FormMembership>>
 }
 
 export default function AvailabilityButton (
-  { availabilityType, selected, membership, setMembership }:
+  { availabilityType, selected, disabled, membership, setMembership }:
   AvailabilityButtonProps
 ) {
   return (
     <button
       type='button'
       aria-pressed={selected}
+      disabled={disabled}
       className='
-      border bg-red dark:bg-red-dark p-1 w-15 cursor-pointer
-      aria-pressed:bg-green'
+      bg-red dark:bg-red-dark p-1 w-15 enabled:border enabled:cursor-pointer
+      aria-pressed:bg-green dark:aria-pressed:bg-green-dark'
       onClick={() => {
         setMembership({
           ...membership,

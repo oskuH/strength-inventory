@@ -144,7 +144,9 @@ export default function GymEquipment (
     <div
       className='flex flex-1 flex-col min-h-0 overflow-y-scroll'
     >
-      <h3 className='self-center mb-3'>editing equipment for {gymName}</h3>
+      <h3 className='self-center mb-3 text-center'>
+        editing equipment for {gymName}
+      </h3>
       <CurrentList
         gymId={gymId}
         gymEquipment={gymEquipmentQuery.data}

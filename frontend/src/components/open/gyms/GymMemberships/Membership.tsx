@@ -19,11 +19,11 @@ function AvailabilityItem ({ itemName, availability }: AvailabilityItemProps) {
 }
 
 function CurrencySymbol ({ feeCurrency }: { feeCurrency: string }) {
-  if (feeCurrency === 'euro') {
+  if (feeCurrency === 'EUR') {
     return <FaEuroSign className='-mb-0.5 text-xs' />;
   }
   // TODO: add more
-  return <p>{feeCurrency}</p>;
+  return <span className='ml-1'>{feeCurrency}</span>;
 }
 
 export default function Membership (

@@ -1,3 +1,5 @@
+// shared with GymMemberships
+
 import { use, useActionState, useState } from 'react';
 
 import { skipToken, useMutation, useQuery, useQueryClient }
@@ -7,7 +9,12 @@ import { z } from 'zod';
 
 import { AuthContext, IconContext } from '../../../../../utils/contexts';
 import {
-  deleteMembership, getMembership, postMembership, putMembership
+  deleteGymMembership,
+  deleteMembership,
+  getMembership,
+  postGymMembership,
+  postMembership,
+  putMembership
 } from '../../../../../utils/api';
 import handleSubmitError from '../../../../../utils/handleSubmitError';
 
@@ -24,14 +31,17 @@ interface FormProps {
   formMode: string
   setFormMode: React.Dispatch<React.SetStateAction<string>>
   selectedMembershipId: string
-  country: string
-  chain: string
+  usedInGymMemberships: boolean
+  addToGym: boolean
+  gymId: string
 }
 
 /* This type is explicitly defined for AvailabilityButtons.
 The membership state in MembershipForm would be fine without. */
 export interface FormMembership {
   name: string,
+  chain: string,
+  country: string,
   initiationFee: string,
   membershipFee: string,
   feeCurrency: string,
@@ -49,13 +59,14 @@ export interface FormMembership {
   notes: string
 }
 
-export default function Form (
+export function Form (
   {
     formMode,
     setFormMode,
     selectedMembershipId,
-    country,
-    chain
+    usedInGymMemberships,
+    addToGym,
+    gymId
   }: FormProps
 ) {
   const auth = use(AuthContext);
@@ -63,11 +74,32 @@ export default function Form (
 
   const queryClient = useQueryClient();
 
+  const [membership, setMembership] = useState<FormMembership>({
+    name: '',
+    chain: '',
+    country: '',
+    initiationFee: '',
+    membershipFee: '',
+    feeCurrency: '',
+    validity: '',
+    validityUnit: '',
+    commitment: '',
+    commitmentUnit: '',
+    availability: {
+      Desk: false,
+      Web: false,
+      App: false,
+      Other: false
+    },
+    url: '',
+    notes: ''
+  });
+
   const membershipQuery = useQuery({
     queryKey: ['membership', selectedMembershipId],
     queryFn: selectedMembershipId
       ? () => getMembership({ id: selectedMembershipId })
-      : skipToken
+      : skipToken  // disable this query when creating a new membership
   });
 
   const postMutation = useMutation({
@@ -77,7 +109,27 @@ export default function Form (
       }),
     onSuccess: () => {
       void queryClient.invalidateQueries(
-        { queryKey: ['membershipsByCountry', country] }
+        { queryKey: ['membershipsByCountry', membership.country] }
+      );
+      // Exit the form immediately if addToGymMutation won't be run afterwards.
+      if (!addToGym) {
+        setFormMode('hidden');
+      }
+    }
+  });
+
+  const addToGymMutation = useMutation({
+    mutationFn: ({ gymId, membershipId }:
+    { gymId: string, membershipId: string }) =>
+      postGymMembership({
+        gymId: gymId,
+        membershipId: membershipId,
+        refresh: auth.refresh,
+        logout: auth.logout
+      }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries(
+        { queryKey: ['gymMemberships', gymId] }
       );
       setFormMode('hidden');
     }
@@ -98,7 +150,10 @@ export default function Form (
         editedMembershipFromServer
       );
       void queryClient.invalidateQueries(
-        { queryKey: ['membershipsByCountry', country] }
+        { queryKey: ['membershipsByCountry', membership.country] }
+      );
+      void queryClient.invalidateQueries(
+        { queryKey: ['gymMemberships', gymId] }
       );
       setFormMode('hidden');
     }
@@ -109,29 +164,30 @@ export default function Form (
       deleteMembership({ id: id, refresh: auth.refresh, logout: auth.logout }),
     onSuccess: () => {
       void queryClient.invalidateQueries(
-        { queryKey: ['membershipsByCountry', country] }
+        { queryKey: ['membershipsByCountry', membership.country] }
+      );
+      void queryClient.invalidateQueries(
+        { queryKey: ['gymMemberships', gymId] }
       );
       setFormMode('hidden');
     }
   });
 
-  const [membership, setMembership] = useState<FormMembership>({
-    name: '',
-    initiationFee: '',
-    membershipFee: '',
-    feeCurrency: '',
-    validity: '',
-    validityUnit: '',
-    commitment: '',
-    commitmentUnit: '',
-    availability: {
-      Desk: false,
-      Web: false,
-      App: false,
-      Other: false
-    },
-    url: '',
-    notes: ''
+  const removeMutation = useMutation({
+    mutationFn: ({ gymId, membershipId }:
+    { gymId: string, membershipId: string }) =>
+      deleteGymMembership({
+        gymId: gymId,
+        membershipId: membershipId,
+        refresh: auth.refresh,
+        logout: auth.logout
+      }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries(
+        { queryKey: ['gymMemberships', gymId] }
+      );
+      setFormMode('hidden');
+    }
   });
 
   const [firstRender, setFirstRender] = useState(true);
@@ -163,18 +219,20 @@ export default function Form (
       const unvalidatedMembership = {
         ...req,
         commitmentUnit: preprocessedCommitmentUnit,
-        country: country,
-        chain: chain,
+        country: membership.country,
+        chain: membership.chain,
         availability: membership.availability
       };
-      console.log('UNVALIDATED:', unvalidatedMembership);
       const validatedMembership
         = MembershipPostAndPutSchema.parse(unvalidatedMembership);
-      console.log('VALIDATED:', validatedMembership);
 
       if (formMode === 'create') {
         try {
-          await postMutation.mutateAsync(validatedMembership);
+          const { id } = await postMutation.mutateAsync(validatedMembership);
+          if (addToGym && gymId) {
+            await addToGymMutation
+              .mutateAsync({ gymId: gymId, membershipId: id });
+          }
           return {
             success: true,
             error: null
@@ -213,6 +271,8 @@ export default function Form (
   if (selectedMembershipId && membershipQuery.isSuccess && firstRender) {
     const {
       name,
+      chain,
+      country,
       initiationFee,
       membershipFee,
       feeCurrency,
@@ -227,6 +287,8 @@ export default function Form (
 
     setMembership({
       name: name,
+      chain: chain,
+      country: country,
       initiationFee: initiationFee
         ? String(initiationFee)
         : '',
@@ -250,12 +312,17 @@ export default function Form (
     setFirstRender(false);
   }
 
+  let readOnly = false;
+  if (usedInGymMemberships && membership.chain) {
+    readOnly = true;
+  }
+
   return (
     <div className='flex flex-col min-h-0'>
       {/* second-highest <div> with px-3 ensures that
       the scrollbar stays clear of content */}
       <div className='flex flex-col gap-3 px-3 text-xs'>
-        <h3 className='flex justify-center text-base'>
+        <h4 className='flex justify-center text-base'>
           {/* formMode is either 'create' or 'edit' */}
           {formMode === 'create'
             ? iconMode
@@ -268,17 +335,22 @@ export default function Form (
                 </span>
               )
               : <span>editing {membership.name}</span>}
-        </h3>
-        <div className='flex flex-col gap-3'>
-          <div className='flex flex-col gap-1'>
-            <p className='flex'>
-              <span className='w-15'>country:</span> {country}
-            </p>
+        </h4>
 
-            <p className='flex'>
-              <span className='w-15'>chain:</span> {chain}
-            </p>
-          </div>
+        <div className='flex flex-col gap-3'>
+          {membership.country && membership.chain
+            ? (
+              <div className='flex flex-col gap-1'>
+                <p className='flex'>
+                  <span className='w-15'>country:</span> {membership.country}
+                </p>
+
+                <p className='flex'>
+                  <span className='w-15'>chain:</span> {membership.chain}
+                </p>
+              </div>
+            )
+            : null}
 
           <form action={submitAction} className='flex flex-col gap-1'>
             <div className='flex flex-col'>
@@ -288,6 +360,7 @@ export default function Form (
                 name='name'
                 type='text'
                 value={membership.name}
+                disabled={readOnly}
                 required
                 className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
@@ -304,6 +377,7 @@ export default function Form (
                   name='membershipFee'
                   type='number'
                   value={membership.membershipFee}
+                  disabled={readOnly}
                   required
                   min={0.01}
                   step={0.01}
@@ -323,6 +397,7 @@ export default function Form (
                   name='initiationFee'
                   type='number'
                   value={membership.initiationFee}
+                  disabled={readOnly}
                   min={0.01}
                   step={0.01}
                   className={`${FORM_INPUT_CLASSES} w-25`}
@@ -340,8 +415,9 @@ export default function Form (
                   id='feeCurrency'
                   name='feeCurrency'
                   value={membership.feeCurrency}
+                  disabled={readOnly}
                   required
-                  className={`${FORM_INPUT_CLASSES} cursor-pointer`}
+                  className={`${FORM_INPUT_CLASSES} enabled:cursor-pointer`}
                   onChange={(event) => {
                     setMembership(
                       { ...membership, feeCurrency: event.target.value }
@@ -367,6 +443,7 @@ export default function Form (
                     name='validity'
                     type='number'
                     value={membership.validity}
+                    disabled={readOnly}
                     required
                     min={1}
                     step={1}
@@ -382,8 +459,10 @@ export default function Form (
                   id='validityUnit'
                   name='validityUnit'
                   value={membership.validityUnit}
+                  disabled={readOnly}
                   required
-                  className={`${FORM_INPUT_CLASSES} self-end cursor-pointer`}
+                  className={`${FORM_INPUT_CLASSES}
+                  self-end enabled:cursor-pointer`}
                   onChange={(event) => {
                     setMembership(
                       { ...membership, validityUnit: event.target.value }
@@ -408,6 +487,7 @@ export default function Form (
                       name='commitment'
                       type='number'
                       value={membership.commitment}
+                      disabled={readOnly}
                       required={membership.commitmentUnit !== ''}
                       min={1}
                       step={1}
@@ -422,9 +502,10 @@ export default function Form (
                       id='commitmentUnit'
                       name='commitmentUnit'
                       value={membership.commitmentUnit}
+                      disabled={readOnly}
                       required={membership.commitment !== ''}
                       className={
-                        `${FORM_INPUT_CLASSES} self-end cursor-pointer`
+                        `${FORM_INPUT_CLASSES} self-end enabled:cursor-pointer`
                       }
                       onChange={(event) => {
                         setMembership(
@@ -450,24 +531,28 @@ export default function Form (
                 <AvailabilityButton
                   availabilityType='Desk'
                   selected={membership.availability.Desk}
+                  disabled={readOnly}
                   membership={membership}
                   setMembership={setMembership}
                 />
                 <AvailabilityButton
                   availabilityType='Web'
                   selected={membership.availability.Web}
+                  disabled={readOnly}
                   membership={membership}
                   setMembership={setMembership}
                 />
                 <AvailabilityButton
                   availabilityType='App'
                   selected={membership.availability.App}
+                  disabled={readOnly}
                   membership={membership}
                   setMembership={setMembership}
                 />
                 <AvailabilityButton
                   availabilityType='Other'
                   selected={membership.availability.Other}
+                  disabled={readOnly}
                   membership={membership}
                   setMembership={setMembership}
                 />
@@ -481,6 +566,7 @@ export default function Form (
                 name='url'
                 type='text'
                 value={membership.url}
+                disabled={readOnly}
                 className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setMembership({ ...membership, url: event.target.value });
@@ -494,6 +580,7 @@ export default function Form (
                 id='notes'
                 name='notes'
                 value={membership.notes}
+                disabled={readOnly}
                 className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setMembership({ ...membership, notes: event.target.value });
@@ -503,9 +590,13 @@ export default function Form (
 
             <p>* = required</p>
 
-            <SubmitButton
-              formMode={formMode} isPending={isPending} error={state.error}
-            />
+            {!readOnly
+              ? (
+                <SubmitButton
+                  formMode={formMode} isPending={isPending} error={state.error}
+                />
+              )
+              : null}
           </form>
 
           <button
@@ -521,16 +612,25 @@ export default function Form (
       : 'cursor-progress'
     }`}
             onClick={() => {
-              deleteMutation.mutate(selectedMembershipId);
+              if (!readOnly) {
+                deleteMutation.mutate(selectedMembershipId);
+              } else {
+                removeMutation
+                  .mutate({ gymId: gymId, membershipId: selectedMembershipId });
+              }
             }}
           >
-            {!deleteMutation.isPending
-              ? 'delete'
-              : 'deleting...'}
+            {!deleteMutation.isPending && !removeMutation.isPending
+              ? !readOnly
+                ? 'delete'
+                : 'remove'
+              : !readOnly
+                ? 'deleting...'
+                : 'removing...'}
           </button>
 
           <ReturnButton
-            queryToInvalidate={['membershipsByCountry', country]}
+            queryToInvalidate={['membershipsByCountry', membership.country]}
             setFormMode={setFormMode}
           />
         </div>

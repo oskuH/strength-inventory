@@ -1,5 +1,3 @@
-// work in progress
-
 import EditFormReturnButton from '../EditFormReturnButton';
 import MembershipList from '../../../MembershipList';
 
@@ -22,6 +20,8 @@ export default function List ({
         filterType='gym'
         setFormMode={setFormMode}
         setSelectedMembershipId={setSelectedMembershipId}
+        disabledMembershipIds={undefined}
+        gymId=''
       />
       <EditFormReturnButton setEditForm={setEditForm} />
     </div>

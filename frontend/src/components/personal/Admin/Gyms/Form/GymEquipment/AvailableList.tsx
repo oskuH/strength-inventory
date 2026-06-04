@@ -48,7 +48,7 @@ export default function AvailableList (
                 {currentEquipmentIds.includes(piece.id)
                   ? (
                     <MdOutlinePlaylistAddCheckCircle
-                      className='text-green-700 dark:text-green-500 text-xl'
+                      className='text-green-dark dark:text-green text-xl'
                     />
                   )
                   : null}

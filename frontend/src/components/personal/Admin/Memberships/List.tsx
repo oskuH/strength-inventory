@@ -33,9 +33,7 @@ export default function List ({
   let filteredMemberships: Membership[] = [];
   if (chain && data) {
     filteredMemberships = data.filter((membership) => {
-      return (
-        membership.chain === chain
-      );
+      return membership.chain === chain;
     });
   }
 
@@ -98,6 +96,8 @@ export default function List ({
                 filterType='chain'
                 setFormMode={setFormMode}
                 setSelectedMembershipId={setSelectedMembershipId}
+                disabledMembershipIds={undefined}
+                gymId=''
               />
             )
             : (
