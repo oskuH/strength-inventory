@@ -28,7 +28,7 @@ class Equipment extends Model<
   declare weightUnit: EquipmentWeightUnit | null | undefined;
   declare weight: number | null | undefined;
   declare startingWeight: number | null | undefined;
-  declare availableWeights: number[] | null | undefined;
+  declare availableWeights: number[];
   declare maximumWeight: number | null | undefined;
   declare url: string | null | undefined;
   declare notes: string;
@@ -108,7 +108,7 @@ Equipment.init({
         && (
           instance.weight
           || instance.startingWeight
-          || instance.availableWeights
+          || instance.availableWeights.length > 0
           || instance.maximumWeight
         )
       ) {

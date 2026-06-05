@@ -294,24 +294,22 @@ export default function Form (
 
   return (
     <div className='flex flex-col min-h-0'>
-      {/* second-highest <div> with px-3 ensures that
-      the scrollbar stays clear of content */}
-      <div className='flex flex-col gap-3 px-3 text-xs'>
-        <h3 className='flex justify-center text-base'>
-          {/* formMode is either 'create' or 'edit' */}
-          {formMode === 'create'
-            ? iconMode
-              ? <TbPlus className='text-2xl' />
-              : 'create new gym'
-            : iconMode
-              ? (
-                <span className='flex gap-1'>
-                  <TbEdit className='text-2xl' /> {gym.name}
-                </span>
-              )
-              : <span className='text-center'>editing {gym.name}</span>}
-        </h3>
+      <h3 className='flex self-center text-base'>
+        {/* formMode is either 'create' or 'edit' */}
+        {formMode === 'create'
+          ? iconMode
+            ? <TbPlus className='text-2xl' />
+            : 'create new gym'
+          : iconMode
+            ? (
+              <span className='flex gap-1'>
+                <TbEdit className='text-2xl' /> {gym.name}
+              </span>
+            )
+            : <span className='text-center'>editing {gym.name}</span>}
+      </h3>
 
+      <div className='flex flex-col gap-3 px-3 overflow-y-scroll text-xs'>
         <form
           action={submitAction}
           className='flex flex-col gap-3'

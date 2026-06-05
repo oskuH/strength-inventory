@@ -1,17 +1,21 @@
 import { use, useState } from 'react';
 
+import { mutationOptions, useQuery, useQueryClient }
+  from '@tanstack/react-query';
 import { MdOutlineLocationOn } from 'react-icons/md';
-import { useQuery } from '@tanstack/react-query';
 
-import { getGymsIdAndName } from '../../../../utils/api';
+import { deleteGym, getGymsIdAndName } from '../../../../utils/api';
 
-import { IconContext } from '../../../../utils/contexts';
+import { AuthContext, IconContext } from '../../../../utils/contexts';
 
+import CreateEditDeleteList from '../CreateEditDeleteList.tsx';
 import Form from './Form/Index.tsx';
-import List from './List.tsx';
 
 export default function AdminGyms () {
+  const auth = use(AuthContext);
   const iconMode = use(IconContext);
+
+  const queryClient = useQueryClient();
 
   const [formMode, setFormMode] = useState('hidden');
   const [selectedGymId, setSelectedGymId] = useState('');
@@ -19,6 +23,16 @@ export default function AdminGyms () {
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['gymsIdAndName'],
     queryFn: () => getGymsIdAndName()
+  });
+
+  const deleteMutationOptions = mutationOptions({
+    mutationFn: (id: string) =>
+      deleteGym({ id: id, refresh: auth.refresh, logout: auth.logout }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['gyms'] });
+      void queryClient.invalidateQueries({ queryKey: ['gymsIdAndName'] });
+      setSelectedGymId('');
+    }
   });
 
   if (isPending) {
@@ -43,11 +57,12 @@ export default function AdminGyms () {
 
       {formMode === 'hidden'
         ? (
-          <List
+          <CreateEditDeleteList
             data={data}
-            selectedGymId={selectedGymId}
-            setSelectedGymId={setSelectedGymId}
+            selectedItemId={selectedGymId}
+            setSelectedItemId={setSelectedGymId}
             setFormMode={setFormMode}
+            deleteMutationOptions={deleteMutationOptions}
           />
         )
         : (

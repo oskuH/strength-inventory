@@ -21,14 +21,13 @@ import { type EquipmentPostAndPut, EquipmentPostAndPutSchema, maxWeight }
   from '@strength-inventory/schemas';
 
 interface FormProps {
-  formMode: string;
-  setFormMode: React.Dispatch<React.SetStateAction<string>>;
-  selectedPieceId: string;
-  setSelectedPieceId: React.Dispatch<React.SetStateAction<string>>;
+  formMode: string
+  setFormMode: React.Dispatch<React.SetStateAction<string>>
+  selectedPieceId: string
 }
 
 export default function Form (
-  { formMode, setFormMode, selectedPieceId, setSelectedPieceId }:
+  { formMode, setFormMode, selectedPieceId }:
   FormProps
 ) {
   const auth = use(AuthContext);
@@ -48,9 +47,11 @@ export default function Form (
       postEquipment({
         piece: newPiece, refresh: auth.refresh, logout: auth.logout
       }),
-    onSuccess: (newPieceFromServer) => {
-      setSelectedPieceId(newPieceFromServer.id);
-      setFormMode('edit');
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: ['equipmentIdAndName']
+      });
+      setFormMode('hidden');
     }
   });
 
@@ -63,6 +64,10 @@ export default function Form (
     onSuccess: (editedPieceFromServer) => {
       queryClient
         .setQueryData(['piece', selectedPieceId], editedPieceFromServer);
+      void queryClient.invalidateQueries({
+        queryKey: ['equipmentIdAndName']
+      });
+      setFormMode('hidden');
     }
   });
 
@@ -152,6 +157,7 @@ export default function Form (
 
       if (formMode === 'create') {
         try {
+          console.log(validatedPiece);
           await postMutation.mutateAsync(validatedPiece);
           return {
             success: true,
@@ -224,11 +230,7 @@ export default function Form (
       notes: notes
     });
 
-    if (availableWeights) {
-      setAvailableWeights(availableWeights);
-    } else {
-      setAvailableWeights([]);
-    }
+    setAvailableWeights(availableWeights);
   }
 
   if (!selectedPieceId && !availableWeights) {
@@ -236,24 +238,23 @@ export default function Form (
   }
 
   return (
-    <div className='flex flex-col min-h-0'>
-      {/* second-highest <div> with px-3 ensures that
-      the scrollbar stays clear of content */}
-      <div className='flex flex-col gap-3 px-3 pb-3 text-xs'>
-        <h3 className='flex justify-center text-base'>
-          {formMode === 'create'
-            ? iconMode
-              ? <TbPlus className='text-2xl' />
-              : 'create new equipment'
-            : iconMode
-              ? (
-                <span className='flex gap-1'>
-                  <TbEdit className='text-2xl' /> {piece.name}
-                </span>
-              )
-              : <span>editing {piece.name}</span>}
-        </h3>
+    <div className='flex flex-col min-h-0 overflow-y-scroll'>
+      <h3 className='flex self-center text-base'>
+        {/* formMode is either 'create' or 'edit' */}
+        {formMode === 'create'
+          ? iconMode
+            ? <TbPlus className='text-2xl' />
+            : 'create new equipment'
+          : iconMode
+            ? (
+              <span className='flex gap-1'>
+                <TbEdit className='text-2xl' /> {piece.name}
+              </span>
+            )
+            : <span>editing {piece.name}</span>}
+      </h3>
 
+      <div className='flex flex-col gap-3 px-3 pb-3 overflow-y-scroll text-xs'>
         <form
           action={submitAction}
           ref={formRef}

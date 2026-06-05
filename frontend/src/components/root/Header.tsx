@@ -5,13 +5,13 @@ export default function Header () {
     <div
       className='
       flex justify-center bg-primary dark:bg-primary-dark p-1
-      text-primary-text dark:text-primary-text-dark'
+      text-primary-text dark:text-primary-text-dark font-bold'
     >
       <Link
-        to='/'
+        to='/gyms'
         activeOptions={{ exact: true }}
       >
-        STRength_inventORY
+        strength inventory
       </Link>
     </div>
   );

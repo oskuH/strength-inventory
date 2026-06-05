@@ -36,7 +36,8 @@ export default function AvailableList (
         {filteredEquipment.map((piece) => (
           <li key={piece.id}>
             <button
-              disabled={currentEquipmentIds.includes(piece.id)}
+              disabled={currentEquipmentIds.includes(piece.id)
+                || addEquipmentMutation.isPending}
               className='
               flex gap-1 pl-1 min-w-full whitespace-nowrap
               enabled:cursor-pointer'

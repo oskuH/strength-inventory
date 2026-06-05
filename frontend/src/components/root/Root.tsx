@@ -67,6 +67,14 @@ export default function Root () {
           iconMode={iconMode}
         />
         <div className='relative flex flex-1 flex-col overflow-hidden'>
+          <div
+            className='
+            flex flex-1 flex-col bg-background dark:bg-background-dark
+            overflow-y-auto transition'
+          >
+            <Outlet />
+          </div>
+          <Footer />
           <SidebarLeft
             sidebarLeftVisible={sidebarLeftVisible}
             iconMode={iconMode}
@@ -78,14 +86,6 @@ export default function Root () {
             sidebarRightVisible={sidebarRightVisible}
             iconMode={iconMode}
           />
-          <div
-            className='
-            flex flex-1 flex-col bg-background dark:bg-background-dark
-            overflow-y-auto transition'
-          >
-            <Outlet />
-          </div>
-          <Footer />
         </div>
       </div>
       <ReactQueryDevtools />

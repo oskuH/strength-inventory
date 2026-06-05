@@ -81,7 +81,8 @@ export default function MembershipList ({
 
   return (
     <ol
-      className='bg-background dark:bg-background-dark min-w-full'
+      className='
+      flex-1 bg-background dark:bg-background-dark min-w-full overflow-y-scroll'
     >
       <hr />
       {memberships.map((membership) => (

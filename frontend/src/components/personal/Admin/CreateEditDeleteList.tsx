@@ -1,37 +1,31 @@
+// used by Gyms and Equipment
+
 import { use, useState } from 'react';
 
 import { TbEdit, TbMinus, TbPlus } from 'react-icons/tb';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
 
-import { AuthContext, IconContext } from '../../../../utils/contexts';
-import { deleteEquipment } from '../../../../utils/api';
+import { IconContext } from '../../../utils/contexts';
 
-import SimpleList from '../SimpleList';
+import SimpleList from './SimpleList';
 
-interface ListProps {
+interface CreateEditDeleteList {
   data: { id: string, name: string }[] | undefined
-  selectedPieceId: string
-  setSelectedPieceId: React.Dispatch<React.SetStateAction<string>>
+  selectedItemId: string
+  setSelectedItemId: React.Dispatch<React.SetStateAction<string>>
   setFormMode: React.Dispatch<React.SetStateAction<string>>
+  deleteMutationOptions: Omit<
+    UseMutationOptions<void, Error, string>, 'mutationKey'>
 }
 
-export default function List (
-  { data, selectedPieceId, setSelectedPieceId, setFormMode }: ListProps
+export default function CreateEditDeleteList (
+  {
+    data, selectedItemId, setSelectedItemId, setFormMode, deleteMutationOptions
+  }: CreateEditDeleteList
 ) {
-  const auth = use(AuthContext);
   const iconMode = use(IconContext);
 
-  const queryClient = useQueryClient();
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) =>
-      deleteEquipment({ id: id, refresh: auth.refresh, logout: auth.logout }),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['equipment'] });
-      void queryClient.invalidateQueries({ queryKey: ['equipmentIdAndName'] });
-      setSelectedPieceId('');
-    }
-  });
+  const deleteMutation = useMutation(deleteMutationOptions);
 
   const [search, setSearch] = useState('');
 
@@ -40,12 +34,12 @@ export default function List (
     filteredItems = data.filter((item) => {
       return (
         item.name.toLowerCase().includes(search.toLowerCase())
-        || item.id === selectedPieceId);
+        || item.id === selectedItemId);
     });
   }
 
   return (
-    <div className='flex flex-1 flex-col gap-1'>
+    <div className='flex flex-1 flex-col gap-1 overflow-y-scroll'>
       <input
         type='text'
         value={search}
@@ -63,7 +57,7 @@ export default function List (
           bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
           cursor-pointer hover:border-solid'
           onClick={() => {
-            setSelectedPieceId('');
+            setSelectedItemId('');
             setFormMode('create');
           }}
         >
@@ -72,7 +66,7 @@ export default function List (
             : 'create'}
         </button>
         <button
-          disabled={!selectedPieceId}
+          disabled={!selectedItemId}
           className='
           border border-dotted
           bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
@@ -87,14 +81,14 @@ export default function List (
             : 'edit'}
         </button>
         <button
-          disabled={!selectedPieceId}
+          disabled={!selectedItemId}
           className='
           border border-dotted
           bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
           enabled:cursor-pointer enabled:hover:border-solid
           disabled:text-secondary dark:disabled:text-secondary-dark'
           onClick={() => {
-            deleteMutation.mutate(selectedPieceId);
+            deleteMutation.mutate(selectedItemId);
           }}
         >
           {iconMode
@@ -109,8 +103,8 @@ export default function List (
       >
         <SimpleList
           data={filteredItems}
-          selectedItemId={selectedPieceId}
-          setSelectedItemId={setSelectedPieceId}
+          selectedItemId={selectedItemId}
+          setSelectedItemId={setSelectedItemId}
         />
       </div>
     </div>

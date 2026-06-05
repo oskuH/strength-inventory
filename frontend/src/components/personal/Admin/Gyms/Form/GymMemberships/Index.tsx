@@ -36,33 +36,35 @@ export default function GymMemberships (
 
   return (
     <div
-      className='flex flex-1 flex-col gap-3 min-h-0 overflow-y-scroll'
+      className='flex flex-1 flex-col gap-3 min-h-0'
     >
       <h3 className='self-center text-center'>
         editing memberships for {gymName}
       </h3>
 
-      {formMode === 'hidden'
-        ? (
-          <List
-            memberships={data}
-            setFormMode={setFormMode}
-            setSelectedMembershipId={setSelectedMembershipId}
-            setEditForm={setEditForm}
-          />
-        )
-        : (
-          <Form
-            gymId={gymId}
-            gymCountry={gymCountry}
-            gymChain={gymChain}
-            currentMembershipIds={data.map((membership) => membership.id)}
-            formMode={formMode}
-            setFormMode={setFormMode}
-            selectedMembershipId={selectedMembershipId}
-            setSelectedMembershipId={setSelectedMembershipId}
-          />
-        )}
+      <div className='flex flex-1 flex-col overflow-y-scroll'>
+        {formMode === 'hidden'
+          ? (
+            <List
+              memberships={data}
+              setFormMode={setFormMode}
+              setSelectedMembershipId={setSelectedMembershipId}
+              setEditForm={setEditForm}
+            />
+          )
+          : (
+            <Form
+              gymId={gymId}
+              gymCountry={gymCountry}
+              gymChain={gymChain}
+              currentMembershipIds={data.map((membership) => membership.id)}
+              formMode={formMode}
+              setFormMode={setFormMode}
+              selectedMembershipId={selectedMembershipId}
+              setSelectedMembershipId={setSelectedMembershipId}
+            />
+          )}
+      </div>
     </div>
   );
 }

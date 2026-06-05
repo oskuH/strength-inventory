@@ -53,7 +53,7 @@ export default function Form ({
   if (formMode === 'create') {
     if (!createMode) {
       return (
-        <div className='flex flex-col gap-1'>
+        <div className='flex flex-col gap-3'>
           <h4 className='self-center'>add new membership</h4>
           <button
             className={`${FORM_RETURN_BUTTON_CLASSES} w-full`}
@@ -63,14 +63,29 @@ export default function Form ({
           >
             <p className='text-sm'>gym's own membership</p>
           </button>
-          <button
-            className={`${FORM_RETURN_BUTTON_CLASSES} w-full`}
-            onClick={() => {
-              setCreateMode('chain');
-            }}
-          >
-            <p className='text-sm'>chain membership</p>
-          </button>
+
+          <div className='flex flex-col gap-0.5'>
+            <button
+              disabled={chainMemberships.length === 0}
+              className={`${FORM_RETURN_BUTTON_CLASSES} w-full
+              disabled:border-dashed
+              disabled:bg-secondary dark:disabled:bg-secondary-dark
+              disabled:cursor-not-allowed`}
+              onClick={() => {
+                setCreateMode('chain');
+              }}
+            >
+              <p className='text-sm'>chain membership</p>
+            </button>
+            {chainMemberships.length === 0
+              ? (
+                <p className='self-center text-xs'>
+                  not available for this gym
+                </p>
+              )
+              : null}
+          </div>
+
           <ReturnButton
             queryToInvalidate={['gymMemberships', gymId]}
             setFormMode={setFormMode}
@@ -83,6 +98,8 @@ export default function Form ({
           formMode={formMode}
           setFormMode={setFormMode}
           selectedMembershipId={selectedMembershipId}
+          defaultCountry=''
+          defaultChain=''
           usedInGymMemberships={true}
           addToGym={true}
           gymId={gymId}
@@ -116,6 +133,8 @@ export default function Form ({
       formMode={formMode}
       setFormMode={setFormMode}
       selectedMembershipId={selectedMembershipId}
+      defaultCountry=''
+      defaultChain=''
       usedInGymMemberships={true}
       addToGym={false}
       gymId={gymId}

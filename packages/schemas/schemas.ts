@@ -254,7 +254,7 @@ const EquipmentWithWeightsSchema = z.object({
     }
     return val;
   }, z.float32().nullish()),
-  availableWeights: z.array(z.float32()).nullish(),
+  availableWeights: z.array(z.float32()),
   maximumWeight: z.preprocess((val) => {
     if (typeof val === 'string') {
       if (val) {
@@ -292,7 +292,7 @@ const EquipmentWithoutWeightsSchema = z.object({
     }
     return val;
   }, z.null('Select a weight unit to use weights.')),
-  availableWeights: z.array(z.float32()).length(0, 'Select a weight unit to use weights.').nullish(),
+  availableWeights: z.array(z.float32()).length(0, 'Select a weight unit to use weights.'),
   maximumWeight: z.preprocess((val) => {
     if (typeof val === 'string') {
       if (val) {

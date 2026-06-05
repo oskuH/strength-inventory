@@ -38,7 +38,7 @@ export default function List ({
   }
 
   return (
-    <div className='flex flex-1 flex-col gap-1 text-sm'>
+    <div className='flex flex-1 flex-col gap-1 overflow-y-scroll text-sm'>
       <div className='flex flex-col'>
         <label htmlFor='country'>
           country

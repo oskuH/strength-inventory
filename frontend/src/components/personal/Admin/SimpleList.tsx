@@ -1,4 +1,4 @@
-// used by GymList and EquipmentList
+// used by CreateEditDeleteList
 
 interface SimpleListProps {
   data: { id: string, name: string }[] | undefined

@@ -1,17 +1,21 @@
 import { use, useState } from 'react';
 
+import { mutationOptions, useQuery, useQueryClient }
+  from '@tanstack/react-query';
 import { CgGym } from 'react-icons/cg';
-import { useQuery } from '@tanstack/react-query';
 
-import { getEquipmentIdAndName } from '../../../../utils/api';
+import { deleteEquipment, getEquipmentIdAndName } from '../../../../utils/api';
 
-import { IconContext } from '../../../../utils/contexts';
+import { AuthContext, IconContext } from '../../../../utils/contexts';
 
+import CreateEditDeleteList from '../CreateEditDeleteList';
 import Form from './Form/Index';
-import List from './List';
 
 export default function AdminEquipment () {
+  const auth = use(AuthContext);
   const iconMode = use(IconContext);
+
+  const queryClient = useQueryClient();
 
   const [selectedPieceId, setSelectedPieceId] = useState('');
   const [formMode, setFormMode] = useState('hidden');
@@ -19,6 +23,17 @@ export default function AdminEquipment () {
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['equipmentIdAndName'],
     queryFn: () => getEquipmentIdAndName()
+  });
+
+  const deleteMutationOptions = mutationOptions({
+    mutationFn: (id: string) =>
+      deleteEquipment({ id: id, refresh: auth.refresh, logout: auth.logout }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['equipment'] });
+      void queryClient
+        .invalidateQueries({ queryKey: ['equipmentIdAndName'] });
+      setSelectedPieceId('');
+    }
   });
 
   if (isPending) {
@@ -43,11 +58,12 @@ export default function AdminEquipment () {
 
       {formMode === 'hidden'
         ? (
-          <List
+          <CreateEditDeleteList
             data={data}
-            selectedPieceId={selectedPieceId}
-            setSelectedPieceId={setSelectedPieceId}
+            selectedItemId={selectedPieceId}
+            setSelectedItemId={setSelectedPieceId}
             setFormMode={setFormMode}
+            deleteMutationOptions={deleteMutationOptions}
           />
         )
         : (
@@ -55,7 +71,6 @@ export default function AdminEquipment () {
             formMode={formMode}
             setFormMode={setFormMode}
             selectedPieceId={selectedPieceId}
-            setSelectedPieceId={setSelectedPieceId}
           />
         )}
     </div>

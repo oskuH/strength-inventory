@@ -43,6 +43,8 @@ export default function AdminMemberships () {
             formMode={formMode}
             setFormMode={setFormMode}
             selectedMembershipId={selectedMembershipId}
+            defaultCountry={country}
+            defaultChain={chain}
             usedInGymMemberships={false}
             addToGym={false}
             gymId=''

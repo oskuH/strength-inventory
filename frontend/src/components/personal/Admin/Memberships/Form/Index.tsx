@@ -31,6 +31,8 @@ interface FormProps {
   formMode: string
   setFormMode: React.Dispatch<React.SetStateAction<string>>
   selectedMembershipId: string
+  defaultCountry: string
+  defaultChain: string
   usedInGymMemberships: boolean
   addToGym: boolean
   gymId: string
@@ -64,6 +66,8 @@ export function Form (
     formMode,
     setFormMode,
     selectedMembershipId,
+    defaultCountry,
+    defaultChain,
     usedInGymMemberships,
     addToGym,
     gymId
@@ -76,8 +80,8 @@ export function Form (
 
   const [membership, setMembership] = useState<FormMembership>({
     name: '',
-    chain: '',
-    country: '',
+    chain: defaultChain,
+    country: defaultCountry,
     initiationFee: '',
     membershipFee: '',
     feeCurrency: '',
@@ -318,7 +322,7 @@ export function Form (
   }
 
   return (
-    <div className='flex flex-col min-h-0'>
+    <div className='flex flex-col min-h-0 overflow-y-scroll'>
       {/* second-highest <div> with px-3 ensures that
       the scrollbar stays clear of content */}
       <div className='flex flex-col gap-3 px-3 text-xs'>

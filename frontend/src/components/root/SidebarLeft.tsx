@@ -141,20 +141,6 @@ export default function SidebarLeft (
           ? <MdOutlineLocationOn className='text-xl' />
           : 'gyms'}
       </Link>
-      <Link
-        to='/equipment'
-        className={`
-        py-1 pl-2 hover:bg-primary dark:hover:bg-background-dark
-        active:font-semibold
-        ${pathname === '/equipment'
-      ? 'bg-primary dark:bg-background-dark font-semibold'
-      : ''
-    }`}
-      >
-        {iconMode
-          ? <CgGym className='text-xl' />
-          : 'equipment'}
-      </Link>
 
       <div className='flex flex-col gap-1 mt-auto p-1'>
         <IconToggle

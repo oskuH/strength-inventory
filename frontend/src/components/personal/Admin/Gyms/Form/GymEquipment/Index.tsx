@@ -142,41 +142,43 @@ export default function GymEquipment (
 
   return (
     <div
-      className='flex flex-1 flex-col min-h-0 overflow-y-scroll'
+      className='flex flex-1 flex-col min-h-0'
     >
       <h3 className='self-center mb-3 text-center'>
         editing equipment for {gymName}
       </h3>
-      <CurrentList
-        gymId={gymId}
-        gymEquipment={gymEquipmentQuery.data}
-        setEquipmentCountMutation={setEquipmentCountMutation}
-        removeEquipmentMutation={removeEquipmentMutation}
-      />
-      {search
-        ? (
-          <AvailableList
-            gymId={gymId}
-            currentEquipment={gymEquipmentQuery.data}
-            filteredEquipment={filteredEquipment}
-            addEquipmentMutation={addEquipmentMutation}
-          />
-        )
-        : (
-          null
-        )}
-      <div className='flex flex-col gap-1 mt-1 mb-3'>
-        <input
-          type='search'
-          value={search}
-          placeholder='search to add new equipment'
-          className='bg-background dark:bg-background-dark pl-1'
-          onChange={(event) => {
-            setSearch(event.target.value);
-          }}
+      <div className='flex flex-1 flex-col overflow-y-scroll'>
+        <CurrentList
+          gymId={gymId}
+          gymEquipment={gymEquipmentQuery.data}
+          setEquipmentCountMutation={setEquipmentCountMutation}
+          removeEquipmentMutation={removeEquipmentMutation}
         />
+        {search
+          ? (
+            <AvailableList
+              gymId={gymId}
+              currentEquipment={gymEquipmentQuery.data}
+              filteredEquipment={filteredEquipment}
+              addEquipmentMutation={addEquipmentMutation}
+            />
+          )
+          : (
+            null
+          )}
+        <div className='flex flex-col gap-1 mt-1 mb-3'>
+          <input
+            type='search'
+            value={search}
+            placeholder='search to add new equipment'
+            className='bg-background dark:bg-background-dark pl-1'
+            onChange={(event) => {
+              setSearch(event.target.value);
+            }}
+          />
+        </div>
+        <EditFormReturnButton setEditForm={setEditForm} />
       </div>
-      <EditFormReturnButton setEditForm={setEditForm} />
     </div>
   );
 }

@@ -52,7 +52,7 @@ export default function Membership (
     <div
       className='
       flex gap-3
-      border bg-secondary dark:bg-secondary-dark p-3 w-63 text-sm'
+      border bg-secondary dark:bg-secondary-dark p-3 w-63 min-h-45 text-sm'
     >
       <div className='flex flex-col gap-1 wrap-break-word basis-2/3 min-w-0'>
         {notNullUrl
