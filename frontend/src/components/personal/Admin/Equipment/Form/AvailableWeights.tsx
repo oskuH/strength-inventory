@@ -4,12 +4,12 @@ import { maxWeight } from '@strength-inventory/schemas';
 
 interface AvailableWeightsProps {
   availableWeights: number[]
-  setAvailableWeights:
-  React.Dispatch<React.SetStateAction<number[] | undefined>>
+  setAvailableWeights: React.Dispatch<React.SetStateAction<number[]>>
+  startingWeight: string
 }
 
 export default function AvailableWeights ({
-  availableWeights, setAvailableWeights
+  availableWeights, setAvailableWeights, startingWeight
 }: AvailableWeightsProps) {
   const [newWeight, setNewWeight] = useState('');
   const [isInvalidStep, setIsInvalidStep] = useState(false);
@@ -34,11 +34,21 @@ export default function AvailableWeights ({
     setAvailableWeights(updatedWeights);
   }
 
+  let lowestRequirement: number | null = null;
+  if (startingWeight) {
+    lowestRequirement = Number(startingWeight);
+  }
+
   return (
     <div className='flex flex-col'>
       <label>available weights</label>
       <div
-        className='flex flex-col gap-2 bg-tertiary dark:bg-tertiary-dark p-1'
+        className={`
+          flex flex-col gap-2 bg-tertiary dark:bg-tertiary-dark p-1
+          ${lowestRequirement
+          && lowestRequirement !== Math.min(...availableWeights)
+      ? 'outline outline-red dark:outline-red-dark'
+      : ''}`}
       >
         <div className='flex flex-wrap gap-3'>
           {availableWeights.map((weight) => (
@@ -46,7 +56,7 @@ export default function AvailableWeights ({
               key={weight}
               className='
               border px-1 cursor-pointer
-              hover:bg-red-400 hover:dark:bg-red-800'
+              hover:bg-red hover:dark:bg-red-dark'
               onClick={() => {
                 const newWeights
                   = availableWeights

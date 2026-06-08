@@ -36,7 +36,7 @@ export default function Form (
 ) {
   interface formatSubmitProps {
     req: GymPostFrontend;
-    exceptions: OpeningHoursException[] | undefined;
+    exceptions: OpeningHoursException[];
   }
 
   function formatSubmit ({ req, exceptions }: formatSubmitProps) {
@@ -166,10 +166,10 @@ export default function Form (
   but they have their own state for convenience.
   formatSubmit function attaches exceptions to
   the other variables before API calls. */
-  const [exceptions, setExceptions]
-    = useState<OpeningHoursException[] | undefined>();
+  const [exceptions, setExceptions] = useState<OpeningHoursException[]>([]);
   /* editForm denotes the subform opened on top of this form. */
   const [editForm, setEditForm] = useState('');
+  const [firstRender, setFirstRender] = useState(true);
 
   const [state, submitAction, isPending] = useActionState(submit, {
     success: false,
@@ -226,10 +226,8 @@ export default function Form (
   }
 
   /* Initialize the form fields when opened in edit mode.
-  selectedGymId is only defined in edit mode.
-  Moreover, !exceptions evaluates truthy only on the first render
-  because a few lines below it is guaranteed to be defined. */
-  if (selectedGymId && gymQuery.isSuccess && !exceptions) {
+  selectedGymId is only defined in edit mode. */
+  if (selectedGymId && gymQuery.isSuccess && firstRender) {
     const {
       name,
       chain,
@@ -263,9 +261,9 @@ export default function Form (
 
     if (openingHoursExceptions.data) {
       setExceptions(openingHoursExceptions.data);
-    } else {
-      setExceptions([]);
     }
+
+    setFirstRender(false);
   }
 
   if (editForm === 'equipment') {

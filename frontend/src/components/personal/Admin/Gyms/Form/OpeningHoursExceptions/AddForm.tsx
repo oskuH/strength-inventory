@@ -8,9 +8,9 @@ import {
 } from '@strength-inventory/schemas';
 
 interface AddFormProps {
-  exceptions: OpeningHoursException[] | undefined
+  exceptions: OpeningHoursException[]
   setExceptions:
-  React.Dispatch<React.SetStateAction<OpeningHoursException[] | undefined>>
+  React.Dispatch<React.SetStateAction<OpeningHoursException[]>>
   setAddException: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -40,7 +40,7 @@ export default function AddForm ({
         = OpeningHoursExceptionSchema.parse(newException);
 
       let newExceptions;
-      if (exceptions) {
+      if (exceptions.length > 0) {
         newExceptions = [
           ...exceptions,
           validatedNewException

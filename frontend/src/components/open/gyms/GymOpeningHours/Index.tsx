@@ -8,7 +8,7 @@ import { FaAddressCard, FaRegAddressCard } from 'react-icons/fa6';
 import { IconContext } from '../../../../utils/contexts';
 
 import ModeButton from './ModeButton';
-import OpeningHours from './OpeningHours';
+import RegularOpeningHours from './RegularOpeningHours';
 
 import type { GymGet } from '@strength-inventory/schemas';
 
@@ -25,18 +25,16 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
       }
     }
   );
-  const [disableMembersOnlySwitch/* setDisableMembersOnlySwitch */] = useState(
-    () => {
-      if (
-        Object.keys(gym.openingHoursEveryone).length === 0
-        || Object.keys(gym.openingHoursMembers).length === 0
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  );
+
+  let disableMembersOnlySwitch: boolean;
+  if (
+    Object.keys(gym.openingHoursEveryone).length === 0
+    || Object.keys(gym.openingHoursMembers).length === 0
+  ) {
+    disableMembersOnlySwitch = true;
+  } else {
+    disableMembersOnlySwitch = false;
+  }
 
   function handleHoursModeToggle (title: string) {
     setHoursMode(title);
@@ -48,38 +46,32 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
     <div
       className='flex flex-col border-x border-b p-3'
     >
-      <div className='flex pb-3'>
-        <OpeningHours
-          gym={gym}
-          hoursMode={hoursMode}
-          membersOnly={membersOnly}
-        />
-      </div>
+      {hoursMode === 'regular'
+        ? (
+          <div className='flex pb-3'>
+            <RegularOpeningHours
+              gym={gym}
+              membersOnly={membersOnly}
+            />
+          </div>
+        )
+        : null}
 
       <div className='flex pb-3'>
         <div
           className='
-          flex border divide-x
-          bg-secondary dark:bg-secondary-dark
-          basis-full min-h-12'
+          flex flex-col border divide-y
+          bg-secondary dark:bg-secondary-dark basis-full'
         >
           <ModeButton
             hoursMode={hoursMode}
-            membersOnly={membersOnly}
-            handleHoursModeToggle={handleHoursModeToggle}
-            title='next week'
-          />
-          <ModeButton
-            hoursMode={hoursMode}
-            membersOnly={membersOnly}
             handleHoursModeToggle={handleHoursModeToggle}
             title='regular'
           />
           <ModeButton
             hoursMode={hoursMode}
-            membersOnly={membersOnly}
             handleHoursModeToggle={handleHoursModeToggle}
-            title='exceptions'
+            title='next week'
           />
         </div>
       </div>

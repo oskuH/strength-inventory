@@ -103,17 +103,29 @@ Equipment.init({
     customValidator () {
       const instance = this as unknown as Equipment;
 
-      if (
-        !instance.weightUnit
-        && (
-          instance.weight
-          || instance.startingWeight
-          || instance.availableWeights.length > 0
-          || instance.maximumWeight
-        )
+      if (!instance.weightUnit && (
+        instance.weight
+        || instance.startingWeight
+        || instance.availableWeights.length > 0
+        || instance.maximumWeight
+      )
       ) {
         throw Error(
           'weight unit must be selected if other weight data is used'
+        );
+      }
+
+      if ((instance.startingWeight && instance.maximumWeight)
+        && instance.startingWeight > instance.maximumWeight) {
+        throw Error(
+          'starting weight cannot be more than maximum weight'
+        );
+      }
+
+      if ((instance.availableWeights.length > 0 && instance.startingWeight)
+        && Math.min(...instance.availableWeights) !== instance.startingWeight) {
+        throw Error(
+          'smallest available weight must equal starting weight'
         );
       }
     }

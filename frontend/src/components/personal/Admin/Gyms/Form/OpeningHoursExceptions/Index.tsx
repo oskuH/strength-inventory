@@ -11,9 +11,9 @@ import Exception from './Exception';
 import { type OpeningHoursException } from '@strength-inventory/schemas';
 
 interface OpeningHoursExceptionsProps {
-  exceptions: OpeningHoursException[] | undefined
+  exceptions: OpeningHoursException[]
   setExceptions:
-  React.Dispatch<React.SetStateAction<OpeningHoursException[] | undefined>>
+  React.Dispatch<React.SetStateAction<OpeningHoursException[]>>
 }
 
 export default function OpeningHoursExceptions ({
@@ -71,7 +71,7 @@ export default function OpeningHoursExceptions ({
           enabled:hover:border-solid
           disabled:text-secondary dark:disabled:text-secondary-dark'
           onClick={() => {
-            const newExceptions = exceptions?.filter((obj) => {
+            const newExceptions = exceptions.filter((obj) => {
               if (obj.id !== selectedExceptionId) {
                 return obj;
               }
@@ -100,7 +100,7 @@ export default function OpeningHoursExceptions ({
         flex flex-col p-1 bg-background dark:bg-background-dark'
       >
         <hr />
-        {exceptions?.map((exception) => (
+        {exceptions.map((exception) => (
           exception.id !== editedException
             ? (
               <li key={exception.id}>

@@ -11,7 +11,7 @@ interface EditFormProps {
   setEditedException: React.Dispatch<React.SetStateAction<string>>
   exceptions: OpeningHoursException[]
   setExceptions:
-  React.Dispatch<React.SetStateAction<OpeningHoursException[] | undefined>>
+  React.Dispatch<React.SetStateAction<OpeningHoursException[]>>
 }
 
 export default function EditForm ({

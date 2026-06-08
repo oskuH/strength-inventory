@@ -266,6 +266,20 @@ const EquipmentWithWeightsSchema = z.object({
     return val;
   }, z.float32().nullish()),
 })
+.refine((data) => {
+  if (data.startingWeight && data.maximumWeight) {
+    data.startingWeight < data.maximumWeight
+  } else {
+    return true;
+  }
+}, { error: 'starting weight cannot be more than maximum weight' })
+.refine((data) => {
+  if (data.availableWeights.length > 0 && data.startingWeight) {
+    Math.min(...data.availableWeights) === data.startingWeight
+  } else {
+    return true
+  }
+}, { error: 'smallest available weight must equal starting weight'})
 
 const EquipmentWithoutWeightsSchema = z.object({
   weightUnit: z.null(),
@@ -365,7 +379,7 @@ export const OpeningHoursExceptionSchema = z.object({
 export type OpeningHoursException = z.infer<typeof OpeningHoursExceptionSchema>;
 
 export const HoursExceptionsSchema = z.object({
-    data: z.array(OpeningHoursExceptionSchema).optional()
+    data: z.array(OpeningHoursExceptionSchema)
   })
 export type HoursExceptions = z.infer<typeof HoursExceptionsSchema>;
 

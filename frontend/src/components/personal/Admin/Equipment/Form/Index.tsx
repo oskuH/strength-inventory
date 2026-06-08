@@ -122,8 +122,8 @@ export default function Form (
   /* Available weights are rendered as part of the form,
   but logically they have their separate state which is merged
   with the form data in submit() */
-  const [availableWeights, setAvailableWeights]
-    = useState<number[] | undefined>();
+  const [availableWeights, setAvailableWeights] = useState<number[]>([]);
+  const [firstRender, setFirstRender] = useState(true);
 
   const [state, submitAction, isPending] = useActionState(submit, {
     success: true,
@@ -193,10 +193,8 @@ export default function Form (
   }
 
   /* Initialize the form fields when opened in edit mode.
-  selectedPieceId is only defined in edit mode.
-  Moreover, !availableWeights evaluates truthy only on the first render
-  because a few lines below it is guaranteed to be defined. */
-  if (selectedPieceId && pieceQuery.isSuccess && !availableWeights) {
+  selectedPieceId is only defined in edit mode. */
+  if (selectedPieceId && pieceQuery.isSuccess && firstRender) {
     const {
       name,
       category,
@@ -231,10 +229,8 @@ export default function Form (
     });
 
     setAvailableWeights(availableWeights);
-  }
 
-  if (!selectedPieceId && !availableWeights) {
-    setAvailableWeights([]);
+    setFirstRender(false);
   }
 
   return (
@@ -362,16 +358,11 @@ export default function Form (
               />
             </div>
 
-            {/* This ternary signals TS that availableWeights is defined.
-            The colon case should never happen in practice. */}
-            {availableWeights
-              ? (
-                <AvailableWeights
-                  availableWeights={availableWeights}
-                  setAvailableWeights={setAvailableWeights}
-                />
-              )
-              : null}
+            <AvailableWeights
+              availableWeights={availableWeights}
+              setAvailableWeights={setAvailableWeights}
+              startingWeight={piece.startingWeight}
+            />
 
             <div className='flex flex-col'>
               <label htmlFor='startingWeight'>starting weight</label>
@@ -381,7 +372,9 @@ export default function Form (
                 type='number'
                 value={piece.startingWeight}
                 min={0.01}
-                max={maxWeight}
+                max={piece.maximumWeight
+                  ? piece.maximumWeight
+                  : maxWeight}
                 step={0.01}
                 className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
@@ -397,7 +390,9 @@ export default function Form (
                 name='maximumWeight'
                 type='number'
                 value={piece.maximumWeight}
-                min={0.01}
+                min={piece.startingWeight
+                  ? piece.startingWeight
+                  : 0.01}
                 max={maxWeight}
                 step={0.01}
                 className={FORM_INPUT_CLASSES}
