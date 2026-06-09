@@ -259,9 +259,7 @@ export default function Form (
       notes: notes
     });
 
-    if (openingHoursExceptions.data) {
-      setExceptions(openingHoursExceptions.data);
-    }
+    setExceptions(openingHoursExceptions.data);
 
     setFirstRender(false);
   }

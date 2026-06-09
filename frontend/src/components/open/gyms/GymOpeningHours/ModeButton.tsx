@@ -6,7 +6,7 @@ import { BsCalendar4Week } from 'react-icons/bs';
 import { IconContext } from '../../../../utils/contexts';
 
 function ModeButtonIcon ({ title }: { title: string }) {
-  if (title === 'next week') {
+  if (title === 'next seven days') {
     return (
       <BsCalendar4Week className='text-xl' />
     );
@@ -39,7 +39,7 @@ export default function ModeButton (
       aria-pressed={hoursMode === title}
       className='
       group flex justify-center items-center py-1 basis-1/2
-      cursor-pointer hover:inset-ring hover:font-semibold
+      cursor-pointer hover:inset-ring active:font-semibold
       aria-pressed:bg-secondary-dark dark:aria-pressed:bg-secondary
       aria-pressed:font-semibold'
       onClick={() => {
@@ -53,7 +53,7 @@ export default function ModeButton (
       >
         {iconMode
           ? <ModeButtonIcon title={title} />
-          : <p className='text-xs md:text-sm'>{title}</p>}
+          : <p className='text-sm'>{title}</p>}
       </div>
     </button>
   );

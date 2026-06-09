@@ -12,12 +12,12 @@ export default function OpeningHoursDayInput (
   { group, day, editedHours }: OpeningHoursDayInputProps
 ) {
   const [openTime, setOpenTime] = useState(editedHours?.[day]
-    ? editedHours[day][0]
+    ? editedHours[day][0] !== undefined
       ? String(editedHours[day][0])
       : ''
     : '');
   const [closeTime, setCloseTime] = useState(editedHours?.[day]
-    ? editedHours[day][1]
+    ? editedHours[day][1] !== undefined
       ? String(editedHours[day][1])
       : ''
     : '');

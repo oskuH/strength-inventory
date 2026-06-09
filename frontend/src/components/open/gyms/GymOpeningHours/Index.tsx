@@ -1,5 +1,3 @@
-// work in progress
-
 import { use, useId, useState } from 'react';
 
 import { BsPeople, BsPeopleFill } from 'react-icons/bs';
@@ -8,7 +6,8 @@ import { FaAddressCard, FaRegAddressCard } from 'react-icons/fa6';
 import { IconContext } from '../../../../utils/contexts';
 
 import ModeButton from './ModeButton';
-import RegularOpeningHours from './RegularOpeningHours';
+import NextSevenDays from './NextSevenDays';
+import RegularHours from './RegularHours';
 
 import type { GymGet } from '@strength-inventory/schemas';
 
@@ -25,6 +24,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
       }
     }
   );
+  const [exceptionReason, setExceptionReason] = useState('');
 
   let disableMembersOnlySwitch: boolean;
   if (
@@ -46,18 +46,25 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
     <div
       className='flex flex-col border-x border-b p-3'
     >
-      {hoursMode === 'regular'
-        ? (
-          <div className='flex pb-3'>
-            <RegularOpeningHours
+      <div className='flex pb-3'>
+        {hoursMode === 'regular'
+          ? (
+            <RegularHours
               gym={gym}
               membersOnly={membersOnly}
+              setExceptionReason={setExceptionReason}
             />
-          </div>
-        )
-        : null}
+          )
+          : (
+            <NextSevenDays
+              gym={gym}
+              membersOnly={membersOnly}
+              setExceptionReason={setExceptionReason}
+            />
+          )}
+      </div>
 
-      <div className='flex pb-3'>
+      <div className='flex relative mb-3'>
         <div
           className='
           flex flex-col border divide-y
@@ -71,9 +78,31 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
           <ModeButton
             hoursMode={hoursMode}
             handleHoursModeToggle={handleHoursModeToggle}
-            title='next week'
+            title='next seven days'
           />
         </div>
+
+        {exceptionReason
+          ? (
+            <div
+              className='
+              absolute flex items-center opacity-95
+              bg-secondary dark:bg-secondary-dark p-1 w-full h-full'
+            >
+              <p className='w-3/4 text-center text-sm'>{exceptionReason}</p>
+              <button
+                className='
+                flex-1 opacity-100 border rounded-md h-full cursor-pointer
+                hover:bg-primary dark:hover:bg-primary-dark'
+                onClick={() => {
+                  setExceptionReason('');
+                }}
+              >
+                OK
+              </button>
+            </div>
+          )
+          : null}
       </div>
 
       <div
@@ -88,6 +117,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
           className='order-2 peer hidden'
           onChange={() => {
             setMembersOnly(!membersOnly);
+            setExceptionReason('');
           }}
         />
         <label
@@ -121,7 +151,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
             ? membersOnly
               ? <BsPeople />
               : <BsPeopleFill />
-            : <p className='text-xs md:text-sm'>everyone</p>}
+            : <p className='text-sm'>everyone</p>}
 
         </div>
         <div
@@ -140,7 +170,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
             ? membersOnly
               ? <FaAddressCard />
               : <FaRegAddressCard />
-            : <p className='text-xs md:text-sm'>members</p>}
+            : <p className='text-sm'>members</p>}
         </div>
       </div>
     </div>
