@@ -8,7 +8,7 @@ z.string() = optional string i.e. empty strings accepted */
 // utility schemas for opening hours
 
 const TimeSchema = z.array(z.number().min(0).max(24).optional()).length(2);
-const TimeSchemaExceptions = z.array(z.number().min(0).max(24)).length(2);
+const ExceptionTimeSchema = z.array(z.number().min(0).max(24).nullish()).length(2);
 
 export const HoursSchema = z.object({
   MO: TimeSchema.optional(),
@@ -372,9 +372,9 @@ export type GymMembershipPost = z.infer<typeof GymMembershipPostSchema>;
 export const OpeningHoursExceptionSchema = z.object({
   id: z.uuidv4(),
   date: z.coerce.date(),
-  hours: TimeSchemaExceptions,
+  hours: ExceptionTimeSchema,
   reason: z.string().min(1),
-  concernsMembers: z.boolean()
+  concerns: z.enum(['everyone', 'non-members', 'members'])
 })
 export type OpeningHoursException = z.infer<typeof OpeningHoursExceptionSchema>;
 

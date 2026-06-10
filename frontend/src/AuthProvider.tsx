@@ -29,19 +29,15 @@ export default function AuthProvider (
     const syncTokenAndLogin = async () => {
       let accessToken = token;
       if (!isTokenValid(token)) {
-        console.log('AuthProvider calling refresh()');
         await refresh()
           .then((newAccessToken) => {
             accessToken = newAccessToken;
-            console.log('accessToken after refresh():', accessToken);
           })
           .catch(() => {
-            console.error('CASE 1');
             localStorage.removeItem('auth-token');
           });
       }
 
-      console.log('Access token given to GET /login:', accessToken);
       fetch(`${baseUrl}/login`, {
         headers: { Authorization: `Bearer ${accessToken}` },
         signal: ctrl.signal,
@@ -50,28 +46,21 @@ export default function AuthProvider (
         .then((res) => res.json())
         .then((userData) => {
           try {
-            console.log('userData from GET /login:', userData);
             const validatedUserData = UserFrontendQuerySchema.parse(userData);
             setUser(validatedUserData);
             setIsAuthenticated(true);
           } catch (err: unknown) {
-            console.error('CASE 2');
             localStorage.removeItem('auth-token');
             if (err instanceof z.ZodError) {
               const messages = err.issues.map((issue) => issue.message);
               throw Error(messages[0], { cause: err });
-            } else {
-              console.error(err);
             }
           }
         })
         .catch((err: unknown) => {
-          console.error('CASE 3');
           localStorage.removeItem('auth-token');
           if (err instanceof Error) {
             throw Error(err.message);
-          } else {
-            console.error(err);
           }
         })
         .finally(() => {
@@ -83,8 +72,8 @@ export default function AuthProvider (
     };
 
     syncTokenAndLogin()
-      .catch((err: unknown) => {
-        console.error('Something went wrong.', err);
+      .catch(() => {
+        console.error('Something went wrong.');
       });
   }, [token]);
 

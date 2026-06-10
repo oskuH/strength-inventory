@@ -44,7 +44,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
 
   return (
     <div
-      className='flex flex-col border-x border-b p-3'
+      className='flex flex-col border-x border-b py-3'
     >
       <div className='flex pb-3'>
         {hoursMode === 'regular'

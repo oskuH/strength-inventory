@@ -9,7 +9,7 @@ interface ExceptionProps {
 export default function Exception ({
   exception, selectedExceptionId, setSelectedExceptionId
 }: ExceptionProps) {
-  const { id, date, hours, reason, concernsMembers } = exception;
+  const { id, date, hours, reason, concerns } = exception;
 
   return (
     <button
@@ -21,14 +21,14 @@ export default function Exception ({
         setSelectedExceptionId(id);
       }}
     >
-      <span className='flex flex-col md:flex-row md:gap-2'>
+      <span className='flex flex-row gap-2'>
         <span>{date.toLocaleDateString('en-GB')}</span>
-        <span>{hours[0]}-{hours[1]}</span>
-        {concernsMembers
-          ? <span>Members: yes</span>
-          : <span>Members: no</span>}
+        {hours[0] || hours[1]
+          ? <span className='w-10'>{hours[0]}-{hours[1]}</span>
+          : <span className='w-10'>closed</span>}
+        <span>concerns: {concerns}</span>
       </span>
-      <span className=''>Reason: {reason}</span>
+      <span className=''>reason: {reason}</span>
     </button>
   );
 }

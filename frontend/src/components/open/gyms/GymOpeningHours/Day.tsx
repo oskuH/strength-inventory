@@ -21,7 +21,7 @@ export default function Day ({
 
   return (
     <button
-      className={`rounded-md px-2 w-22
+      className={`rounded-md px-2 w-24
     ${highlighted
       ? 'bg-secondary dark:bg-secondary-dark'
       : ''

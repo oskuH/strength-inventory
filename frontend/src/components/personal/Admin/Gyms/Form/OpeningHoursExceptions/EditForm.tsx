@@ -20,24 +20,43 @@ export default function EditForm ({
   const [date, setDate] = useState(exception.date.toISOString().split('T')[0]);
   const [from, setFrom] = useState(String(exception.hours[0]));
   const [to, setTo] = useState(String(exception.hours[1]));
-  const [members, setMembers] = useState(exception.concernsMembers);
+  const [concerns, setConcerns] = useState<string>(exception.concerns);
   const [reason, setReason] = useState(exception.reason);
   const [error, setError] = useState('');
 
   function handleSubmit (event: React.SubmitEvent) {
     event.preventDefault();
+    const hours: (number | undefined)[] = [undefined, undefined];
+    if (from) {
+      hours[0] = Number(from);
+    }
+    if (to) {
+      hours[1] = Number(to);
+    }
 
     try {
       const editedException = {
         id: exception.id,
         date: new Date(date),
-        hours: [Number(from), Number(to)],
-        concernsMembers: members,
+        hours: hours,
+        concerns: concerns,
         reason: reason
       };
 
       const validatedEditedException
         = OpeningHoursExceptionSchema.parse(editedException);
+
+      const exceptionsWithoutEdited = exceptions.filter((exception) =>
+        exception.id !== editedException.id);
+      const overlap = exceptionsWithoutEdited.find((exception) =>
+        exception.date.getDate() === editedException.date.getDate()
+        && ((exception.concerns === (editedException.concerns || 'everyone'))
+          || editedException.concerns === 'everyone'));
+      if (overlap) {
+        throw Error(
+          'there already exists an overlapping exception for the date'
+        );
+      }
 
       const newExceptions = exceptions.map((obj) => {
         if (obj.id === exception.id) {
@@ -54,6 +73,8 @@ export default function EditForm ({
         const messages = err.issues.map((issue) => issue.message);
         console.error(messages);
         setError(err.issues[0].message);
+      } else if (err instanceof Error) {
+        setError(err.message);
       } else {
         setError('ERROR');
       }
@@ -85,11 +106,10 @@ export default function EditForm ({
             placeholder='from'
             min='0'
             max={to}
+            className='bg-secondary dark:bg-tertiary-dark w-12'
             onChange={(event) => {
               setFrom(event.target.value);
             }}
-            required
-            className='bg-secondary dark:bg-tertiary-dark w-12'
           />
           <span className='self-center'>-</span>
           <input
@@ -100,7 +120,6 @@ export default function EditForm ({
             placeholder='to'
             min={from}
             max='24'
-            required
             className='bg-secondary dark:bg-tertiary-dark w-12'
             onChange={(event) => {
               setTo(event.target.value);
@@ -110,17 +129,22 @@ export default function EditForm ({
       </div>
 
       <div className='flex gap-1'>
-        <label htmlFor='members'>applies to members</label>
-        <input
-          id='members'
-          name='members'
-          type='checkbox'
-          value='members'
-          checked={members}
-          onChange={() => {
-            setMembers(!members);
+        <label htmlFor='members'>concerns:</label>
+        <select
+          id='concerns'
+          name='concerns'
+          value={concerns}
+          required
+          className='bg-secondary dark:bg-tertiary-dark pl-1'
+          onChange={(event) => {
+            setConcerns(event.target.value);
           }}
-        />
+        >
+          <option value=''>-- concerns --</option>
+          <option value='everyone'>everyone</option>
+          <option value='non-members'>non-members</option>
+          <option value='members'>members</option>
+        </select>
       </div>
 
       <div className='flex flex-col'>

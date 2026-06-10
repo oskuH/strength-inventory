@@ -20,24 +20,45 @@ export default function AddForm ({
   const [date, setDate] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
-  const [members, setMembers] = useState(false);
+  const [concerns, setConcerns] = useState('');
   const [reason, setReason] = useState('');
   const [error, setError] = useState('');
 
   function handleSubmit (event: React.SubmitEvent) {
+    function compareDates (a: OpeningHoursException, b: OpeningHoursException) {
+      return a.date.getTime() - b.date.getTime();
+    }
+
     event.preventDefault();
+    const hours: (number | undefined)[] = [undefined, undefined];
+    if (from) {
+      hours[0] = Number(from);
+    }
+    if (to) {
+      hours[1] = Number(to);
+    }
 
     try {
       const newException = {
         id: uuidv4(),
         date: new Date(date),
-        hours: [Number(from), Number(to)],
-        concernsMembers: members,
+        hours: hours,
+        concerns: concerns,
         reason: reason
       };
 
       const validatedNewException
         = OpeningHoursExceptionSchema.parse(newException);
+
+      const overlap = exceptions.find((exception) =>
+        exception.date.getDate() === newException.date.getDate()
+        && ((exception.concerns === (newException.concerns || 'everyone'))
+          || newException.concerns === 'everyone'));
+      if (overlap) {
+        throw Error(
+          'there already exists an overlapping exception for the date'
+        );
+      }
 
       let newExceptions;
       if (exceptions.length > 0) {
@@ -45,6 +66,7 @@ export default function AddForm ({
           ...exceptions,
           validatedNewException
         ];
+        newExceptions.sort(compareDates);
       } else {
         newExceptions = [validatedNewException];
       }
@@ -57,6 +79,8 @@ export default function AddForm ({
         const messages = err.issues.map((issue) => issue.message);
         console.error(messages);
         setError(err.issues[0].message);
+      } else if (err instanceof Error) {
+        setError(err.message);
       } else {
         setError('ERROR');
       }
@@ -88,7 +112,6 @@ export default function AddForm ({
             placeholder='from'
             min='0'
             max={to}
-            required
             className='bg-tertiary dark:bg-background-dark w-12'
             onChange={(event) => {
               setFrom(event.target.value);
@@ -103,7 +126,6 @@ export default function AddForm ({
             placeholder='to'
             min={from}
             max='24'
-            required
             className='bg-tertiary dark:bg-background-dark w-12'
             onChange={(event) => {
               setTo(event.target.value);
@@ -113,17 +135,22 @@ export default function AddForm ({
       </div>
 
       <div className='flex gap-1'>
-        <label htmlFor='members'>applies to members</label>
-        <input
-          id='members'
-          name='members'
-          type='checkbox'
-          value='members'
-          checked={members}
-          onChange={() => {
-            setMembers(!members);
+        <label htmlFor='members'>concerns:</label>
+        <select
+          id='concerns'
+          name='concerns'
+          value={concerns}
+          required
+          className='bg-tertiary dark:bg-backgroudn-dark pl-1'
+          onChange={(event) => {
+            setConcerns(event.target.value);
           }}
-        />
+        >
+          <option value=''>-- please select a group --</option>
+          <option value='everyone'>everyone</option>
+          <option value='non-members'>non-members</option>
+          <option value='members'>members</option>
+        </select>
       </div>
 
       <div className='flex flex-col'>
