@@ -25,11 +25,11 @@ export default function SubmitButton (
             : 'saving...'}
         disabled={isPending}
         className={`
-        flex justify-center border border-black dark:border-white
-        bg-green dark:bg-green-dark px-3 w-full
-        text-primary-text dark:text-primary-text-dark text-base
-        hover:border-white hover:dark:border-black
-        active:border-white active:dark:border-black active:font-bold
+          flex justify-center border border-black dark:border-white
+          bg-green dark:bg-green-dark px-3 w-full
+          text-primary-text dark:text-primary-text-dark text-base
+          hover:border-white hover:dark:border-black
+          active:border-white active:dark:border-black active:font-bold
         ${!isPending
       ? 'cursor-pointer'
       : 'cursor-progress'

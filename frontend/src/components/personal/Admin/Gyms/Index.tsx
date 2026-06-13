@@ -46,8 +46,8 @@ export default function AdminGyms () {
   return (
     <div
       className='
-      flex flex-1 flex-col gap-1 border bg-secondary dark:bg-secondary-dark
-      p-3 overflow-y-scroll text-primary-text dark:text-primary-text-dark'
+        flex flex-1 flex-col gap-1 border bg-secondary dark:bg-secondary-dark
+        p-3 overflow-y-scroll text-primary-text dark:text-primary-text-dark'
     >
       <h2 className='self-center font-bold'>
         {iconMode

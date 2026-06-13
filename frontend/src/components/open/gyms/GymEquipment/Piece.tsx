@@ -27,7 +27,7 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
   }
 
   let weights;
-  if (availableWeights) {
+  if (availableWeights.length > 0) {
     weights = availableWeights.join(' / ');
   }
 
@@ -48,7 +48,7 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
               href={notNullUrl}
               target='_blank'
               className='
-              flex items-center gap-1 cursor-pointer hover:text-blue-600'
+                flex items-center gap-1 cursor-pointer hover:text-blue-600'
             >
               {name} <TbWorldWww className='text-xl' />
             </a>
@@ -58,7 +58,7 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
       <div className='flex gap-3'>
         <div
           className='
-          flex flex-col gap-1 grow basis-1/2 wrap-break-word'
+            flex flex-col gap-1 grow basis-1/2 wrap-break-word'
         >
           {/* backend does not support images, yet */}
           <p className='hidden'>image</p>
@@ -92,7 +92,7 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
                   </div>
                 )
                 : null}
-              {availableWeights
+              {weights
                 ? (
                   <div>
                     <h4 className='inline mr-1'>

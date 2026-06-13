@@ -53,9 +53,9 @@ export default function CreateEditDeleteList (
       <div className='flex justify-around'>
         <button
           className='
-          border border-dotted
-          bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
-          cursor-pointer hover:border-solid'
+            border border-dotted
+            bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
+            cursor-pointer hover:border-solid'
           onClick={() => {
             setSelectedItemId('');
             setFormMode('create');
@@ -68,10 +68,10 @@ export default function CreateEditDeleteList (
         <button
           disabled={!selectedItemId}
           className='
-          border border-dotted
-          bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
-          enabled:cursor-pointer enabled:hover:border-solid
-          disabled:text-secondary dark:disabled:text-secondary-dark'
+            border border-dotted
+            bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
+            enabled:cursor-pointer enabled:hover:border-solid
+            disabled:text-secondary dark:disabled:text-secondary-dark'
           onClick={() => {
             setFormMode('edit');
           }}
@@ -83,10 +83,10 @@ export default function CreateEditDeleteList (
         <button
           disabled={!selectedItemId}
           className='
-          border border-dotted
-          bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
-          enabled:cursor-pointer enabled:hover:border-solid
-          disabled:text-secondary dark:disabled:text-secondary-dark'
+            border border-dotted
+            bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
+            enabled:cursor-pointer enabled:hover:border-solid
+            disabled:text-secondary dark:disabled:text-secondary-dark'
           onClick={() => {
             deleteMutation.mutate(selectedItemId);
           }}
@@ -98,8 +98,8 @@ export default function CreateEditDeleteList (
       </div>
       <div
         className='
-        flex flex-1 bg-background dark:bg-background-dark
-        overflow-y-scroll overflow-x-scroll'
+          flex flex-1 bg-background dark:bg-background-dark
+          overflow-y-scroll overflow-x-scroll'
       >
         <SimpleList
           data={filteredItems}

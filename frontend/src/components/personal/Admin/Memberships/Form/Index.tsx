@@ -465,8 +465,10 @@ export function Form (
                   value={membership.validityUnit}
                   disabled={readOnly}
                   required
-                  className={`${FORM_INPUT_CLASSES}
-                  self-end enabled:cursor-pointer`}
+                  className={
+                    `${FORM_INPUT_CLASSES}
+                    self-end enabled:cursor-pointer`
+                  }
                   onChange={(event) => {
                     setMembership(
                       { ...membership, validityUnit: event.target.value }
@@ -606,12 +608,12 @@ export function Form (
           <button
             disabled={deleteMutation.isPending}
             className={`
-            flex justify-center border border-black dark:border-white
-            bg-red dark:bg-red-dark px-3 w-full
-            text-primary-text dark:text-primary-text-dark text-base
-            hover:border-white hover:dark:border-black
-            active:border-white active:dark:border-black active:font-bold
-            ${!deleteMutation.isPending
+              flex justify-center border border-black dark:border-white
+              bg-red dark:bg-red-dark px-3 w-full
+              text-primary-text dark:text-primary-text-dark text-base
+              hover:border-white hover:dark:border-black
+              active:border-white active:dark:border-black active:font-bold
+              ${!deleteMutation.isPending
       ? 'cursor-pointer'
       : 'cursor-progress'
     }`}

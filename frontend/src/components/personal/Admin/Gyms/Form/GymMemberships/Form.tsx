@@ -67,10 +67,11 @@ export default function Form ({
           <div className='flex flex-col gap-0.5'>
             <button
               disabled={chainMemberships.length === 0}
-              className={`${FORM_RETURN_BUTTON_CLASSES} w-full
-              disabled:border-dashed
-              disabled:bg-secondary dark:disabled:bg-secondary-dark
-              disabled:cursor-not-allowed`}
+              className={`
+                ${FORM_RETURN_BUTTON_CLASSES} w-full
+                disabled:border-dashed
+                disabled:bg-secondary dark:disabled:bg-secondary-dark
+                disabled:cursor-not-allowed`}
               onClick={() => {
                 setCreateMode('chain');
               }}

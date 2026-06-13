@@ -41,18 +41,18 @@ export default function GymButton (
     <button
       aria-pressed={activeExtension === title}
       className='
-      group flex justify-center items-center p-2 w-1/3 cursor-pointer
-      hover:inset-ring active:font-semibold
-      aria-pressed:bg-secondary-dark dark:aria-pressed:bg-secondary
-      aria-pressed:font-semibold'
+        group flex justify-center items-center p-2 w-1/3 cursor-pointer
+        hover:inset-ring active:font-semibold
+        aria-pressed:bg-secondary-dark dark:aria-pressed:bg-secondary
+        aria-pressed:font-semibold'
       onClick={() => {
         handleToggle(title);
       }}
     >
       <h3
         className='
-        group-aria-pressed:text-primary-text-dark
-        dark:group-aria-pressed:text-primary-text'
+          group-aria-pressed:text-primary-text-dark
+          dark:group-aria-pressed:text-primary-text'
       >
         {iconMode
           ? <ButtonIcon title={title} />

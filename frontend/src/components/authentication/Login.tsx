@@ -50,14 +50,14 @@ export default function Login () {
   return (
     <div
       className='
-      flex flex-col self-center items-stretch mt-3 border
-      bg-tertiary dark:bg-tertiary-dark w-85 md:w-135
-      text-primary-text dark:text-primary-text-dark'
+        flex flex-col self-center items-stretch mt-3 border
+        bg-tertiary dark:bg-tertiary-dark w-85 md:w-135
+        text-primary-text dark:text-primary-text-dark'
     >
       <div
         className='
-        flex flex-col items-center
-        bg-secondary dark:bg-secondary-dark p-3'
+          flex flex-col items-center
+          bg-secondary dark:bg-secondary-dark p-3'
       >
         <form
           action={submitAction}
@@ -126,9 +126,9 @@ export default function Login () {
       <div className='flex flex-col gap-3 p-3'>
         <button
           className='
-          flex justify-center border border-dashed
-          bg-secondary dark:bg-secondary-dark py-1 cursor-not-allowed
-          hover:inset-ring'
+            flex justify-center border border-dashed
+            bg-secondary dark:bg-secondary-dark py-1 cursor-not-allowed
+            hover:inset-ring'
         >
           {iconMode
             ? <TbUserPlus className='text-2xl' />
@@ -136,9 +136,9 @@ export default function Login () {
         </button>
         <button
           className='
-          flex justify-center border border-dashed
-          bg-secondary dark:bg-secondary-dark py-1 cursor-not-allowed
-          hover:inset-ring'
+            flex justify-center border border-dashed
+            bg-secondary dark:bg-secondary-dark py-1 cursor-not-allowed
+            hover:inset-ring'
         >
           {iconMode
             ? <TbUserQuestion className='text-2xl' />

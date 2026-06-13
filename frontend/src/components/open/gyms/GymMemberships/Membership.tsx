@@ -22,7 +22,6 @@ function CurrencySymbol ({ feeCurrency }: { feeCurrency: string }) {
   if (feeCurrency === 'EUR') {
     return <FaEuroSign className='-mb-0.5 text-xs' />;
   }
-  // TODO: add more
   return <span className='ml-1'>{feeCurrency}</span>;
 }
 
@@ -51,8 +50,8 @@ export default function Membership (
   return (
     <div
       className='
-      flex gap-3
-      border bg-secondary dark:bg-secondary-dark p-3 w-63 min-h-45 text-sm'
+        flex gap-3
+        border bg-secondary dark:bg-secondary-dark p-3 w-63 min-h-45 text-sm'
     >
       <div className='flex flex-col gap-1 wrap-break-word basis-2/3 min-w-0'>
         {notNullUrl

@@ -93,9 +93,9 @@ export default function MembershipList ({
           <button
             disabled={disabledMembershipIds?.includes(membership.id)}
             className='
-            flex gap-1 min-w-full p-1 cursor-pointer
-            enabled:hover:bg-gray-300 enabled:dark:hover:bg-gray-600
-            disabled:cursor-default'
+              flex gap-1 min-w-full p-1 cursor-pointer
+              enabled:hover:bg-gray-300 enabled:dark:hover:bg-gray-600
+              disabled:cursor-default'
             onClick={() => {
               if (!disabledMembershipIds) {
                 setFormMode('edit');
@@ -110,7 +110,7 @@ export default function MembershipList ({
               ? (
                 <MdOutlinePlaylistAddCheckCircle
                   className='
-                  self-center text-green-dark dark:text-green text-4xl'
+                    self-center text-green-dark dark:text-green text-4xl'
                 />
               )
               : null}

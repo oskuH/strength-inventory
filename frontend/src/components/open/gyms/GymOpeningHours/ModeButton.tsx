@@ -38,18 +38,18 @@ export default function ModeButton (
     <button
       aria-pressed={hoursMode === title}
       className='
-      group flex justify-center items-center py-1 basis-1/2
-      cursor-pointer hover:inset-ring active:font-semibold
-      aria-pressed:bg-secondary-dark dark:aria-pressed:bg-secondary
-      aria-pressed:font-semibold'
+        group flex justify-center items-center py-1 basis-1/2
+        cursor-pointer hover:inset-ring active:font-semibold
+        aria-pressed:bg-secondary-dark dark:aria-pressed:bg-secondary
+        aria-pressed:font-semibold'
       onClick={() => {
         handleHoursModeToggle(title);
       }}
     >
       <div
         className='
-        group-aria-pressed:text-primary-text-dark
-        dark:group-aria-pressed:text-primary-text'
+          group-aria-pressed:text-primary-text-dark
+          dark:group-aria-pressed:text-primary-text'
       >
         {iconMode
           ? <ModeButtonIcon title={title} />

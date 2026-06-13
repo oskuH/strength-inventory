@@ -88,7 +88,10 @@ Equipment.init({
     // As per customValidator(), using this field requires weightUnit !== null.
   },
   url: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    validate: {
+      isUrl: true
+    }
   },
   notes: {
     type: DataTypes.STRING
@@ -126,6 +129,13 @@ Equipment.init({
         && Math.min(...instance.availableWeights) !== instance.startingWeight) {
         throw Error(
           'smallest available weight must equal starting weight'
+        );
+      }
+
+      if ((instance.availableWeights.length > 0 && instance.maximumWeight)
+        && Math.max(...instance.availableWeights) !== instance.maximumWeight) {
+        throw Error(
+          'highest available weight must equal maximum weight'
         );
       }
     }

@@ -48,7 +48,7 @@ export default function List ({
           name='country'
           value={country}
           className='
-          border bg-tertiary dark:bg-tertiary-dark pl-1 cursor-pointer'
+            border bg-tertiary dark:bg-tertiary-dark pl-1 cursor-pointer'
           onChange={(event) => {
             setCountry(event.target.value);
             if (event.target.value === '') {
@@ -84,8 +84,7 @@ export default function List ({
 
       <div
         hidden={!country}
-        className='
-        flex flex-1 overflow-y-scroll overflow-x-scroll'
+        className='flex flex-1 overflow-y-scroll overflow-x-scroll'
       >
         {isPending
           ? 'loading...'
@@ -102,8 +101,7 @@ export default function List ({
             )
             : (
               <p
-                className='
-                flex-1 bg-background dark:bg-background-dark p-1'
+                className='flex-1 bg-background dark:bg-background-dark p-1'
               >
                 please select a chain to see its memberships (case-sensitive)
               </p>

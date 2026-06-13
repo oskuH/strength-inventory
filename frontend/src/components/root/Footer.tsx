@@ -5,8 +5,8 @@ export default function Footer () {
   return (
     <div
       className='
-      relative flex justify-center bg-primary dark:bg-primary-dark p-1
-      text-primary-text dark:text-primary-text-dark text-sm'
+        relative flex justify-center bg-primary dark:bg-primary-dark p-1
+        text-primary-text dark:text-primary-text-dark text-sm'
     >
       <p className='flex gap-1'>
         made with <CiHeart className='text-xl' /> in Helsinki

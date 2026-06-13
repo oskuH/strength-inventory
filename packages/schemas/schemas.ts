@@ -61,7 +61,7 @@ const MembershipBaseSchema = z.object({
 
 const MembershipWithChainSchema = z.object({
   chain: z.string().min(1),
-  country: z.string().min(1)
+  country: z.string().min(1).max(40)
 })
 
 const MembershipWithoutChainSchema = z.object({
@@ -98,7 +98,7 @@ const MembershipWithoutCommitmentSchema = z.object({
       }
     }
     return val;
-  }, z.null('Select a commitment unit to add commitment.'))
+  }, z.null('select a commitment unit to add commitment'))
 })
 
 const MembershipCommitmentSchema = z.discriminatedUnion('commitmentUnit', [
@@ -136,7 +136,6 @@ export type GymManagerPost = z.infer<typeof GymManagerPostSchema>;
 
 // user
 
-// TODO: ADD FURTHER REQUIREMENTS
 export const PasswordSchema = z
   .string()
   .min(15)  // without MFA, shorter than 15 is considered weak (NIST SP800-63B)
@@ -279,7 +278,14 @@ const EquipmentWithWeightsSchema = z.object({
   } else {
     return true
   }
-}, { error: 'smallest available weight must equal starting weight'})
+}, { error: 'smallest available weight must equal starting weight' })
+.refine((data) => {
+  if (data.availableWeights.length > 0 && data.maximumWeight) {
+    Math.max(...data.availableWeights) === data.maximumWeight
+  } else {
+    return true
+  }
+}, { error: 'highest available weight must equal maximum weight' })
 
 const EquipmentWithoutWeightsSchema = z.object({
   weightUnit: z.null(),
@@ -295,7 +301,7 @@ const EquipmentWithoutWeightsSchema = z.object({
       }
     }
     return val;
-  }, z.null('Select a weight unit to use weights.')),
+  }, z.null('select a weight unit to use weights')),
   startingWeight: z.preprocess((val) => {
     if (typeof val === 'string') {
       if (val) {
@@ -305,8 +311,8 @@ const EquipmentWithoutWeightsSchema = z.object({
       }
     }
     return val;
-  }, z.null('Select a weight unit to use weights.')),
-  availableWeights: z.array(z.float32()).length(0, 'Select a weight unit to use weights.'),
+  }, z.null('select a weight unit to use weights')),
+  availableWeights: z.array(z.float32()).length(0, 'select a weight unit to use weights'),
   maximumWeight: z.preprocess((val) => {
     if (typeof val === 'string') {
       if (val) {
@@ -316,7 +322,7 @@ const EquipmentWithoutWeightsSchema = z.object({
       }
     }
     return val;
-  }, z.null('Select a weight unit to use weights.'))
+  }, z.null('select a weight unit to use weights'))
 })
 
 const EquipmentWeightsSchema = z.discriminatedUnion('weightUnit', [
@@ -387,11 +393,11 @@ export const GymSchema = z.object({
   id: z.uuidv4(),
   name: z.string().min(1),
   chain: z.string(),
-  street: z.string().min(1),
-  streetNumber: z.string().min(1),
-  district: z.string().min(1),
-  city: z.string().min(1),
-  country: z.string().min(1),
+  street: z.string().min(1).max(60),
+  streetNumber: z.string().min(1).max(20),
+  district: z.string().min(1).max(60),
+  city: z.string().min(1).max(60),
+  country: z.string().min(1).max(40),
   openingHoursEveryone: HoursSchema,
   openingHoursMembers: HoursSchema,
   openingHoursExceptions: HoursExceptionsSchema,

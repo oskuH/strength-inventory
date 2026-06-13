@@ -79,9 +79,9 @@ export default function Navbar ({
   return (
     <nav
       className='
-      md:hidden flex justify-between items-center
-      bg-secondary dark:bg-secondary-dark p-1
-      text-primary-text dark:text-primary-text-dark'
+        flex justify-between items-center
+        bg-secondary dark:bg-secondary-dark p-1
+        text-primary-text dark:text-primary-text-dark md:hidden'
     >
       <button
         className='group relative w-4 h-4 cursor-pointer'
@@ -94,7 +94,7 @@ export default function Navbar ({
             <div>
               <TbLayoutSidebarLeftCollapseFilled
                 className='
-                absolute inset-0 opacity-0 m-auto group-hover:opacity-100'
+                  absolute inset-0 opacity-0 m-auto group-hover:opacity-100'
               />
               <TbLayoutSidebarLeftCollapse
                 className='absolute inset-0 m-auto group-hover:opacity-0'
@@ -105,7 +105,7 @@ export default function Navbar ({
             <div>
               <TbLayoutSidebarLeftExpandFilled
                 className='
-                absolute inset-0 opacity-0 m-auto group-hover:opacity-100'
+                  absolute inset-0 opacity-0 m-auto group-hover:opacity-100'
               />
               <TbLayoutSidebarLeftExpand
                 className='absolute inset-0 m-auto group-hover:opacity-0'
@@ -125,7 +125,7 @@ export default function Navbar ({
             <div>
               <TbLayoutSidebarRightCollapseFilled
                 className='
-                absolute inset-0 opacity-0 m-auto group-hover:opacity-100'
+                  absolute inset-0 opacity-0 m-auto group-hover:opacity-100'
               />
               <TbLayoutSidebarRightCollapse
                 className='absolute inset-0 m-auto group-hover:opacity-0'
@@ -136,7 +136,7 @@ export default function Navbar ({
             <div>
               <TbLayoutSidebarRightExpandFilled
                 className='
-                absolute inset-0 opacity-0 m-auto group-hover:opacity-100'
+                  absolute inset-0 opacity-0 m-auto group-hover:opacity-100'
               />
               <TbLayoutSidebarRightExpand
                 className='absolute inset-0 m-auto group-hover:opacity-0'

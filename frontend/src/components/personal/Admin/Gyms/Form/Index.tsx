@@ -286,8 +286,6 @@ export default function Form (
     );
   }
 
-  // TODO post-1.0: return for editing managers
-
   return (
     <div className='flex flex-col min-h-0'>
       <h3 className='flex self-center text-base'>
@@ -348,6 +346,7 @@ export default function Form (
                 type='text'
                 value={gym.street}
                 required
+                maxLength={60}
                 className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setGym({ ...gym, street: event.target.value });
@@ -363,6 +362,7 @@ export default function Form (
                 type='text'
                 value={gym.streetNumber}
                 required
+                maxLength={20}
                 className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setGym({ ...gym, streetNumber: event.target.value });
@@ -378,6 +378,7 @@ export default function Form (
                 type='text'
                 value={gym.city}
                 required
+                maxLength={60}
                 className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setGym({ ...gym, city: event.target.value });
@@ -393,6 +394,7 @@ export default function Form (
                 type='text'
                 value={gym.district}
                 required
+                maxLength={60}
                 className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setGym({ ...gym, district: event.target.value });
@@ -408,6 +410,7 @@ export default function Form (
                 type='text'
                 value={gym.country}
                 required
+                maxLength={40}
                 className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
                   setGym({ ...gym, country: event.target.value });
@@ -619,12 +622,12 @@ export default function Form (
           htmlFor='submit-form'
           tabIndex={0} /* make this tab-selectable */
           className={`
-          flex justify-center border border-black dark:border-white
-          bg-green dark:bg-green-dark px-3 w-full
-          text-primary-text dark:text-primary-text-dark text-base
-          hover:border-white hover:dark:border-black
-          active:border-white active:dark:border-black active:font-bold
-          ${!isPending
+            flex justify-center border border-black dark:border-white
+            bg-green dark:bg-green-dark px-3 w-full
+            text-primary-text dark:text-primary-text-dark text-base
+            hover:border-white hover:dark:border-black
+            active:border-white active:dark:border-black active:font-bold
+            ${!isPending
       ? 'cursor-pointer'
       : 'cursor-progress'
     }`}
@@ -657,9 +660,9 @@ export default function Form (
               <>
                 <button
                   className='
-                  border bg-tertiary dark:bg-tertiary-dark py-1 cursor-pointer
-                  hover:bg-background dark:hover:bg-background-dark
-                  active:font-bold'
+                    border bg-tertiary dark:bg-tertiary-dark py-1 cursor-pointer
+                    hover:bg-background dark:hover:bg-background-dark
+                    active:font-bold'
                   onClick={() => {
                     setEditForm('equipment');
                   }}
@@ -668,9 +671,9 @@ export default function Form (
                 </button>
                 <button
                   className='
-                  border bg-tertiary dark:bg-tertiary-dark py-1 cursor-pointer
-                  hover:bg-background dark:hover:bg-background-dark
-                  active:font-bold'
+                    border bg-tertiary dark:bg-tertiary-dark py-1 cursor-pointer
+                    hover:bg-background dark:hover:bg-background-dark
+                    active:font-bold'
                   onClick={() => {
                     setEditForm('memberships');
                   }}
@@ -678,14 +681,14 @@ export default function Form (
                   edit memberships
                 </button>
                 <button
-                  disabled /* TODO: upcoming post-1.0 feature */
+                  disabled /* upcoming post-1.0 feature */
                   className='
-                  border bg-tertiary dark:bg-tertiary-dark py-1
-                  text-red-700 dark:text-red-400
-                  cursor-not-allowed enabled:cursor-pointer
-                  enabled:hover:bg-background
-                  enabled:dark:hover:bg-background-dark
-                  enabled:active:font-bold'
+                    border bg-tertiary dark:bg-tertiary-dark py-1
+                    text-red-700 dark:text-red-400
+                    cursor-not-allowed enabled:cursor-pointer
+                    enabled:hover:bg-background
+                    enabled:dark:hover:bg-background-dark
+                    enabled:active:font-bold'
                 >
                   edit managers
                 </button>

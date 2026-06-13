@@ -362,6 +362,7 @@ export default function Form (
               availableWeights={availableWeights}
               setAvailableWeights={setAvailableWeights}
               startingWeight={piece.startingWeight}
+              maximumWeight={piece.maximumWeight}
             />
 
             <div className='flex flex-col'>

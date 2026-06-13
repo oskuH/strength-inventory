@@ -39,15 +39,15 @@ function IconToggle ({ iconMode, handleChange }: IconToggleProps) {
       <label
         htmlFor='icon-mode-checkbox'
         className='
-        flex items-center cursor-pointer
-        before:rounded-md before:bg-red dark:before:bg-red-dark
-        peer-checked:before:bg-green dark:peer-checked:before:bg-green-dark
-        before:w-10 before:h-5 before:content-[""]
-        after:absolute after:right-7
-        after:rounded-md after:bg-primary-dark dark:after:bg-primary
-        after:w-3 after:h-3 after:content-[""]
-        peer-hover:after:scale-120
-        peer-checked:after:translate-x-5'
+          flex items-center cursor-pointer
+          before:rounded-md before:bg-red dark:before:bg-red-dark
+          peer-checked:before:bg-green dark:peer-checked:before:bg-green-dark
+          before:w-10 before:h-5 before:content-[""]
+          after:absolute after:right-7
+          after:rounded-md after:bg-primary-dark dark:after:bg-primary
+          after:w-3 after:h-3 after:content-[""]
+          peer-hover:after:scale-120
+          peer-checked:after:translate-x-5'
       />
     </div>
   );
@@ -57,13 +57,12 @@ function ThemeToggle ({ iconMode, darkMode, handleChange }: ThemeToggleProps) {
   return (
     <div
       className='
-      flex relative rounded-md py-1 pr-1
-      bg-secondary-dark dark:bg-secondary
-      text-primary-text-dark dark:text-primary-text'
+        flex relative rounded-md py-1 pr-1
+        bg-secondary-dark dark:bg-secondary
+        text-primary-text-dark dark:text-primary-text'
     >
       <div
-        className='
-        flex flex-1 flex-col justify-between items-center text-sm'
+        className='flex flex-1 flex-col justify-between items-center text-sm'
       >
         {iconMode
           ? (
@@ -91,14 +90,14 @@ function ThemeToggle ({ iconMode, darkMode, handleChange }: ThemeToggleProps) {
       <label
         htmlFor='dark-mode-checkbox'
         className='
-        flex items-center cursor-pointer
-        before:rounded-md before:bg-tertiary dark:before:bg-tertiary-dark
-        before:w-10 before:h-14 before:content-[""]
-        after:absolute after:top-2 after:right-2
-        after:rounded-md after:bg-primary-dark dark:after:bg-primary
-        after:w-8 after:h-4 after:content-[""]
-        peer-hover:after:scale-110
-        peer-checked:after:translate-y-8'
+          flex items-center cursor-pointer
+          before:rounded-md before:bg-tertiary dark:before:bg-tertiary-dark
+          before:w-10 before:h-14 before:content-[""]
+          after:absolute after:top-2 after:right-2
+          after:rounded-md after:bg-primary-dark dark:after:bg-primary
+          after:w-8 after:h-4 after:content-[""]
+          peer-hover:after:scale-110
+          peer-checked:after:translate-y-8'
       />
     </div>
   );
@@ -115,10 +114,10 @@ export default function SidebarLeft (
   return (
     <nav
       className={`
-      absolute left-0 md:translate-x-0 flex flex-col gap-1 border-t border-r
-      bg-secondary dark:bg-secondary-dark pt-3 pb-12 w-24 h-full
-      text-primary-text dark:text-primary-text-dark text-sm
-      ${sidebarLeftVisible
+        absolute left-0 md:translate-x-0 flex flex-col gap-1 border-t border-r
+        bg-secondary dark:bg-secondary-dark pt-3 pb-12 w-24 h-full
+        text-primary-text dark:text-primary-text-dark text-sm
+        ${sidebarLeftVisible
       ? 'translate-x-0'
       : '-translate-x-full'}`}
     >
@@ -130,9 +129,9 @@ export default function SidebarLeft (
       <Link
         to='/gyms'
         className={`
-        py-1 pl-2 hover:bg-primary dark:hover:bg-background-dark
-        active:font-semibold
-        ${pathname === '/gyms'
+          py-1 pl-2 hover:bg-primary dark:hover:bg-background-dark
+          active:font-semibold
+          ${pathname === '/gyms'
       ? 'bg-primary dark:bg-background-dark font-semibold'
       : ''
     }`}

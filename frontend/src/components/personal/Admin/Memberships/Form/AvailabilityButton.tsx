@@ -1,5 +1,3 @@
-// work in progress
-
 import type { FormMembership } from './Index';
 
 interface AvailabilityButtonProps {
@@ -20,8 +18,8 @@ export default function AvailabilityButton (
       aria-pressed={selected}
       disabled={disabled}
       className='
-      bg-red dark:bg-red-dark p-1 w-15 enabled:border enabled:cursor-pointer
-      aria-pressed:bg-green dark:aria-pressed:bg-green-dark'
+        bg-red dark:bg-red-dark p-1 w-15 enabled:border enabled:cursor-pointer
+        aria-pressed:bg-green dark:aria-pressed:bg-green-dark'
       onClick={() => {
         setMembership({
           ...membership,

@@ -67,23 +67,38 @@ Gym.init({
   },
   street: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      len: [1, 60]
+    }
   },
   streetNumber: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      len: [1, 20]
+    }
   },
   district: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      len: [1, 60]
+    }
   },
   city: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      len: [1, 60]
+    }
   },
   country: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      len: [1, 40]
+    }
   },
   openingHoursEveryone: {
     type: DataTypes.JSON,
@@ -101,7 +116,10 @@ Gym.init({
     defaultValue: {}
   },
   url: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    validate: {
+      isUrl: true
+    }
   },
   equipmentVisible: {
     type: DataTypes.BOOLEAN,

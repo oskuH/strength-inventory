@@ -87,11 +87,11 @@ export default function SidebarRight (
   return (
     <nav
       className={`
-      absolute right-0 md:translate-x-0 flex flex-col items-stretch
-      border-t border-l
-      bg-secondary dark:bg-secondary-dark pt-3 pb-12 w-24 h-full
-      text-primary-text dark:text-primary-text-dark text-sm
-      ${sidebarRightVisible
+        absolute right-0 md:translate-x-0 flex flex-col items-stretch
+        border-t border-l
+        bg-secondary dark:bg-secondary-dark pt-3 pb-12 w-24 h-full
+        text-primary-text dark:text-primary-text-dark text-sm
+        ${sidebarRightVisible
       ? 'translate-x-0'
       : 'translate-x-full'}`}
     >
@@ -102,10 +102,10 @@ export default function SidebarRight (
               to='/login'
               search={() => ({ redirect: location.pathname })}
               className={`
-              flex justify-end py-1 pr-2 cursor-pointer
-              hover:bg-primary dark:hover:bg-background-dark
-              active:font-semibold
-              ${pathname === '/login'
+                flex justify-end py-1 pr-2 cursor-pointer
+                hover:bg-primary dark:hover:bg-background-dark
+                active:font-semibold
+                ${pathname === '/login'
             ? 'bg-primary dark:bg-background-dark font-semibold'
             : ''
           }`}
@@ -121,10 +121,10 @@ export default function SidebarRight (
             <Link
               to='/admin'
               className={`
-              flex justify-end py-1 pr-2
-              hover:bg-primary dark:hover:bg-background-dark
-              active:font-semibold
-              ${pathname.startsWith('/admin')
+                flex justify-end py-1 pr-2
+                hover:bg-primary dark:hover:bg-background-dark
+                active:font-semibold
+                ${pathname.startsWith('/admin')
             ? 'bg-primary dark:bg-background-dark font-semibold'
             : ''
           }`}
@@ -138,12 +138,11 @@ export default function SidebarRight (
               <div className='flex flex-col gap-1'>
                 <Role role={role} iconMode={iconMode} />
                 <div
-                  className='
-                  flex justify-end mx-2 font-bold cursor-default'
+                  className='flex justify-end mx-2 font-bold cursor-default'
                 >
                   <p
                     className='
-                    ml-auto truncate hover:overflow-visible transition-none'
+                      ml-auto truncate hover:overflow-visible transition-none'
                   >
                     {auth.user?.username}
                   </p>
@@ -154,9 +153,9 @@ export default function SidebarRight (
                   handleLogout().catch(() => {});
                 }}
                 className='
-                flex justify-end py-1 pr-2 cursor-pointer
-                hover:bg-primary dark:hover:bg-background-dark
-                active:font-semibold'
+                  flex justify-end py-1 pr-2 cursor-pointer
+                  hover:bg-primary dark:hover:bg-background-dark
+                  active:font-semibold'
               >
                 {iconMode
                   ? <TbLogout2 className='text-base' />

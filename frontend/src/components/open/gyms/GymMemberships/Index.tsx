@@ -17,10 +17,10 @@ function LeftArrow ({ membershipIndex, setMembershipIndex }: LeftArrowProps) {
       <button
         disabled
         className='
-        flex justify-end
-        border border-primary dark:border-primary-dark
-        bg-secondary dark:bg-secondary-dark w-25
-        text-primary dark:text-primary-dark'
+          flex justify-end
+          border border-primary dark:border-primary-dark
+          bg-secondary dark:bg-secondary-dark w-25
+          text-primary dark:text-primary-dark'
       >
         <FaCaretLeft />
       </button>
@@ -30,11 +30,11 @@ function LeftArrow ({ membershipIndex, setMembershipIndex }: LeftArrowProps) {
   return (
     <button
       className='
-      flex justify-end border
-      bg-secondary dark:bg-secondary-dark w-25
-      cursor-pointer
-      hover:scale-105 hover:bg-primary dark:hover:bg-background-dark
-      active:scale-100'
+        flex justify-end border
+        bg-secondary dark:bg-secondary-dark w-25
+        cursor-pointer
+        hover:scale-105 hover:bg-primary dark:hover:bg-background-dark
+        active:scale-100'
       onClick={() => {
         setMembershipIndex(membershipIndex - 1);
       }}
@@ -60,10 +60,9 @@ function RightArrow ({
       <button
         disabled
         className='
-        flex
-        border border-primary dark:border-primary-dark
-        bg-secondary dark:bg-secondary-dark w-25
-        text-primary dark:text-primary-dark'
+          flex border border-primary dark:border-primary-dark
+          bg-secondary dark:bg-secondary-dark w-25
+          text-primary dark:text-primary-dark'
       >
         <FaCaretRight />
       </button>
@@ -73,11 +72,9 @@ function RightArrow ({
   return (
     <button
       className='
-      flex border
-      bg-secondary dark:bg-secondary-dark w-25
-      cursor-pointer
-      hover:bg-primary dark:hover:bg-background-dark hover:scale-105
-      active:scale-100'
+        flex border bg-secondary dark:bg-secondary-dark w-25 cursor-pointer
+        hover:bg-primary dark:hover:bg-background-dark hover:scale-105
+        active:scale-100'
       onClick={() => {
         setMembershipIndex(membershipIndex + 1);
       }}
@@ -91,8 +88,8 @@ function LastMembership () {
   return (
     <div
       className='
-      flex flex-col gap-1
-      bg-secondary dark:bg-secondary-dark p-3 min-w-63 text-sm'
+        flex flex-col gap-1
+        bg-secondary dark:bg-secondary-dark p-3 min-w-63 text-sm'
     >
       <p>Membership missing?</p>
       <a

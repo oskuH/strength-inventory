@@ -24,8 +24,8 @@ export default function SimpleList (
           <button
             aria-pressed={item.id === selectedItemId}
             className='
-            flex px-1 min-w-full whitespace-nowrap
-            aria-pressed:bg-gray-300 dark:aria-pressed:bg-gray-600'
+              flex px-1 min-w-full whitespace-nowrap
+              aria-pressed:bg-gray-300 dark:aria-pressed:bg-gray-600'
             onClick={() => {
               setSelectedItemId(item.id);
             }}

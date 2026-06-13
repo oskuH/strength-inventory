@@ -43,8 +43,7 @@ export default function CurrentList ({
           <span key={piece.id}>
             <li
               key={piece.id}
-              className='
-              flex items-center px-1 min-w-full'
+              className='flex items-center px-1 min-w-full'
             >
               <p
                 className='flex-1 overflow-hidden text-clip whitespace-nowrap'
@@ -67,13 +66,12 @@ export default function CurrentList ({
                 >
                   <IoRemoveCircleOutline
                     className='
-                    text-xl
-                    group-hover:opacity-0 group-active:opacity-0'
+                      text-xl group-hover:opacity-0 group-active:opacity-0'
                   />
                   <IoRemoveCircle
                     className='
-                    absolute opacity-0 text-xl
-                    group-hover:opacity-100 group-active:opacity-100'
+                      absolute opacity-0 text-xl
+                      group-hover:opacity-100 group-active:opacity-100'
                   />
                 </button>
                 <span>{piece.gymequipment.count}</span>
@@ -88,13 +86,12 @@ export default function CurrentList ({
                 >
                   <IoAddCircleOutline
                     className='
-                    text-xl
-                    group-hover:opacity-0 group-active:opacity-0'
+                      text-xl group-hover:opacity-0 group-active:opacity-0'
                   />
                   <IoAddCircle
                     className='
-                    absolute opacity-0 text-xl
-                    group-hover:opacity-100 group-active:opacity-100'
+                      absolute opacity-0 text-xl
+                      group-hover:opacity-100 group-active:opacity-100'
                   />
                 </button>
               </div>
@@ -109,13 +106,13 @@ export default function CurrentList ({
                 >
                   <TiDeleteOutline
                     className='
-                    text-red-500 text-xl
-                    group-hover:opacity-0 group-active:opacity-0'
+                      text-red-500 text-xl
+                      group-hover:opacity-0 group-active:opacity-0'
                   />
                   <TiDelete
                     className='
-                    absolute opacity-0 text-red-500 text-xl
-                    group-hover:opacity-100 group-active:opacity-100'
+                      absolute opacity-0 text-red-500 text-xl
+                      group-hover:opacity-100 group-active:opacity-100'
                   />
                 </button>
               </div>

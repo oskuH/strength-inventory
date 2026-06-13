@@ -29,8 +29,8 @@ export default function AvailableList (
     <div className='flex max-h-9/10 overflow-y-scroll overflow-x-scroll'>
       <ol
         className='
-        min-w-full text-sm
-        bg-background dark:bg-background-dark'
+          min-w-full text-sm
+          bg-background dark:bg-background-dark'
       >
         <hr />
         {filteredEquipment.map((piece) => (
@@ -39,8 +39,8 @@ export default function AvailableList (
               disabled={currentEquipmentIds.includes(piece.id)
                 || addEquipmentMutation.isPending}
               className='
-              flex gap-1 pl-1 min-w-full whitespace-nowrap
-              enabled:cursor-pointer'
+                flex gap-1 pl-1 min-w-full whitespace-nowrap
+                enabled:cursor-pointer'
               onClick={() => {
                 addEquipmentMutation.mutate({ gymId, equipmentId: piece.id });
               }}

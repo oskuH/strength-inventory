@@ -6,10 +6,11 @@ interface AvailableWeightsProps {
   availableWeights: number[]
   setAvailableWeights: React.Dispatch<React.SetStateAction<number[]>>
   startingWeight: string
+  maximumWeight: string
 }
 
 export default function AvailableWeights ({
-  availableWeights, setAvailableWeights, startingWeight
+  availableWeights, setAvailableWeights, startingWeight, maximumWeight
 }: AvailableWeightsProps) {
   const [newWeight, setNewWeight] = useState('');
   const [isInvalidStep, setIsInvalidStep] = useState(false);
@@ -39,6 +40,11 @@ export default function AvailableWeights ({
     lowestRequirement = Number(startingWeight);
   }
 
+  let highestRequirement: number | null = null;
+  if (maximumWeight) {
+    highestRequirement = Number(maximumWeight);
+  }
+
   return (
     <div className='flex flex-col'>
       <label>available weights</label>
@@ -48,6 +54,10 @@ export default function AvailableWeights ({
           ${lowestRequirement
           && lowestRequirement !== Math.min(...availableWeights)
       ? 'outline outline-red dark:outline-red-dark'
+      : ''}
+          ${highestRequirement
+          && highestRequirement !== Math.max(...availableWeights)
+      ? 'outline outline-red dark:outline-red-dark'
       : ''}`}
       >
         <div className='flex flex-wrap gap-3'>
@@ -55,8 +65,8 @@ export default function AvailableWeights ({
             <button
               key={weight}
               className='
-              border px-1 cursor-pointer
-              hover:bg-red hover:dark:bg-red-dark'
+                border px-1 cursor-pointer
+                hover:bg-red hover:dark:bg-red-dark'
               onClick={() => {
                 const newWeights
                   = availableWeights
@@ -92,11 +102,11 @@ export default function AvailableWeights ({
               !newWeight || isNewWeightInvalid() || isInvalidStep
             }
             className='
-            border border-dotted enabled:border-double px-1
-            cursor-not-allowed enabled:cursor-pointer
-            enabled:border-black enabled:dark:border-white
-            enabled:bg-green-700 enabled:dark:bg-green-500
-            enabled:text-primary-text-dark enabled:dark:text-primary-text'
+              border border-dotted enabled:border-double px-1
+              cursor-not-allowed enabled:cursor-pointer
+              enabled:border-black enabled:dark:border-white
+              enabled:bg-green-700 enabled:dark:bg-green-500
+              enabled:text-primary-text-dark enabled:dark:text-primary-text'
             onClick={() => {
               handleAddWeight();
             }}

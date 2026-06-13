@@ -15,8 +15,8 @@ export default function Exception ({
     <button
       aria-pressed={id === selectedExceptionId}
       className='
-      flex flex-col min-w-full
-      aria-pressed:bg-gray-300 dark:aria-pressed:bg-gray-600 text-left'
+        flex flex-col min-w-full
+        aria-pressed:bg-gray-300 dark:aria-pressed:bg-gray-600 text-left'
       onClick={() => {
         setSelectedExceptionId(id);
       }}

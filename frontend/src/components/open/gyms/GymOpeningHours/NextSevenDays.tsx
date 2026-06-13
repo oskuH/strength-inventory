@@ -1,4 +1,3 @@
-// work in progress
 import { useState } from 'react';
 
 import Day from './Day';

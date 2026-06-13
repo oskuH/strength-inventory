@@ -69,8 +69,8 @@ export default function Root () {
         <div className='relative flex flex-1 flex-col overflow-hidden'>
           <div
             className='
-            flex flex-1 flex-col bg-background dark:bg-background-dark
-            overflow-y-auto transition'
+              flex flex-1 flex-col bg-background dark:bg-background-dark
+              overflow-y-auto transition'
           >
             <Outlet />
           </div>

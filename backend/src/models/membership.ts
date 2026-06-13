@@ -87,7 +87,10 @@ Membership.init({
     allowNull: false
   },
   url: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    validate: {
+      isUrl: true
+    }
   },
   notes: {
     type: DataTypes.STRING

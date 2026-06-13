@@ -36,7 +36,7 @@ function AdminLink ({ pathname }: { pathname: string }) {
     select: (location) => location.pathname
   });
 
-  /* TODO: keep updated */
+  /* keep these paths updated */
   const validPaths = ['equipment', 'gyms', 'memberships'];
   let to: string;
   if (validPaths.includes(pathname)) {
@@ -70,14 +70,13 @@ export default function AdminLayoutComponent () {
   return (
     <div
       className='
-      flex flex-1 justify-center items-stretch w-full overflow-hidden'
+        flex flex-1 justify-center items-stretch w-full overflow-hidden'
     >
       <div className='flex flex-1 flex-col gap-1 p-3 min-w-90 max-w-145'>
         <nav className='flex justify-evenly gap-1'>
           <AdminLink pathname='gyms' />
           <AdminLink pathname='equipment' />
           <AdminLink pathname='memberships' />
-          {/* <AdminLink pathname='users' /> */} {/* TODO */}
         </nav>
         <Outlet />
       </div>

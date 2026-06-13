@@ -33,7 +33,8 @@ export default function OpeningHoursDayInput (
         min='0'
         max={closeTime}
         className='
-        flex bg-background dark:bg-background-dark w-10'
+          flex bg-background dark:bg-background-dark w-10
+          invalid:text-red-dark dark:invalid:text-red'
         onChange={(event) => {
           setOpenTime(event.target.value);
         }}
@@ -47,7 +48,8 @@ export default function OpeningHoursDayInput (
         min={openTime}
         max='24'
         className='
-        flex bg-background dark:bg-background-dark w-10'
+          flex bg-background dark:bg-background-dark w-10
+          invalid:text-red-dark dark:invalid:text-red'
         onChange={(event) => {
           setCloseTime(event.target.value);
         }}

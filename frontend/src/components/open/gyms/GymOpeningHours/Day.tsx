@@ -1,5 +1,3 @@
-// work in progress
-
 import { use } from 'react';
 
 import { FaLock } from 'react-icons/fa6';
@@ -22,13 +20,13 @@ export default function Day ({
   return (
     <button
       className={`rounded-md px-2 w-24
-    ${highlighted
+        ${highlighted
       ? 'bg-secondary dark:bg-secondary-dark'
       : ''
     }
-    ${exception
+        ${exception
       ? `outline-2 outline-dashed hover:outline-solid
-      hover:cursor-help`
+        hover:cursor-help`
       : ''
     }`}
       onClick={() => {

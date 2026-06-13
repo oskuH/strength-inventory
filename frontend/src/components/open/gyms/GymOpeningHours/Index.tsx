@@ -67,8 +67,8 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
       <div className='flex relative mb-3'>
         <div
           className='
-          flex flex-col border divide-y
-          bg-secondary dark:bg-secondary-dark basis-full'
+            flex flex-col border divide-y
+            bg-secondary dark:bg-secondary-dark basis-full'
         >
           <ModeButton
             hoursMode={hoursMode}
@@ -86,14 +86,14 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
           ? (
             <div
               className='
-              absolute flex items-center opacity-95
-              bg-secondary dark:bg-secondary-dark p-1 w-full h-full'
+                absolute flex items-center opacity-95
+                bg-secondary dark:bg-secondary-dark p-1 w-full h-full'
             >
               <p className='w-3/4 text-center text-sm'>{exceptionReason}</p>
               <button
                 className='
-                flex-1 opacity-100 border rounded-md h-full cursor-pointer
-                hover:bg-primary dark:hover:bg-primary-dark'
+                  flex-1 opacity-100 border rounded-md h-full cursor-pointer
+                  hover:bg-primary dark:hover:bg-primary-dark'
                 onClick={() => {
                   setExceptionReason('');
                 }}
@@ -107,7 +107,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
 
       <div
         className='
-        flex relative justify-center items-center'
+          flex relative justify-center items-center'
       >
         <input
           id={membersOnlyCheckboxId}
@@ -123,29 +123,29 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
         <label
           htmlFor={membersOnlyCheckboxId}
           className='
-          flex order-3 items-center peer-enabled:cursor-pointer
-          before:rounded-md
-          peer-enabled:before:bg-secondary-dark
-          dark:peer-enabled:before:bg-secondary
-          peer-disabled:before:bg-secondary
-          dark:peer-disabled:before:bg-secondary-dark
-          before:w-15 before:h-5 before:content-[""]
-          after:absolute after:left-1/2 after:-ml-6.5
-          peer-checked:after:translate-x-10
-          after:rounded-md
-          after:bg-primary dark:after:bg-primary-dark
-          after:h-3 after:w-3 after:content-[""]
-          peer-hover:peer-enabled:after:scale-120'
+            flex order-3 items-center peer-enabled:cursor-pointer
+            before:rounded-md
+            peer-enabled:before:bg-secondary-dark
+            dark:peer-enabled:before:bg-secondary
+            peer-disabled:before:bg-secondary
+            dark:peer-disabled:before:bg-secondary-dark
+            before:w-15 before:h-5 before:content-[""]
+            after:absolute after:left-1/2 after:-ml-6.5
+            peer-checked:after:translate-x-10
+            after:rounded-md
+            after:bg-primary dark:after:bg-primary-dark
+            after:h-3 after:w-3 after:content-[""]
+            peer-hover:peer-enabled:after:scale-120'
         />
         <div
           className='
-          flex order-1 justify-end pr-3 flex-1
-          font-bold peer-checked:font-normal
-          text-secondary-dark peer-checked:text-current
-          dark:text-secondary dark:peer-checked:text-current
-          peer-checked:peer-disabled:text-primary
-          dark:peer-checked:peer-disabled:text-primary-dark
-          peer-checked:peer-disabled:line-through'
+            flex order-1 justify-end pr-3 flex-1 font-bold
+            peer-checked:font-normal
+            text-secondary-dark peer-checked:text-current
+            dark:text-secondary dark:peer-checked:text-current
+            peer-checked:peer-disabled:text-primary
+            dark:peer-checked:peer-disabled:text-primary-dark
+            peer-checked:peer-disabled:line-through'
         >
           {iconMode
             ? membersOnly
@@ -156,15 +156,13 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
         </div>
         <div
           className='
-          flex order-4 pl-3 flex-1
-          peer-checked:font-bold
-          peer-checked:text-secondary-dark dark:peer-checked:text-secondary
-          peer-checked:peer-disabled:text-secondary-dark
-          dark:peer-checked:peer-disabled:text-secondary
-          peer-disabled:text-primary
-          dark:peer-disabled:text-primary-dark
-          peer-checked:peer-disabled:no-underline
-          peer-disabled:line-through'
+            flex order-4 pl-3 flex-1 peer-checked:font-bold
+            peer-checked:text-secondary-dark dark:peer-checked:text-secondary
+            peer-checked:peer-disabled:text-secondary-dark
+            dark:peer-checked:peer-disabled:text-secondary
+            peer-disabled:text-primary dark:peer-disabled:text-primary-dark
+            peer-checked:peer-disabled:no-underline
+            peer-disabled:line-through'
         >
           {iconMode
             ? membersOnly
