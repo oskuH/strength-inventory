@@ -19,6 +19,7 @@ import {
 import handleSubmitError from '../../../../../utils/handleSubmitError';
 
 import AvailabilityButton from './AvailabilityButton';
+import Notification from '../../../../Notification';
 import ReturnButton from '../../ReturnButton';
 import SubmitButton from '../../SubmitButton';
 
@@ -36,6 +37,10 @@ interface FormProps {
   usedInGymMemberships: boolean
   addToGym: boolean
   gymId: string
+  setParentNotification: React.Dispatch<React.SetStateAction<{
+    type: string,
+    message: string
+  }>>
 }
 
 /* This type is explicitly defined for AvailabilityButtons.
@@ -70,7 +75,8 @@ export function Form (
     defaultChain,
     usedInGymMemberships,
     addToGym,
-    gymId
+    gymId,
+    setParentNotification
   }: FormProps
 ) {
   const auth = use(AuthContext);
@@ -118,6 +124,11 @@ export function Form (
       // Exit the form immediately if addToGymMutation won't be run afterwards.
       if (!addToGym) {
         setFormMode('hidden');
+        setTimeout(() => {
+          setParentNotification({
+            type: 'success', message: 'membership created'
+          });
+        }, 150);
       }
     }
   });
@@ -136,6 +147,11 @@ export function Form (
         { queryKey: ['gymMemberships', gymId] }
       );
       setFormMode('hidden');
+      setTimeout(() => {
+        setParentNotification({
+          type: 'success', message: 'membership created'
+        });
+      }, 150);
     }
   });
 
@@ -160,6 +176,11 @@ export function Form (
         { queryKey: ['gymMemberships', gymId] }
       );
       setFormMode('hidden');
+      setTimeout(() => {
+        setParentNotification({
+          type: 'success', message: 'changes saved'
+        });
+      }, 150);
     }
   });
 
@@ -174,6 +195,11 @@ export function Form (
         { queryKey: ['gymMemberships', gymId] }
       );
       setFormMode('hidden');
+      setTimeout(() => {
+        setParentNotification({
+          type: 'success', message: 'membership deleted'
+        });
+      }, 150);
     }
   });
 
@@ -191,12 +217,24 @@ export function Form (
         { queryKey: ['gymMemberships', gymId] }
       );
       setFormMode('hidden');
+      setTimeout(() => {
+        setParentNotification({
+          type: 'success', message: 'membership removed'
+        });
+      }, 150);
     }
   });
 
+  const [originalName, setOriginalName] = useState('');
   const [firstRender, setFirstRender] = useState(true);
 
-  const [state, submitAction, isPending] = useActionState(submit, {
+  const [notification, setNotification] = useState({
+    type: '',
+    message: ''
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_state, submitAction, isPending] = useActionState(submit, {
     success: false,
     error: null
   });
@@ -242,7 +280,7 @@ export function Form (
             error: null
           };
         } catch (err: unknown) {
-          return handleSubmitError(err);
+          return handleSubmitError({ err, setNotification });
         }
       } else {  // formMode === 'edit'
         try {
@@ -254,11 +292,11 @@ export function Form (
             error: null
           };
         } catch (err: unknown) {
-          return handleSubmitError(err);
+          return handleSubmitError({ err, setNotification });
         }
       }
     } catch (err: unknown) {
-      return handleSubmitError(err);
+      return handleSubmitError({ err, setNotification });
     }
   }
 
@@ -312,6 +350,7 @@ export function Form (
       url: url ?? '',
       notes: notes
     });
+    setOriginalName(name);
 
     setFirstRender(false);
   }
@@ -326,20 +365,34 @@ export function Form (
       {/* second-highest <div> with px-3 ensures that
       the scrollbar stays clear of content */}
       <div className='flex flex-col gap-3 px-3 text-xs'>
-        <h4 className='flex justify-center text-base'>
-          {/* formMode is either 'create' or 'edit' */}
-          {formMode === 'create'
-            ? iconMode
-              ? <TbPlus className='text-2xl' />
-              : 'create new membership'
-            : iconMode
-              ? (
-                <span className='flex gap-1'>
-                  <TbEdit className='text-2xl' /> {membership.name}
-                </span>
-              )
-              : <span>editing {membership.name}</span>}
-        </h4>
+        <div className='flex flex-col gap-1'>
+          <h4 className='flex justify-center text-base'>
+            {/* formMode is either 'create' or 'edit' */}
+            {formMode === 'create'
+              ? iconMode
+                ? <TbPlus className='text-2xl' />
+                : 'create new membership'
+              : iconMode
+                ? readOnly
+                  ? <span className='flex gap-1'>{originalName}</span>
+                  : (
+                    <span className='flex gap-1'>
+                      <TbEdit className='text-2xl' /> {originalName}
+                    </span>
+                  )
+                : readOnly
+                  ? <span>{originalName}</span>
+                  : <span>editing {originalName}</span>}
+          </h4>
+
+          {readOnly
+            ? (
+              <p className='text-center italic'>
+                only admins and chain managers can edit chain memberships
+              </p>
+            )
+            : null}
+        </div>
 
         <div className='flex flex-col gap-3'>
           {membership.country && membership.chain
@@ -356,7 +409,11 @@ export function Form (
             )
             : null}
 
-          <form action={submitAction} className='flex flex-col gap-1'>
+          <form
+            action={submitAction}
+            autoComplete='off'
+            className='flex flex-col gap-1'
+          >
             <div className='flex flex-col'>
               <label htmlFor='name'>name*</label>
               <input
@@ -597,11 +654,7 @@ export function Form (
             <p>* = required</p>
 
             {!readOnly
-              ? (
-                <SubmitButton
-                  formMode={formMode} isPending={isPending} error={state.error}
-                />
-              )
+              ? <SubmitButton formMode={formMode} isPending={isPending} />
               : null}
           </form>
 
@@ -636,11 +689,17 @@ export function Form (
           </button>
 
           <ReturnButton
-            queryToInvalidate={['membershipsByCountry', membership.country]}
+            queriesToInvalidate={[['membershipsByCountry', membership.country]]}
             setFormMode={setFormMode}
           />
         </div>
       </div>
+
+      <Notification
+        type={notification.type}
+        message={notification.message}
+        setNotification={setNotification}
+      />
     </div>
   );
 }

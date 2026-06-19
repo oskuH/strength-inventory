@@ -10,6 +10,7 @@ import { AuthContext, IconContext } from '../../../../utils/contexts';
 
 import CreateEditDeleteList from '../CreateEditDeleteList.tsx';
 import Form from './Form/Index.tsx';
+import Notification from '../../../Notification.tsx';
 
 export default function AdminGyms () {
   const auth = use(AuthContext);
@@ -19,6 +20,11 @@ export default function AdminGyms () {
 
   const [formMode, setFormMode] = useState('hidden');
   const [selectedGymId, setSelectedGymId] = useState('');
+
+  const [notification, setNotification] = useState({
+    type: '',
+    message: ''
+  });
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['gymsIdAndName'],
@@ -32,6 +38,7 @@ export default function AdminGyms () {
       void queryClient.invalidateQueries({ queryKey: ['gyms'] });
       void queryClient.invalidateQueries({ queryKey: ['gymsIdAndName'] });
       setSelectedGymId('');
+      setNotification({ type: 'success', message: 'gym deleted' });
     }
   });
 
@@ -44,35 +51,46 @@ export default function AdminGyms () {
   }
 
   return (
-    <div
-      className='
-        flex flex-1 flex-col gap-1 border bg-secondary dark:bg-secondary-dark
-        p-3 overflow-y-scroll text-primary-text dark:text-primary-text-dark'
-    >
-      <h2 className='self-center font-bold'>
-        {iconMode
-          ? <MdOutlineLocationOn className='text-2xl' />
-          : 'gyms'}
-      </h2>
+    // give Notification a place to hide
+    <div className='relative flex flex-1 overflow-y-hidden'>
+      <div
+        className='
+          flex flex-1 flex-col gap-1
+          border bg-secondary dark:bg-secondary-dark p-3
+          overflow-y-scroll text-primary-text dark:text-primary-text-dark'
+      >
+        <h2 className='self-center font-bold'>
+          {iconMode
+            ? <MdOutlineLocationOn className='text-2xl' />
+            : 'gyms'}
+        </h2>
 
-      {formMode === 'hidden'
-        ? (
-          <CreateEditDeleteList
-            data={data}
-            selectedItemId={selectedGymId}
-            setSelectedItemId={setSelectedGymId}
-            setFormMode={setFormMode}
-            deleteMutationOptions={deleteMutationOptions}
-          />
-        )
-        : (
-          <Form
-            formMode={formMode}
-            setFormMode={setFormMode}
-            selectedGymId={selectedGymId}
-            setSelectedGymId={setSelectedGymId}
-          />
-        )}
+        {formMode === 'hidden'
+          ? (
+            <CreateEditDeleteList
+              data={data}
+              selectedItemId={selectedGymId}
+              setSelectedItemId={setSelectedGymId}
+              setFormMode={setFormMode}
+              deleteMutationOptions={deleteMutationOptions}
+            />
+          )
+          : (
+            <Form
+              formMode={formMode}
+              setFormMode={setFormMode}
+              selectedGymId={selectedGymId}
+              setSelectedGymId={setSelectedGymId}
+              setParentNotification={setNotification}
+            />
+          )}
+      </div>
+
+      <Notification
+        type={notification.type}
+        message={notification.message}
+        setNotification={setNotification}
+      />
     </div>
   );
 }

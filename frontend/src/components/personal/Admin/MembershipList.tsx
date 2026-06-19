@@ -6,6 +6,7 @@
 import { use } from 'react';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { GiMeshNetwork } from 'react-icons/gi';
 import { MdOutlinePlaylistAddCheckCircle } from 'react-icons/md';
 
 import { AuthContext } from '../../../utils/contexts';
@@ -17,6 +18,11 @@ interface MembershipListProps {
   memberships: Membership[]
   filterType: string
   setFormMode: React.Dispatch<React.SetStateAction<string>>
+  setParentNotification: React.Dispatch<React.SetStateAction<{
+    type: string,
+    message: string
+  }>>
+  highlightChainMemberships: boolean
   setSelectedMembershipId: React.Dispatch<React.SetStateAction<string>>
   disabledMembershipIds: string[] | undefined
   gymId: string
@@ -26,10 +32,12 @@ export default function MembershipList ({
   memberships,
   filterType,
   setFormMode,
+  setParentNotification,
+  highlightChainMemberships,
   setSelectedMembershipId,
   /* disabledMembershipIds is only defined when this component
   is being used by GymMemberships/Form.
-  In this case, the list is being used to add chain memberships
+  In this case, this component is being used to add chain memberships
   to a gym, which explains the conditionals further below. */
   disabledMembershipIds,
   /* gymId !== '' only when this component
@@ -54,6 +62,11 @@ export default function MembershipList ({
         { queryKey: ['gymMemberships', gymId] }
       );
       setFormMode('hidden');
+      setTimeout(() => {
+        setParentNotification({
+          type: 'success', message: 'membership added'
+        });
+      }, 150);
     }
   });
 
@@ -78,6 +91,10 @@ export default function MembershipList ({
       </div>
     );
   }
+
+  memberships.sort((a, b) => (a.name > b.name
+    ? 1
+    : -1));
 
   return (
     <ol
@@ -114,22 +131,50 @@ export default function MembershipList ({
                 />
               )
               : null}
+
+            {highlightChainMemberships && membership.chain
+              ? (
+                <GiMeshNetwork
+                  className='
+                    self-center text-green-dark dark:text-green text-4xl'
+                />
+              )
+              : null}
+
             <div className='flex flex-col'>
               <h3 className='flex truncate'>{membership.name}</h3>
               <div className='flex text-xs'>
-                <span className='flex w-18'>
-                  {membership.membershipFee} {membership.feeCurrency}
-                </span>
-                <span className='flex w-20'>
-                  per {membership.validity} {membership.validityUnit}
-                </span>
+                <div className='flex w-32'>
+                  <span className='flex mr-1'>
+                    {membership.feeCurrency} {membership.membershipFee}
+                  </span>
+                  {membership.validity > 1
+                    ? (
+                      <span>
+                        / {membership.validity} {membership.validityUnit}s
+                      </span>
+                    )
+                    : (
+                      <span>
+                        / {membership.validity} {membership.validityUnit}
+                      </span>
+                    )}
+                </div>
+
                 {membership.commitment
-                  ? (
-                    <span className='flex truncate'>
-                      {/* eslint-disable-next-line @stylistic/max-len */}
-                      {membership.commitment} {membership.commitmentUnit} commitment
-                    </span>
-                  )
+                  ? membership.commitment > 1
+                    ? (
+                      <span className='flex truncate'>
+                        {/* eslint-disable-next-line @stylistic/max-len */}
+                        commitment: {membership.commitment} {membership.commitmentUnit}s
+                      </span>
+                    )
+                    : (
+                      <span className='flex truncate'>
+                        {/* eslint-disable-next-line @stylistic/max-len */}
+                        commitment: {membership.commitment} {membership.commitmentUnit}
+                      </span>
+                    )
                   : null}
               </div>
             </div>

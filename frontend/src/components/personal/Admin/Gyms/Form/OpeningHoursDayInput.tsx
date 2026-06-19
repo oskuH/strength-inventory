@@ -39,7 +39,7 @@ export default function OpeningHoursDayInput (
           setOpenTime(event.target.value);
         }}
       />
-      <span>-</span>
+      <span className='self-center'>-</span>
       <input
         id={`${group}${day}Close`}
         name={`${group}${day}Close`}

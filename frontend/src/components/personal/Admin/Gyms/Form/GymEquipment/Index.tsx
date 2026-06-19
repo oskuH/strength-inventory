@@ -21,10 +21,14 @@ interface GymEquipmentProps {
   gymId: string
   gymName: string
   setEditForm: React.Dispatch<React.SetStateAction<string>>
+  setParentNotification: React.Dispatch<React.SetStateAction<{
+    type: string,
+    message: string
+  }>>
 }
 
 export default function GymEquipment (
-  { gymId, gymName, setEditForm }: GymEquipmentProps
+  { gymId, gymName, setEditForm, setParentNotification }: GymEquipmentProps
 ) {
   const auth = use(AuthContext);
 
@@ -177,7 +181,11 @@ export default function GymEquipment (
             }}
           />
         </div>
-        <EditFormReturnButton setEditForm={setEditForm} />
+        <EditFormReturnButton
+          model='equipment'
+          setEditForm={setEditForm}
+          setParentNotification={setParentNotification}
+        />
       </div>
     </div>
   );

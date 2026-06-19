@@ -267,21 +267,21 @@ const EquipmentWithWeightsSchema = z.object({
 })
 .refine((data) => {
   if (data.startingWeight && data.maximumWeight) {
-    data.startingWeight < data.maximumWeight
+    return data.startingWeight < data.maximumWeight
   } else {
     return true;
   }
 }, { error: 'starting weight cannot be more than maximum weight' })
 .refine((data) => {
   if (data.availableWeights.length > 0 && data.startingWeight) {
-    Math.min(...data.availableWeights) === data.startingWeight
+    return Math.min(...data.availableWeights) === data.startingWeight
   } else {
     return true
   }
 }, { error: 'smallest available weight must equal starting weight' })
 .refine((data) => {
   if (data.availableWeights.length > 0 && data.maximumWeight) {
-    Math.max(...data.availableWeights) === data.maximumWeight
+    return Math.max(...data.availableWeights) === data.maximumWeight
   } else {
     return true
   }
@@ -414,6 +414,11 @@ export const GymSchema = z.object({
 });
 export type Gym = z.infer<typeof GymSchema>;
 
+export const GymGetEquipmentSchema = z.intersection(
+  EquipmentBaseSchema.extend({ gymequipment: GymEquipmentSchema }),
+  EquipmentWeightsSchema)
+export type GymGetEquipment = z.infer<typeof GymGetEquipmentSchema>;
+
 export const GymGetSchema = GymSchema.extend({
   managers: z.array(UserSchema.pick({
     id: true,
@@ -424,14 +429,9 @@ export const GymGetSchema = GymSchema.extend({
     gymmanagers: GymManagerSchema
   })),
   memberships: z.array(MembershipSchema),
-  equipment: z.array(EquipmentSchema)
+  equipment: z.array(GymGetEquipmentSchema)
 })
 export type GymGet = z.infer<typeof GymGetSchema>;
-
-export const GymGetEquipmentSchema = z.intersection(
-  EquipmentBaseSchema.extend({ gymequipment: GymEquipmentSchema }),
-  EquipmentWeightsSchema)
-export type GymGetEquipment = z.infer<typeof GymGetEquipmentSchema>;
 
 export const GymGetMembershipsSchema = z.intersection(
   MembershipBaseSchema.extend({ gymmemberships: GymMembershipSchema }),
@@ -528,7 +528,7 @@ export type GymPatch = z.infer<typeof GymPatchSchema>;
 
 // login
 
-// Auth types for the frontend's AuthContext and root route.
+// Auth types for the frontend's AuthContext and root route
 export interface AuthState {
   isAuthenticated: boolean
   user: UserFrontend

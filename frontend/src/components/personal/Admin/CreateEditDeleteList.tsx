@@ -9,6 +9,8 @@ import { IconContext } from '../../../utils/contexts';
 
 import SimpleList from './SimpleList';
 
+import { PLUS_EDIT_MINUS_BUTTON_CLASSES } from '../../../constants/theme';
+
 interface CreateEditDeleteList {
   data: { id: string, name: string }[] | undefined
   selectedItemId: string
@@ -50,12 +52,9 @@ export default function CreateEditDeleteList (
           setSearch(event.target.value);
         }}
       />
-      <div className='flex justify-around'>
+      <div className='flex gap-1 justify-around'>
         <button
-          className='
-            border border-dotted
-            bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
-            cursor-pointer hover:border-solid'
+          className={PLUS_EDIT_MINUS_BUTTON_CLASSES}
           onClick={() => {
             setSelectedItemId('');
             setFormMode('create');
@@ -67,11 +66,7 @@ export default function CreateEditDeleteList (
         </button>
         <button
           disabled={!selectedItemId}
-          className='
-            border border-dotted
-            bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
-            enabled:cursor-pointer enabled:hover:border-solid
-            disabled:text-secondary dark:disabled:text-secondary-dark'
+          className={PLUS_EDIT_MINUS_BUTTON_CLASSES}
           onClick={() => {
             setFormMode('edit');
           }}
@@ -82,11 +77,7 @@ export default function CreateEditDeleteList (
         </button>
         <button
           disabled={!selectedItemId}
-          className='
-            border border-dotted
-            bg-primary dark:bg-primary-dark p-1 text-sm md:text-base
-            enabled:cursor-pointer enabled:hover:border-solid
-            disabled:text-secondary dark:disabled:text-secondary-dark'
+          className={PLUS_EDIT_MINUS_BUTTON_CLASSES}
           onClick={() => {
             deleteMutation.mutate(selectedItemId);
           }}
@@ -105,6 +96,7 @@ export default function CreateEditDeleteList (
           data={filteredItems}
           selectedItemId={selectedItemId}
           setSelectedItemId={setSelectedItemId}
+          setFormMode={setFormMode}
         />
       </div>
     </div>

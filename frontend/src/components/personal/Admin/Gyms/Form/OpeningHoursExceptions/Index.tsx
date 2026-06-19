@@ -7,6 +7,9 @@ import { IconContext } from '../../../../../../utils/contexts';
 import Exception from './Exception';
 import Form from './Form';
 
+import { PLUS_EDIT_MINUS_BUTTON_CLASSES }
+  from '../../../../../../constants/theme';
+
 import { type OpeningHoursException } from '@strength-inventory/schemas';
 
 interface OpeningHoursExceptionsProps {
@@ -22,20 +25,15 @@ export default function OpeningHoursExceptions ({
 
   const [selectedExceptionId, setSelectedExceptionId] = useState('');
   const [addException, setAddException] = useState(false);
-  const [editedException, setEditedException] = useState('');
+  const [editedExceptionId, setEditedExceptionId] = useState('');
 
   return (
     <div className='flex flex-col gap-1'>
       <h4 className='text-sm font-bold'>exceptional opening hours</h4>
-      <div className='flex justify-around'>
+      <div className='flex justify-around gap-1'>
         <button
           disabled={addException}
-          className='
-            border border-dotted
-            bg-primary dark:bg-primary-dark p-1 text-xs
-            cursor-not-allowed enabled:cursor-pointer
-            enabled:hover:border-solid
-            disabled:text-secondary dark:disabled:text-secondary-dark'
+          className={`${PLUS_EDIT_MINUS_BUTTON_CLASSES} text-xs md:text-xs`}
           onClick={() => {
             setAddException(true);
           }}
@@ -45,15 +43,10 @@ export default function OpeningHoursExceptions ({
             : 'add'}
         </button>
         <button
-          disabled={!selectedExceptionId || editedException !== ''}
-          className='
-            border border-dotted
-            bg-primary dark:bg-primary-dark p-1 text-xs
-            cursor-not-allowed enabled:cursor-pointer
-            enabled:hover:border-solid
-            disabled:text-secondary dark:disabled:text-secondary-dark'
+          disabled={!selectedExceptionId || editedExceptionId !== ''}
+          className={`${PLUS_EDIT_MINUS_BUTTON_CLASSES} text-xs md:text-xs`}
           onClick={() => {
-            setEditedException(selectedExceptionId);
+            setEditedExceptionId(selectedExceptionId);
             setSelectedExceptionId('');
           }}
         >
@@ -63,12 +56,7 @@ export default function OpeningHoursExceptions ({
         </button>
         <button
           disabled={!selectedExceptionId}
-          className='
-            border border-dotted
-            bg-primary dark:bg-primary-dark p-1 text-xs
-            cursor-not-allowed enabled:cursor-pointer
-            enabled:hover:border-solid
-            disabled:text-secondary dark:disabled:text-secondary-dark'
+          className={`${PLUS_EDIT_MINUS_BUTTON_CLASSES} text-xs md:text-xs`}
           onClick={() => {
             const newExceptions = exceptions.filter((obj) => {
               if (obj.id !== selectedExceptionId) {
@@ -89,7 +77,7 @@ export default function OpeningHoursExceptions ({
         ? (
           <Form
             exception={undefined}
-            setEditedException={setEditedException}
+            setEditedExceptionId={setEditedExceptionId}
             exceptions={exceptions}
             setExceptions={setExceptions}
             setAddException={setAddException}
@@ -101,13 +89,14 @@ export default function OpeningHoursExceptions ({
       >
         <hr />
         {exceptions.map((exception) => (
-          exception.id !== editedException
+          exception.id !== editedExceptionId
             ? (
               <li key={exception.id}>
                 <Exception
                   exception={exception}
                   selectedExceptionId={selectedExceptionId}
                   setSelectedExceptionId={setSelectedExceptionId}
+                  setEditedExceptionId={setEditedExceptionId}
                 />
                 <hr />
               </li>
@@ -116,7 +105,7 @@ export default function OpeningHoursExceptions ({
               <li key={exception.id}>
                 <Form
                   exception={exception}
-                  setEditedException={setEditedException}
+                  setEditedExceptionId={setEditedExceptionId}
                   exceptions={exceptions}
                   setExceptions={setExceptions}
                   setAddException={setAddException}

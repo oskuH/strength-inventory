@@ -4,13 +4,13 @@
   --color-primary: var(--color-orange-300);
   --color-primary-dark: var(--color-olive-950);
   --color-secondary: var(--color-orange-200);
-  --color-secondary-dark: var(--color-olive-900);
+  --color-secondary-dark: var(--color-olive-800);
   --color-tertiary: var(--color-orange-100);
-  --color-tertiary-dark: var(--color-olive-800);
+  --color-tertiary-dark: var(--color-olive-700);
   --color-primary-text: var(--color-gray-900);
   --color-primary-text-dark: var(--color-gray-200);
   --color-background: var(--color-orange-50);
-  --color-background-dark: var(--color-olive-700);
+  --color-background-dark: var(--color-olive-600);
   --color-green: var(--color-green-500);
   --color-green-dark: var(--color-green-700);
   --color-red: var(--color-red-400);
@@ -18,8 +18,8 @@
 }
 
 @layer base {
-  *, *::before, *::after {
-    @apply transition
+  *, ::before, ::after {
+    @apply dark:border-neutral-400 dark:inset-ring-neutral-400
   }
 }
 

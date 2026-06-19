@@ -10,6 +10,7 @@ import handleSubmitError from '../../../../../utils/handleSubmitError';
 
 import GymEquipment from './GymEquipment/Index';
 import GymMemberships from './GymMemberships/Index';
+import Notification from '../../../../Notification';
 import OpeningHoursDayInput from './OpeningHoursDayInput';
 import OpeningHoursExceptions from './OpeningHoursExceptions/Index';
 import ReturnButton from '../../ReturnButton';
@@ -29,10 +30,20 @@ interface FormProps {
   setFormMode: React.Dispatch<React.SetStateAction<string>>;
   selectedGymId: string;
   setSelectedGymId: React.Dispatch<React.SetStateAction<string>>;
+  setParentNotification: React.Dispatch<React.SetStateAction<{
+    type: string,
+    message: string
+  }>>
 }
 
 export default function Form (
-  { formMode, setFormMode, selectedGymId, setSelectedGymId }: FormProps
+  {
+    formMode,
+    setFormMode,
+    selectedGymId,
+    setSelectedGymId,
+    setParentNotification
+  }: FormProps
 ) {
   interface formatSubmitProps {
     req: GymPostFrontend;
@@ -132,6 +143,7 @@ export default function Form (
       postGym({ gym: newGym, refresh: auth.refresh, logout: auth.logout }),
     onSuccess: (newGymFromServer) => {
       setSelectedGymId(newGymFromServer.id);
+      setOriginalName(newGymFromServer.name);
       setFormMode('edit');
     }
   });
@@ -141,8 +153,19 @@ export default function Form (
       putGym({
         id: id, gym: updatedGym, refresh: auth.refresh, logout: auth.logout
       }),
-    onSuccess: (editedGymFromServer) => {
-      queryClient.setQueryData(['gym', selectedGymId], editedGymFromServer);
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: ['gym', selectedGymId]
+      });
+      void queryClient.invalidateQueries({
+        queryKey: ['gymsIdAndName']
+      });
+      setFormMode('hidden');
+      setTimeout(() => {
+        setParentNotification({
+          type: 'success', message: 'changes saved'
+        });
+      }, 150);
     }
   });
 
@@ -170,8 +193,15 @@ export default function Form (
   /* editForm denotes the subform opened on top of this form. */
   const [editForm, setEditForm] = useState('');
   const [firstRender, setFirstRender] = useState(true);
+  const [originalName, setOriginalName] = useState('');
 
-  const [state, submitAction, isPending] = useActionState(submit, {
+  const [notification, setNotification] = useState({
+    type: '',
+    message: ''
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_state, dispatchAction, isPending] = useActionState(submit, {
     success: false,
     error: null
   });
@@ -197,7 +227,7 @@ export default function Form (
             error: null
           };
         } catch (err: unknown) {
-          return handleSubmitError(err);
+          return handleSubmitError({ err, setNotification });
         }
       } else {  // formMode === 'edit'
         try {
@@ -209,11 +239,11 @@ export default function Form (
             error: null
           };
         } catch (err: unknown) {
-          return handleSubmitError(err);
+          return handleSubmitError({ err, setNotification });
         }
       }
     } catch (err: unknown) {
-      return handleSubmitError(err);
+      return handleSubmitError({ err, setNotification });
     }
   }
 
@@ -258,8 +288,8 @@ export default function Form (
       openingHoursVisible: openingHoursVisible,
       notes: notes
     });
-
     setExceptions(openingHoursExceptions.data);
+    setOriginalName(name);
 
     setFirstRender(false);
   }
@@ -270,6 +300,7 @@ export default function Form (
         gymId={selectedGymId}
         gymName={gym.name}
         setEditForm={setEditForm}
+        setParentNotification={setNotification}
       />
     );
   }
@@ -282,6 +313,7 @@ export default function Form (
         gymCountry={gym.country}
         gymChain={gym.chain}
         setEditForm={setEditForm}
+        setParentNotification={setNotification}
       />
     );
   }
@@ -297,15 +329,16 @@ export default function Form (
           : iconMode
             ? (
               <span className='flex gap-1'>
-                <TbEdit className='text-2xl' /> {gym.name}
+                <TbEdit className='text-2xl' /> {originalName}
               </span>
             )
-            : <span className='text-center'>editing {gym.name}</span>}
+            : <span className='text-center'>editing {originalName}</span>}
       </h3>
 
       <div className='flex flex-col gap-3 px-3 overflow-y-scroll text-xs'>
         <form
-          action={submitAction}
+          action={dispatchAction}
+          autoComplete='off'
           className='flex flex-col gap-3'
         >
           <div className='flex flex-col gap-1'>
@@ -602,7 +635,7 @@ export default function Form (
               />
             </div>
           </div>
-          {/* Actual submit button is below <OpeningHoursExceptions />. */}
+          {/* actual submit button below <OpeningHoursExceptions /> */}
           <input
             type='submit'
             id='submit-form'
@@ -620,9 +653,9 @@ export default function Form (
         Keep this button identical with SubmitButton used by the other forms!*/}
         <label
           htmlFor='submit-form'
-          tabIndex={0} /* make this tab-selectable */
+          tabIndex={0} /* make tabbable */
           className={`
-            flex justify-center border border-black dark:border-white
+            flex justify-center mt-3 border
             bg-green dark:bg-green-dark px-3 w-full
             text-primary-text dark:text-primary-text-dark text-base
             hover:border-white hover:dark:border-black
@@ -641,14 +674,10 @@ export default function Form (
               : <span>saving...</span>}
         </label>
 
-        {state.error
-          ? (
-            <div className='self-center text-red-dark dark:text-red'>
-              {state.error}
-            </div>
-          )
-          : null}
-
+        <ReturnButton
+          queriesToInvalidate={[['gym', selectedGymId], ['gymsIdAndName']]}
+          setFormMode={setFormMode}
+        />
 
         {formMode === 'edit'
           ? <hr />
@@ -684,7 +713,7 @@ export default function Form (
                   disabled /* upcoming post-1.0 feature */
                   className='
                     border bg-tertiary dark:bg-tertiary-dark py-1
-                    text-red-700 dark:text-red-400
+                    text-red-dark dark:text-red
                     cursor-not-allowed enabled:cursor-pointer
                     enabled:hover:bg-background
                     enabled:dark:hover:bg-background-dark
@@ -695,12 +724,14 @@ export default function Form (
               </>
             )
             : null}
-
-          <ReturnButton
-            queryToInvalidate={['gymsIdAndName']} setFormMode={setFormMode}
-          />
         </div>
       </div>
+
+      <Notification
+        type={notification.type}
+        message={notification.message}
+        setNotification={setNotification}
+      />
     </div>
   );
 }

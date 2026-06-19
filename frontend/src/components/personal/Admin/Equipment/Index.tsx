@@ -10,6 +10,7 @@ import { AuthContext, IconContext } from '../../../../utils/contexts';
 
 import CreateEditDeleteList from '../CreateEditDeleteList';
 import Form from './Form/Index';
+import Notification from '../../../Notification';
 
 export default function AdminEquipment () {
   const auth = use(AuthContext);
@@ -19,6 +20,11 @@ export default function AdminEquipment () {
 
   const [selectedPieceId, setSelectedPieceId] = useState('');
   const [formMode, setFormMode] = useState('hidden');
+
+  const [notification, setNotification] = useState({
+    type: '',
+    message: ''
+  });
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['equipmentIdAndName'],
@@ -33,6 +39,7 @@ export default function AdminEquipment () {
       void queryClient
         .invalidateQueries({ queryKey: ['equipmentIdAndName'] });
       setSelectedPieceId('');
+      setNotification({ type: 'success', message: 'piece deleted' });
     }
   });
 
@@ -45,34 +52,44 @@ export default function AdminEquipment () {
   }
 
   return (
-    <div
-      className='
-        flex flex-1 flex-col gap-1 border bg-secondary dark:bg-secondary-dark
-        p-3 overflow-y-scroll text-primary-text dark:text-primary-text-dark'
-    >
-      <h2 className='self-center font-bold'>
-        {iconMode
-          ? <CgGym className='text-2xl' />
-          : 'equipment'}
-      </h2>
+    // give Notification a place to hide
+    <div className='relative flex flex-1 overflow-y-hidden'>
+      <div
+        className='
+          flex flex-1 flex-col gap-1 border bg-secondary dark:bg-secondary-dark
+          p-3 overflow-y-scroll text-primary-text dark:text-primary-text-dark'
+      >
+        <h2 className='self-center font-bold'>
+          {iconMode
+            ? <CgGym className='text-2xl' />
+            : 'equipment'}
+        </h2>
 
-      {formMode === 'hidden'
-        ? (
-          <CreateEditDeleteList
-            data={data}
-            selectedItemId={selectedPieceId}
-            setSelectedItemId={setSelectedPieceId}
-            setFormMode={setFormMode}
-            deleteMutationOptions={deleteMutationOptions}
-          />
-        )
-        : (
-          <Form
-            formMode={formMode}
-            setFormMode={setFormMode}
-            selectedPieceId={selectedPieceId}
-          />
-        )}
+        {formMode === 'hidden'
+          ? (
+            <CreateEditDeleteList
+              data={data}
+              selectedItemId={selectedPieceId}
+              setSelectedItemId={setSelectedPieceId}
+              setFormMode={setFormMode}
+              deleteMutationOptions={deleteMutationOptions}
+            />
+          )
+          : (
+            <Form
+              formMode={formMode}
+              setFormMode={setFormMode}
+              selectedPieceId={selectedPieceId}
+              setParentNotification={setNotification}
+            />
+          )}
+      </div>
+
+      <Notification
+        type={notification.type}
+        message={notification.message}
+        setNotification={setNotification}
+      />
     </div>
   );
 }

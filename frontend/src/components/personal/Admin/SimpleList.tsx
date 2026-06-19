@@ -4,10 +4,11 @@ interface SimpleListProps {
   data: { id: string, name: string }[] | undefined
   selectedItemId: string
   setSelectedItemId: React.Dispatch<React.SetStateAction<string>>
+  setFormMode: React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function SimpleList (
-  { data, selectedItemId, setSelectedItemId }: SimpleListProps
+  { data, selectedItemId, setSelectedItemId, setFormMode }: SimpleListProps
 ) {
   if (!data) {
     return (
@@ -16,6 +17,10 @@ export default function SimpleList (
       </ol>
     );
   }
+
+  data.sort((a, b) => (a.name > b.name
+    ? 1
+    : -1));
 
   return (
     <ol className='min-w-full text-sm'>
@@ -28,6 +33,10 @@ export default function SimpleList (
               aria-pressed:bg-gray-300 dark:aria-pressed:bg-gray-600'
             onClick={() => {
               setSelectedItemId(item.id);
+            }}
+            onDoubleClick={() => {
+              setSelectedItemId(item.id);
+              setFormMode('edit');
             }}
           >
             <p>{item.name}</p>

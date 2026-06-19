@@ -1,32 +1,61 @@
-import { FaEuroSign } from 'react-icons/fa6';
 import { TbWorldWww } from 'react-icons/tb';
 
 import type { Membership } from '@strength-inventory/schemas';
 
 interface AvailabilityItemProps {
-  itemName: string
-  availability: boolean
+  itemName: string;
+  availability: boolean;
 }
 
 function AvailabilityItem ({ itemName, availability }: AvailabilityItemProps) {
   return (
     <div className='mr-1'>
       {availability
-        ? <p className='text-green-700 dark:text-green-500'>{itemName}</p>
-        : <p className='text-red-500 dark:text-red-400'>{itemName}</p>}
+        ? <p className='text-green-dark dark:text-green'>{itemName}</p>
+        : <p className='text-red-dark dark:text-red'>{itemName}</p>}
     </div>
   );
 }
 
-function CurrencySymbol ({ feeCurrency }: { feeCurrency: string }) {
-  if (feeCurrency === 'EUR') {
-    return <FaEuroSign className='-mb-0.5 text-xs' />;
+interface PriceProps {
+  fee: number
+  currency: string
+}
+
+function Price ({ fee, currency }: PriceProps) {
+  const ISOfee = ['DKK', 'ISK'];
+
+  if (currency in ISOfee) {
+    return (
+      <span className='flex items-center'>
+        {currency} {fee}
+      </span>
+    );
+  } else if (currency === 'EUR') {
+    return (
+      <span className='flex items-center'>
+        {fee} €
+      </span>
+    );
+  } else if (currency === 'NOK') {
+    return (
+      <span className='flex items-center'>
+        {fee} kr.
+      </span>
+    );
+  } else if (currency === 'SEK') {
+    return (
+      <span className='flex items-center'>
+        {fee} kr
+      </span>
+    );
+  } else {
+    return <span>{fee} {currency}</span>;
   }
-  return <span className='ml-1'>{feeCurrency}</span>;
 }
 
 export default function Membership (
-  { membership }: { membership: Membership }
+  { membership }: { membership: Membership; }
 ) {
   const {
     name,
@@ -96,9 +125,7 @@ export default function Membership (
         </div>
       </div>
       <div className='flex flex-col gap-1 basis-1/3'>
-        <p className='flex items-center'>
-          {membershipFee} <CurrencySymbol feeCurrency={feeCurrency} />
-        </p>
+        <Price fee={membershipFee} currency={feeCurrency} />
         <div>
           <h4>Valid for:</h4>
           {validity === 1
@@ -121,7 +148,7 @@ export default function Membership (
             {initiationFee
               ? (
                 <p className='flex items-center'>
-                  {initiationFee} <CurrencySymbol feeCurrency={feeCurrency} />
+                  <Price fee={initiationFee} currency={feeCurrency} />
                 </p>
               )
               : 'none'}

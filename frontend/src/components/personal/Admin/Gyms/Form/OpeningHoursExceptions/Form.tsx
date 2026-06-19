@@ -13,7 +13,7 @@ import {
 
 interface FormProps {
   exception: OpeningHoursException | undefined
-  setEditedException: React.Dispatch<React.SetStateAction<string>>
+  setEditedExceptionId: React.Dispatch<React.SetStateAction<string>>
   exceptions: OpeningHoursException[]
   setExceptions:
   React.Dispatch<React.SetStateAction<OpeningHoursException[]>>
@@ -21,7 +21,7 @@ interface FormProps {
 }
 
 export default function Form ({
-  exception, setEditedException, exceptions, setExceptions, setAddException
+  exception, setEditedExceptionId, exceptions, setExceptions, setAddException
 }: FormProps) {
   const [date, setDate] = useState(exception
     ? exception.date.toISOString().split('T')[0]
@@ -113,7 +113,7 @@ export default function Form ({
 
       setExceptions(newExceptions);
       if (exception) {
-        setEditedException('');
+        setEditedExceptionId('');
       } else {
         setAddException(false);
       }
@@ -132,7 +132,11 @@ export default function Form ({
   }
 
   return (
-    <form onSubmit={handleSubmit} className='flex flex-col gap-1 border p-1'>
+    <form
+      autoComplete='off'
+      className='flex flex-col gap-1 border p-1'
+      onSubmit={handleSubmit}
+    >
       <h5 className='font-bold'>
         {exception
           ? 'edit exception'
@@ -243,8 +247,8 @@ export default function Form ({
         <button
           type='submit'
           className='
-            mr-0.5 border border-black dark:border-white
-            bg-green-500 dark:bg-green-700 w-1/2 cursor-pointer
+            mr-0.5 border
+            bg-green dark:bg-green-dark w-1/2 cursor-pointer
             hover:border-white hover:dark:border-black
             active:border-white active:dark:border-black active:font-bold'
         >
@@ -255,13 +259,13 @@ export default function Form ({
         <button
           type='submit'
           className='
-            ml-0.5 border border-black dark:border-white
+            ml-0.5 border
             bg-red dark:bg-red-dark w-1/2 cursor-pointer
             hover:border-white hover:dark:border-black
             active:border-white active:dark:border-black active:font-bold'
           onClick={() => {
             if (exception) {
-              setEditedException('');
+              setEditedExceptionId('');
             } else {
               setAddException(false);
             }

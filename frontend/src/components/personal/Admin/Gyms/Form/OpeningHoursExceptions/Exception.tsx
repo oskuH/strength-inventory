@@ -4,10 +4,11 @@ interface ExceptionProps {
   exception: OpeningHoursException
   selectedExceptionId: string
   setSelectedExceptionId: React.Dispatch<React.SetStateAction<string>>
+  setEditedExceptionId: React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function Exception ({
-  exception, selectedExceptionId, setSelectedExceptionId
+  exception, selectedExceptionId, setSelectedExceptionId, setEditedExceptionId
 }: ExceptionProps) {
   const { id, date, hours, reason, concerns } = exception;
 
@@ -19,6 +20,10 @@ export default function Exception ({
         aria-pressed:bg-gray-300 dark:aria-pressed:bg-gray-600 text-left'
       onClick={() => {
         setSelectedExceptionId(id);
+      }}
+      onDoubleClick={() => {
+        setSelectedExceptionId('');
+        setEditedExceptionId(id);
       }}
     >
       <span className='flex flex-row gap-2'>

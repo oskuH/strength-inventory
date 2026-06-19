@@ -31,10 +31,8 @@ function LeftArrow ({ membershipIndex, setMembershipIndex }: LeftArrowProps) {
     <button
       className='
         flex justify-end border
-        bg-secondary dark:bg-secondary-dark w-25
-        cursor-pointer
-        hover:scale-105 hover:bg-primary dark:hover:bg-background-dark
-        active:scale-100'
+        bg-secondary dark:bg-secondary-dark w-25 cursor-pointer
+        hover:inset-ring active:scale-95'
       onClick={() => {
         setMembershipIndex(membershipIndex - 1);
       }}
@@ -73,32 +71,13 @@ function RightArrow ({
     <button
       className='
         flex border bg-secondary dark:bg-secondary-dark w-25 cursor-pointer
-        hover:bg-primary dark:hover:bg-background-dark hover:scale-105
-        active:scale-100'
+        hover:inset-ring active:scale-95'
       onClick={() => {
         setMembershipIndex(membershipIndex + 1);
       }}
     >
       <FaCaretRight />
     </button>
-  );
-}
-
-function LastMembership () {
-  return (
-    <div
-      className='
-        flex flex-col gap-1
-        bg-secondary dark:bg-secondary-dark p-3 min-w-63 text-sm'
-    >
-      <p>Membership missing?</p>
-      <a
-        href=''
-        target='_blank'
-        className='border text-center hover:text-blue-600'
-      > Send a report! {/* TODO */}
-      </a>
-    </div>
   );
 }
 
@@ -118,7 +97,7 @@ export default function GymMemberships ({ gym }: { gym: GymGet }) {
 
   return (
     <div className='flex flex-col border-x border-b gap-3 p-3'>
-      <div className='flex justify-center gap-3'>
+      <div className='flex justify-center gap-3 md:mr-66'>
         <LeftArrow
           membershipIndex={membershipIndex}
           setMembershipIndex={setMembershipIndex}
@@ -130,6 +109,7 @@ export default function GymMemberships ({ gym }: { gym: GymGet }) {
           membershipCount={membershipCount}
         />
       </div>
+
       <div className='flex justify-center gap-3'>
         <Membership membership={memberships[membershipIndex]} />
         {membershipCount > 1
@@ -140,8 +120,10 @@ export default function GymMemberships ({ gym }: { gym: GymGet }) {
               </div>
             )
             : (
-              <div className='hidden md:block'>
-                <LastMembership />
+              /* on larger screens, render an invisible membership
+              to have the last one lined up correctly */
+              <div className='hidden md:block md:invisible'>
+                <Membership membership={memberships[membershipIndex]} />
               </div>
             )
           : null}

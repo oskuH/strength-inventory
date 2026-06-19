@@ -28,23 +28,28 @@ function ButtonIcon ({ title }: { title: string }) {
 
 interface GymEntryButtonProps {
   activeExtension: string | null
+  disabled: boolean
   handleToggle: (title: string) => void
   title: string
 }
 
 export default function GymButton (
-  { activeExtension, handleToggle, title }: GymEntryButtonProps
+  { activeExtension, disabled, handleToggle, title }: GymEntryButtonProps
 ) {
   const iconMode = use(IconContext);
 
   return (
     <button
       aria-pressed={activeExtension === title}
+      disabled={disabled}
       className='
         group flex justify-center items-center p-2 w-1/3 cursor-pointer
-        hover:inset-ring active:font-semibold
+        enabled:hover:inset-ring enabled:active:inset-ring
+        enabled:active:font-semibold
         aria-pressed:bg-secondary-dark dark:aria-pressed:bg-secondary
-        aria-pressed:font-semibold'
+        aria-pressed:font-semibold
+        disabled:bg-background dark:disabled:bg-background-dark
+        disabled:cursor-not-allowed'
       onClick={() => {
         handleToggle(title);
       }}

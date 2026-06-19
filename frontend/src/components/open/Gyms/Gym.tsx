@@ -32,21 +32,24 @@ export default function Gym ({ gym }: { gym: GymGet; }) {
         </div>
         <div
           className='
-            flex border divide-x bg-secondary dark:bg-secondary-dark
-            flex-1 min-h-18'
+            flex flex-1 border divide-x bg-secondary dark:bg-secondary-dark
+            min-h-18'
         >
           <GymExtensionButton
             activeExtension={activeExtension}
+            disabled={!gym.equipmentVisible}
             handleToggle={handleToggle}
             title='equipment'
           />
           <GymExtensionButton
             activeExtension={activeExtension}
+            disabled={!gym.membershipsVisible}
             handleToggle={handleToggle}
             title='memberships'
           />
           <GymExtensionButton
             activeExtension={activeExtension}
+            disabled={!gym.openingHoursVisible}
             handleToggle={handleToggle}
             title='opening hours'
           />

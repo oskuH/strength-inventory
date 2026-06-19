@@ -16,6 +16,7 @@ export default function AvailableWeights ({
   const [isInvalidStep, setIsInvalidStep] = useState(false);
 
   const newWeightInputRef = useRef<HTMLInputElement>(null);
+  const addButtonRef = useRef<HTMLButtonElement>(null);
 
   function isNewWeightInvalid () {
     const weight = Number(newWeight);
@@ -33,6 +34,7 @@ export default function AvailableWeights ({
     const updatedWeights = [...availableWeights, Number(newWeight)];
     updatedWeights.sort(compareNumbers);
     setAvailableWeights(updatedWeights);
+    setNewWeight('');
   }
 
   let lowestRequirement: number | null = null;
@@ -53,16 +55,19 @@ export default function AvailableWeights ({
           flex flex-col gap-2 bg-tertiary dark:bg-tertiary-dark p-1
           ${lowestRequirement
           && lowestRequirement !== Math.min(...availableWeights)
+          && availableWeights.length > 0
       ? 'outline outline-red dark:outline-red-dark'
       : ''}
           ${highestRequirement
           && highestRequirement !== Math.max(...availableWeights)
+          && availableWeights.length > 0
       ? 'outline outline-red dark:outline-red-dark'
       : ''}`}
       >
         <div className='flex flex-wrap gap-3'>
           {availableWeights.map((weight) => (
             <button
+              type='button'
               key={weight}
               className='
                 border px-1 cursor-pointer
@@ -79,7 +84,7 @@ export default function AvailableWeights ({
           ))}
         </div>
         <div className='flex gap-2'>
-          <span>add weight:</span>
+          <label htmlFor='new-weight'>add weight:</label>
           <input
             id='new-weight'
             ref={newWeightInputRef}
@@ -95,18 +100,27 @@ export default function AvailableWeights ({
                 = newWeightInputRef.current?.validity.stepMismatch;
               setIsInvalidStep(!!isMismatch);
             }}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                addButtonRef.current?.click();
+              }
+            }}
           />
           <button
             type='button'
+            ref={addButtonRef}
             disabled={
               !newWeight || isNewWeightInvalid() || isInvalidStep
             }
             className='
-              border border-dotted enabled:border-double px-1
-              cursor-not-allowed enabled:cursor-pointer
-              enabled:border-black enabled:dark:border-white
-              enabled:bg-green-700 enabled:dark:bg-green-500
-              enabled:text-primary-text-dark enabled:dark:text-primary-text'
+              border border-dotted border-black dark:border-neutral-400 w-10
+              cursor-not-allowed enabled:border-solid
+              enabled:bg-green-dark enabled:dark:bg-green
+              enabled:text-primary-text-dark enabled:dark:text-primary-text
+              enabled:cursor-pointer
+              enabled:hover:inset-ring dark:inset-ring-black
+              enabled:active:inset-ring enabled:active:font-bold'
             onClick={() => {
               handleAddWeight();
             }}

@@ -134,7 +134,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
             peer-checked:after:translate-x-10
             after:rounded-md
             after:bg-primary dark:after:bg-primary-dark
-            after:h-3 after:w-3 after:content-[""]
+            after:h-3 after:w-3 after:content-[""] after:transition
             peer-hover:peer-enabled:after:scale-120'
         />
         <div

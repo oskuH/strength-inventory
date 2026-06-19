@@ -5,12 +5,12 @@ import { useQueryClient } from '@tanstack/react-query';
 import { FORM_RETURN_BUTTON_CLASSES } from '../../../constants/theme';
 
 interface ReturnButtonProps {
-  queryToInvalidate: string[]
+  queriesToInvalidate: string[][]
   setFormMode: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function ReturnButton (
-  { queryToInvalidate, setFormMode }: ReturnButtonProps
+  { queriesToInvalidate, setFormMode }: ReturnButtonProps
 ) {
   const queryClient = useQueryClient();
 
@@ -18,9 +18,10 @@ export default function ReturnButton (
     <button
       className={FORM_RETURN_BUTTON_CLASSES}
       onClick={() => {
-        void queryClient.invalidateQueries(
-          { queryKey: queryToInvalidate }
-        );
+        queriesToInvalidate.map((query) =>
+          void queryClient.invalidateQueries(
+            { queryKey: query }
+          ));
         setFormMode('hidden');
       }}
     >

@@ -37,6 +37,10 @@ export default function List ({
     });
   }
 
+  filteredMemberships.sort((a, b) => (a.name > b.name
+    ? 1
+    : -1));
+
   return (
     <div className='flex flex-1 flex-col gap-1 overflow-y-scroll text-sm'>
       <div className='flex flex-col'>
@@ -48,7 +52,7 @@ export default function List ({
           name='country'
           value={country}
           className='
-            border bg-tertiary dark:bg-tertiary-dark pl-1 cursor-pointer'
+            border bg-tertiary dark:bg-tertiary-dark p-1 cursor-pointer'
           onChange={(event) => {
             setCountry(event.target.value);
             if (event.target.value === '') {
@@ -94,6 +98,7 @@ export default function List ({
                 memberships={filteredMemberships}
                 filterType='chain'
                 setFormMode={setFormMode}
+                highlightChainMemberships={false}
                 setSelectedMembershipId={setSelectedMembershipId}
                 disabledMembershipIds={undefined}
                 gymId=''
@@ -103,7 +108,9 @@ export default function List ({
               <p
                 className='flex-1 bg-background dark:bg-background-dark p-1'
               >
-                please select a chain to see its memberships (case-sensitive)
+                <span className='flex justify-center text-center'>
+                  please enter a chain to see its memberships (case-sensitive)
+                </span>
               </p>
             )}
       </div>

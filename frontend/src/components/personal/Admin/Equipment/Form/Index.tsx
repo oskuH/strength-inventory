@@ -12,6 +12,7 @@ import { getPiece, postEquipment, putEquipment }
 import handleSubmitError from '../../../../../utils/handleSubmitError';
 
 import AvailableWeights from './AvailableWeights';
+import Notification from '../../../../Notification';
 import ReturnButton from '../../ReturnButton';
 import SubmitButton from '../../SubmitButton';
 
@@ -24,10 +25,14 @@ interface FormProps {
   formMode: string
   setFormMode: React.Dispatch<React.SetStateAction<string>>
   selectedPieceId: string
+  setParentNotification: React.Dispatch<React.SetStateAction<{
+    type: string,
+    message: string
+  }>>
 }
 
 export default function Form (
-  { formMode, setFormMode, selectedPieceId }:
+  { formMode, setFormMode, selectedPieceId, setParentNotification }:
   FormProps
 ) {
   const auth = use(AuthContext);
@@ -52,6 +57,11 @@ export default function Form (
         queryKey: ['equipmentIdAndName']
       });
       setFormMode('hidden');
+      setTimeout(() => {
+        setParentNotification({
+          type: 'success', message: 'piece created'
+        });
+      }, 150);
     }
   });
 
@@ -61,37 +71,21 @@ export default function Form (
       putEquipment({
         id: id, piece: updatedPiece, refresh: auth.refresh, logout: auth.logout
       }),
-    onSuccess: (editedPieceFromServer) => {
-      queryClient
-        .setQueryData(['piece', selectedPieceId], editedPieceFromServer);
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: ['piece', selectedPieceId]
+      });
       void queryClient.invalidateQueries({
         queryKey: ['equipmentIdAndName']
       });
       setFormMode('hidden');
+      setTimeout(() => {
+        setParentNotification({
+          type: 'success', message: 'changes saved'
+        });
+      }, 150);
     }
   });
-
-  /* React 19's useActionState has had a bug since its 2024 release
-  where <select> fields get reset after <form> submission.
-  This watchReser + formRef is a partially functioning workaround
-  adapted from a solution by GitHub user danieltott:
-  https://github.com/facebook/react/issues/29034#issuecomment-2843233452
-
-  A PR fixing the bug has been open since November 2025:
-  https://github.com/facebook/react/pull/35168 */
-  function watchReset (e: Event) {
-    // console.log('reset in react', e)
-    e.preventDefault();
-  }
-  function formRef (node: HTMLFormElement | null) {
-    if (node) {
-      node.addEventListener('reset', watchReset);
-    }
-
-    return () => {
-      node?.removeEventListener('reset', watchReset);
-    };
-  }
 
   interface PieceProps {
     name: string,
@@ -119,13 +113,20 @@ export default function Form (
     notes: ''
   });
 
-  /* Available weights are rendered as part of the form,
+  /* Available weights are visually part of the form,
   but logically they have their separate state which is merged
   with the form data in submit() */
   const [availableWeights, setAvailableWeights] = useState<number[]>([]);
   const [firstRender, setFirstRender] = useState(true);
+  const [originalName, setOriginalName] = useState('');
 
-  const [state, submitAction, isPending] = useActionState(submit, {
+  const [notification, setNotification] = useState({
+    type: '',
+    message: ''
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_state, submitAction, isPending] = useActionState(submit, {
     success: true,
     error: null
   });
@@ -164,7 +165,7 @@ export default function Form (
             error: null
           };
         } catch (err: unknown) {
-          return handleSubmitError(err);
+          return handleSubmitError({ err, setNotification });
         }
       } else {  // formMode === 'edit'
         try {
@@ -176,11 +177,11 @@ export default function Form (
             error: null
           };
         } catch (err: unknown) {
-          return handleSubmitError(err);
+          return handleSubmitError({ err, setNotification });
         }
       }
     } catch (err: unknown) {
-      return handleSubmitError(err);
+      return handleSubmitError({ err, setNotification });
     }
   }
 
@@ -227,8 +228,8 @@ export default function Form (
       url: url ?? '',
       notes: notes
     });
-
     setAvailableWeights(availableWeights);
+    setOriginalName(name);
 
     setFirstRender(false);
   }
@@ -244,16 +245,16 @@ export default function Form (
           : iconMode
             ? (
               <span className='flex gap-1'>
-                <TbEdit className='text-2xl' /> {piece.name}
+                <TbEdit className='text-2xl' /> {originalName}
               </span>
             )
-            : <span>editing {piece.name}</span>}
+            : <span>editing {originalName}</span>}
       </h3>
 
       <div className='flex flex-col gap-3 px-3 pb-3 overflow-y-scroll text-xs'>
         <form
           action={submitAction}
-          ref={formRef}
+          autoComplete='off'
           className='flex flex-col gap-3'
         >
           <div className='flex flex-col gap-1'>
@@ -432,16 +433,23 @@ export default function Form (
 
             <p>* = required</p>
 
-            <SubmitButton
-              formMode={formMode} isPending={isPending} error={state.error}
-            />
+            <SubmitButton formMode={formMode} isPending={isPending} />
           </div>
         </form>
 
         <ReturnButton
-          queryToInvalidate={['equipmentIdAndName']} setFormMode={setFormMode}
+          queriesToInvalidate={
+            [['piece', selectedPieceId], ['equipmentIdAndName']]
+          }
+          setFormMode={setFormMode}
         />
       </div>
+
+      <Notification
+        type={notification.type}
+        message={notification.message}
+        setNotification={setNotification}
+      />
     </div>
   );
 }

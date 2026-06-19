@@ -39,13 +39,13 @@ function IconToggle ({ iconMode, handleChange }: IconToggleProps) {
       <label
         htmlFor='icon-mode-checkbox'
         className='
-          flex items-center cursor-pointer
-          before:rounded-md before:bg-red dark:before:bg-red-dark
+          flex items-center cursor-pointer before:rounded-md
+          before:bg-red dark:before:bg-red-dark before:transition
           peer-checked:before:bg-green dark:peer-checked:before:bg-green-dark
           before:w-10 before:h-5 before:content-[""]
           after:absolute after:right-7
           after:rounded-md after:bg-primary-dark dark:after:bg-primary
-          after:w-3 after:h-3 after:content-[""]
+          after:w-3 after:h-3 after:content-[""] after:transition
           peer-hover:after:scale-120
           peer-checked:after:translate-x-5'
       />
@@ -90,7 +90,7 @@ function ThemeToggle ({ iconMode, darkMode, handleChange }: ThemeToggleProps) {
       <label
         htmlFor='dark-mode-checkbox'
         className='
-          flex items-center cursor-pointer
+          flex items-center cursor-pointer before:transition after:transition
           before:rounded-md before:bg-tertiary dark:before:bg-tertiary-dark
           before:w-10 before:h-14 before:content-[""]
           after:absolute after:top-2 after:right-2

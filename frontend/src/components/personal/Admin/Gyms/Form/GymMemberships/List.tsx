@@ -8,10 +8,18 @@ interface ListProps {
   setFormMode: React.Dispatch<React.SetStateAction<string>>
   setSelectedMembershipId: React.Dispatch<React.SetStateAction<string>>
   setEditForm: React.Dispatch<React.SetStateAction<string>>
+  setParentNotification: React.Dispatch<React.SetStateAction<{
+    type: string,
+    message: string
+  }>>
 }
 
 export default function List ({
-  memberships, setFormMode, setSelectedMembershipId, setEditForm
+  memberships,
+  setFormMode,
+  setSelectedMembershipId,
+  setEditForm,
+  setParentNotification
 }: ListProps) {
   return (
     <div className='flex flex-1 flex-col gap-3'>
@@ -19,11 +27,17 @@ export default function List ({
         memberships={memberships}
         filterType='gym'
         setFormMode={setFormMode}
+        highlightChainMemberships={true}
         setSelectedMembershipId={setSelectedMembershipId}
         disabledMembershipIds={undefined}
         gymId=''
+        setParentNotification={setParentNotification}
       />
-      <EditFormReturnButton setEditForm={setEditForm} />
+      <EditFormReturnButton
+        model='memberships'
+        setEditForm={setEditForm}
+        setParentNotification={setParentNotification}
+      />
     </div>
   );
 }

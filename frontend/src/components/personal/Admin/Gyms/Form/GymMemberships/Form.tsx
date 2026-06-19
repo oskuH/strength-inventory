@@ -19,6 +19,10 @@ interface FormProps {
   setFormMode: React.Dispatch<React.SetStateAction<string>>
   selectedMembershipId: string
   setSelectedMembershipId: React.Dispatch<React.SetStateAction<string>>
+  setParentNotification: React.Dispatch<React.SetStateAction<{
+    type: string,
+    message: string
+  }>>
 }
 
 export default function Form ({
@@ -29,7 +33,8 @@ export default function Form ({
   formMode,
   setFormMode,
   selectedMembershipId,
-  setSelectedMembershipId
+  setSelectedMembershipId,
+  setParentNotification
 }: FormProps) {
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['membershipsByCountry', gymCountry],
@@ -88,7 +93,7 @@ export default function Form ({
           </div>
 
           <ReturnButton
-            queryToInvalidate={['gymMemberships', gymId]}
+            queriesToInvalidate={[['gymMemberships', gymId]]}
             setFormMode={setFormMode}
           />
         </div>
@@ -104,6 +109,7 @@ export default function Form ({
           usedInGymMemberships={true}
           addToGym={true}
           gymId={gymId}
+          setParentNotification={setParentNotification}
         />
       );
     } else {  // createMode === 'chain'
@@ -116,12 +122,14 @@ export default function Form ({
             memberships={chainMemberships}
             filterType='chain'
             setFormMode={setFormMode}
+            setParentNotification={setParentNotification}
+            highlightChainMemberships={false}
             setSelectedMembershipId={setSelectedMembershipId}
             disabledMembershipIds={currentMembershipIds}
             gymId={gymId}
           />
           <ReturnButton
-            queryToInvalidate={['gymMemberships', gymId]}
+            queriesToInvalidate={[['gymMemberships', gymId]]}
             setFormMode={setFormMode}
           />
         </div>
@@ -139,6 +147,7 @@ export default function Form ({
       usedInGymMemberships={true}
       addToGym={false}
       gymId={gymId}
+      setParentNotification={setParentNotification}
     />
   );
 }

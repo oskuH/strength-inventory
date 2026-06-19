@@ -6,6 +6,7 @@ import { getGymMemberships } from '../../../../../../utils/api';
 
 import Form from './Form';
 import List from './List';
+import Notification from '../../../../../Notification';
 
 interface GymMembershipsProps {
   gymId: string
@@ -13,10 +14,15 @@ interface GymMembershipsProps {
   gymCountry: string
   gymChain: string
   setEditForm: React.Dispatch<React.SetStateAction<string>>
+  setParentNotification: React.Dispatch<React.SetStateAction<{
+    type: string,
+    message: string
+  }>>
 }
 
 export default function GymMemberships (
-  { gymId, gymName, gymCountry, gymChain, setEditForm }: GymMembershipsProps
+  { gymId, gymName, gymCountry, gymChain, setEditForm, setParentNotification }:
+  GymMembershipsProps
 ) {
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['gymMemberships', gymId],
@@ -25,6 +31,11 @@ export default function GymMemberships (
 
   const [formMode, setFormMode] = useState('hidden');
   const [selectedMembershipId, setSelectedMembershipId] = useState('');
+
+  const [notification, setNotification] = useState({
+    type: '',
+    message: ''
+  });
 
   if (isPending) {
     return <p>Loading...</p>;
@@ -45,12 +56,20 @@ export default function GymMemberships (
       <div className='flex flex-1 flex-col overflow-y-scroll'>
         {formMode === 'hidden'
           ? (
-            <List
-              memberships={data}
-              setFormMode={setFormMode}
-              setSelectedMembershipId={setSelectedMembershipId}
-              setEditForm={setEditForm}
-            />
+            <div className='flex flex-1'>
+              <List
+                memberships={data}
+                setFormMode={setFormMode}
+                setSelectedMembershipId={setSelectedMembershipId}
+                setEditForm={setEditForm}
+                setParentNotification={setParentNotification}
+              />
+              <Notification
+                type={notification.type}
+                message={notification.message}
+                setNotification={setNotification}
+              />
+            </div>
           )
           : (
             <Form
@@ -62,6 +81,7 @@ export default function GymMemberships (
               setFormMode={setFormMode}
               selectedMembershipId={selectedMembershipId}
               setSelectedMembershipId={setSelectedMembershipId}
+              setParentNotification={setNotification}
             />
           )}
       </div>
