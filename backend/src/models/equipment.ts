@@ -10,6 +10,7 @@ import {
 
 import type {
   EquipmentCategory,
+  EquipmentMaximumWeightType,
   EquipmentWeightUnit
 } from '@strength-inventory/schemas';
 
@@ -30,6 +31,7 @@ class Equipment extends Model<
   declare startingWeight: number | null | undefined;
   declare availableWeights: number[];
   declare maximumWeight: number | null | undefined;
+  declare maximumWeightType: EquipmentMaximumWeightType;
   declare url: string | null | undefined;
   declare notes: string;
   declare createdAt: CreationOptional<Date>;
@@ -86,6 +88,9 @@ Equipment.init({
   maximumWeight: {
     type: DataTypes.DECIMAL(5, 2)
     // As per customValidator(), using this field requires weightUnit !== null.
+  },
+  maximumWeightType: {
+    type: DataTypes.ENUM('load', 'weight')
   },
   url: {
     type: DataTypes.STRING,

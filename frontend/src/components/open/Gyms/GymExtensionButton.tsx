@@ -43,7 +43,7 @@ export default function GymButton (
       aria-pressed={activeExtension === title}
       disabled={disabled}
       className='
-        group flex justify-center items-center p-2 w-1/3 cursor-pointer
+        group flex flex-1 justify-center items-center p-2 cursor-pointer
         enabled:hover:inset-ring enabled:active:inset-ring
         enabled:active:font-semibold
         aria-pressed:bg-secondary-dark dark:aria-pressed:bg-secondary

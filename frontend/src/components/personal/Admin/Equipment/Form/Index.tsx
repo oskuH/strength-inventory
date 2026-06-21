@@ -96,6 +96,7 @@ export default function Form (
     weight: string,
     startingWeight: string,
     maximumWeight: string,
+    maximumWeightType: string,
     url: string,
     notes: string
   }
@@ -109,6 +110,7 @@ export default function Form (
     weight: '',
     startingWeight: '',
     maximumWeight: '',
+    maximumWeightType: 'load',
     url: '',
     notes: ''
   });
@@ -158,7 +160,6 @@ export default function Form (
 
       if (formMode === 'create') {
         try {
-          console.log(validatedPiece);
           await postMutation.mutateAsync(validatedPiece);
           return {
             success: true,
@@ -206,6 +207,7 @@ export default function Form (
       startingWeight,
       availableWeights,
       maximumWeight,
+      maximumWeightType,
       url,
       notes
     } = pieceQuery.data;
@@ -225,6 +227,7 @@ export default function Form (
       maximumWeight: maximumWeight
         ? String(maximumWeight)
         : '',
+      maximumWeightType: maximumWeightType,
       url: url ?? '',
       notes: notes
     });
@@ -385,23 +388,43 @@ export default function Form (
               />
             </div>
 
-            <div className='flex flex-col'>
-              <label htmlFor='maximumWeight'>maximum weight</label>
-              <input
-                id='maximumWeight'
-                name='maximumWeight'
-                type='number'
-                value={piece.maximumWeight}
-                min={piece.startingWeight
-                  ? piece.startingWeight
-                  : 0.01}
-                max={maxWeight}
-                step={0.01}
-                className={FORM_INPUT_CLASSES}
-                onChange={(event) => {
-                  setPiece({ ...piece, maximumWeight: event.target.value });
-                }}
-              />
+            <div className='flex gap-3'>
+              <div className='flex flex-1 flex-col'>
+                <label htmlFor='maximumWeight'>maximum weight</label>
+                <input
+                  id='maximumWeight'
+                  name='maximumWeight'
+                  type='number'
+                  value={piece.maximumWeight}
+                  min={piece.startingWeight
+                    ? piece.startingWeight
+                    : 0.01}
+                  max={maxWeight}
+                  step={0.01}
+                  className={FORM_INPUT_CLASSES}
+                  onChange={(event) => {
+                    setPiece({ ...piece, maximumWeight: event.target.value });
+                  }}
+                />
+              </div>
+
+              <div className='flex flex-col'>
+                <label htmlFor='maximumWeightType'>maximum weight type</label>
+                <select
+                  id='maximumWeightType'
+                  name='maximumWeightType'
+                  value={piece.maximumWeightType}
+                  className={`${FORM_INPUT_CLASSES} cursor-pointer`}
+                  onChange={(event) => {
+                    setPiece({
+                      ...piece, maximumWeightType: event.target.value
+                    });
+                  }}
+                >
+                  <option value='load'>load</option>
+                  <option value='weight'>weight</option>
+                </select>
+              </div>
             </div>
 
             <div className='flex flex-col'>

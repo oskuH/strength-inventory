@@ -18,6 +18,7 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
     startingWeight,
     availableWeights,
     maximumWeight,
+    maximumWeightType,
     url,
     notes,
     gymequipment
@@ -107,7 +108,9 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
               {maximumWeight
                 ? (
                   <div className='flex'>
-                    <h4 className='w-35 italic'>maximum weight:</h4>
+                    {maximumWeightType === 'load'
+                      ? <h4 className='w-35 italic'>maximum load:</h4>
+                      : <h4 className='w-35 italic'>maximum weight:</h4>}
                     {maximumWeight} {weightUnit}
                   </div>
                 )

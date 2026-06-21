@@ -4,6 +4,7 @@ import { use, useState } from 'react';
 
 import { TbEdit, TbMinus, TbPlus } from 'react-icons/tb';
 import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
+import { FaRegClone } from 'react-icons/fa6';
 
 import { IconContext } from '../../../utils/contexts';
 
@@ -63,6 +64,17 @@ export default function CreateEditDeleteList (
           {iconMode
             ? <TbPlus className='text-xl md:text-2xl' />
             : 'create'}
+        </button>
+        <button
+          disabled={!selectedItemId}
+          className={PLUS_EDIT_MINUS_BUTTON_CLASSES}
+          onClick={() => {
+            setFormMode('create');
+          }}
+        >
+          {iconMode
+            ? <FaRegClone className='text-xl md:text-2xl' />
+            : 'clone'}
         </button>
         <button
           disabled={!selectedItemId}

@@ -47,6 +47,7 @@ equipmentRouter.post(
       startingWeight,
       availableWeights,
       maximumWeight,
+      maximumWeightType,
       url,
       notes
     } = req.body;
@@ -61,6 +62,7 @@ equipmentRouter.post(
       startingWeight,
       availableWeights,
       maximumWeight,
+      maximumWeightType,
       url,
       notes
     });
@@ -95,6 +97,7 @@ equipmentRouter.put(
       startingWeight,
       availableWeights,
       maximumWeight,
+      maximumWeightType,
       url,
       notes
     } = req.body;
@@ -109,6 +112,7 @@ equipmentRouter.put(
       startingWeight: startingWeight,
       availableWeights: availableWeights,
       maximumWeight: maximumWeight,
+      maximumWeightType: maximumWeightType,
       url: url,
       notes: notes
     });

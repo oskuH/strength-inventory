@@ -67,7 +67,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
       <div className='flex relative mb-3'>
         <div
           className='
-            flex flex-col border divide-y
+            flex flex-col border-y divide-y
             bg-secondary dark:bg-secondary-dark basis-full'
         >
           <ModeButton

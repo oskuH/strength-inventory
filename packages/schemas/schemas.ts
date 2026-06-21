@@ -210,12 +210,16 @@ export type EquipmentCategory = z.infer<typeof EquipmentCategoryEnum>;
 export const EquipmentWeightUnitEnum = z.enum(['kg', 'lbs'])
 export type EquipmentWeightUnit = z.infer<typeof EquipmentWeightUnitEnum>;
 
+export const EquipmentMaximumWeightTypeEnum = z.enum(['load', 'weight'])
+export type EquipmentMaximumWeightType = z.infer<typeof EquipmentMaximumWeightTypeEnum>;
+
 const EquipmentBaseSchema = z.object({
   id: z.uuidv4(),
   name: z.string().min(1),
   category: EquipmentCategoryEnum,
   manufacturer: z.string().min(1),
   code: z.string().min(1),
+  maximumWeightType: EquipmentMaximumWeightTypeEnum,
   url: z.preprocess(
     (val) => (val === '' ? undefined : val),
     z.url().nullish()
