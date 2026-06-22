@@ -1,3 +1,4 @@
+import { MdOutlineStarRate } from 'react-icons/md';
 import { TbWorldWww } from 'react-icons/tb';
 
 import { type GymGetEquipment } from '@strength-inventory/schemas';
@@ -19,6 +20,7 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
     availableWeights,
     maximumWeight,
     maximumWeightType,
+    outOfProduction,
     url,
     notes,
     gymequipment
@@ -61,12 +63,18 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
               >
                 {name} <TbWorldWww className='text-xl' />
               </a>
+              {outOfProduction
+                ? <MdOutlineStarRate />
+                : null}
             </p>
           )
           : (
-            <p className='flex gap-1'>
+            <p className='flex items-center gap-1'>
               <span>{gymequipment.count}x</span>
               <span className='font-bold'>{name}</span>
+              {outOfProduction
+                ? <MdOutlineStarRate />
+                : null}
             </p>
           )}
       </h3>
@@ -76,6 +84,19 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
           className='
             flex flex-col gap-1 w-1/2 wrap-break-word'
         >
+          <p className='flex'>
+            <span className='w-30 italic'>in production:</span>
+            <div className='flex-1'>
+              {outOfProduction
+                ? (
+                  <p className='flex gap-1 items-center'>
+                    <span>no</span>
+                    <MdOutlineStarRate />
+                  </p>
+                )
+                : 'yes'}
+            </div>
+          </p>
           <p className='flex'>
             <span className='w-30 italic'>manufacturer:</span>
             <span className='flex-1'>{manufacturer}</span>

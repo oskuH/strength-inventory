@@ -1,4 +1,5 @@
-import { MdOutlinePlaylistAddCheckCircle } from 'react-icons/md';
+import { MdOutlinePlaylistAddCheckCircle, MdOutlineStarRate }
+  from 'react-icons/md';
 import { type UseMutationResult } from '@tanstack/react-query';
 
 import { type GymGetEquipment } from '@strength-inventory/schemas';
@@ -6,7 +7,7 @@ import { type GymGetEquipment } from '@strength-inventory/schemas';
 interface AvailableListProps {
   gymId: string
   currentEquipment: GymGetEquipment[]
-  filteredEquipment: { id: string, name: string }[]
+  filteredEquipment: { id: string, name: string, outOfProduction: boolean }[]
   addEquipmentMutation: UseMutationResult<{
     gymId: string,
     equipmentId: string
@@ -39,7 +40,7 @@ export default function AvailableList (
               disabled={currentEquipmentIds.includes(piece.id)
                 || addEquipmentMutation.isPending}
               className='
-                flex gap-1 pl-1 min-w-full whitespace-nowrap
+                flex items-center gap-1 pl-1 min-w-full whitespace-nowrap
                 enabled:cursor-pointer'
               onClick={() => {
                 addEquipmentMutation.mutate({ gymId, equipmentId: piece.id });
@@ -55,6 +56,9 @@ export default function AvailableList (
                   : null}
               </span>
               <p>{piece.name}</p>
+              {piece.outOfProduction
+                ? <MdOutlineStarRate className='text-base' />
+                : null}
             </button>
             <hr />
           </li>

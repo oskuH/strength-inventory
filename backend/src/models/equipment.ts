@@ -32,6 +32,7 @@ class Equipment extends Model<
   declare availableWeights: number[];
   declare maximumWeight: number | null | undefined;
   declare maximumWeightType: EquipmentMaximumWeightType;
+  declare outOfProduction: boolean;
   declare url: string | null | undefined;
   declare notes: string;
   declare createdAt: CreationOptional<Date>;
@@ -91,6 +92,9 @@ Equipment.init({
   },
   maximumWeightType: {
     type: DataTypes.ENUM('load', 'weight')
+  },
+  outOfProduction: {
+    type: DataTypes.BOOLEAN
   },
   url: {
     type: DataTypes.STRING,

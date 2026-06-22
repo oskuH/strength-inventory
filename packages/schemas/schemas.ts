@@ -220,6 +220,7 @@ const EquipmentBaseSchema = z.object({
   manufacturer: z.string().min(1),
   code: z.string().min(1),
   maximumWeightType: EquipmentMaximumWeightTypeEnum,
+  outOfProduction: z.boolean(),
   url: z.preprocess(
     (val) => (val === '' ? undefined : val),
     z.url().nullish()

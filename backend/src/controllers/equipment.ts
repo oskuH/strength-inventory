@@ -48,6 +48,7 @@ equipmentRouter.post(
       availableWeights,
       maximumWeight,
       maximumWeightType,
+      outOfProduction,
       url,
       notes
     } = req.body;
@@ -63,6 +64,7 @@ equipmentRouter.post(
       availableWeights,
       maximumWeight,
       maximumWeightType,
+      outOfProduction,
       url,
       notes
     });
@@ -98,6 +100,7 @@ equipmentRouter.put(
       availableWeights,
       maximumWeight,
       maximumWeightType,
+      outOfProduction,
       url,
       notes
     } = req.body;
@@ -113,6 +116,7 @@ equipmentRouter.put(
       availableWeights: availableWeights,
       maximumWeight: maximumWeight,
       maximumWeightType: maximumWeightType,
+      outOfProduction: outOfProduction,
       url: url,
       notes: notes
     });

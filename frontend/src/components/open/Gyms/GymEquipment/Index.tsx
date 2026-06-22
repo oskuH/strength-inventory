@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { MdOutlineStarRate } from 'react-icons/md';
+
 import Piece from './Piece';
 
 import type { GymGet, GymGetEquipment } from '@strength-inventory/schemas';
@@ -23,7 +25,7 @@ function Category ({ name, equipment, setClickedEquipment }: CategoryProps) {
             setClickedEquipment(piece);
           }}
         >
-          <p className='flex'>
+          <p className='flex items-center'>
             {piece.gymequipment.count < 5
               ? (
                 <span className='font-light min-w-4'>
@@ -37,6 +39,9 @@ function Category ({ name, equipment, setClickedEquipment }: CategoryProps) {
                 </span>
               )}
             <span>{piece.name}</span>
+            {piece.outOfProduction
+              ? <MdOutlineStarRate className='ml-1' />
+              : null}
           </p>
         </button>
       </li>

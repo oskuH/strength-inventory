@@ -97,6 +97,7 @@ export default function Form (
     startingWeight: string,
     maximumWeight: string,
     maximumWeightType: string,
+    outOfProduction: boolean,
     url: string,
     notes: string
   }
@@ -111,6 +112,7 @@ export default function Form (
     startingWeight: '',
     maximumWeight: '',
     maximumWeightType: 'load',
+    outOfProduction: false,
     url: '',
     notes: ''
   });
@@ -150,11 +152,21 @@ export default function Form (
         }
       }, z.string().min(1)
         .nullable());
+      const preprocessOutOfProduction = z.preprocess((val) => {
+        if (val) {
+          return true;
+        } else {
+          return false;
+        }
+      }, z.boolean());
       const preprocessedWeightUnit = preprocessWeightUnit.parse(req.weightUnit);
+      const preprocessedOutOfProduction
+        = preprocessOutOfProduction.parse(req.outOfProduction);
       const piece = {
         ...req,
         weightUnit: preprocessedWeightUnit,
-        availableWeights: availableWeights
+        availableWeights: availableWeights,
+        outOfProduction: preprocessedOutOfProduction
       };
       const validatedPiece = EquipmentPostAndPutSchema.parse(piece);
 
@@ -208,6 +220,7 @@ export default function Form (
       availableWeights,
       maximumWeight,
       maximumWeightType,
+      outOfProduction,
       url,
       notes
     } = pieceQuery.data;
@@ -228,6 +241,7 @@ export default function Form (
         ? String(maximumWeight)
         : '',
       maximumWeightType: maximumWeightType,
+      outOfProduction: outOfProduction,
       url: url ?? '',
       notes: notes
     });
@@ -261,19 +275,37 @@ export default function Form (
           className='flex flex-col gap-3'
         >
           <div className='flex flex-col gap-1'>
-            <div className='flex flex-col'>
-              <label htmlFor='name'>name*</label>
-              <input
-                id='name'
-                name='name'
-                type='text'
-                value={piece.name}
-                required
-                className={FORM_INPUT_CLASSES}
-                onChange={(event) => {
-                  setPiece({ ...piece, name: event.target.value });
-                }}
-              />
+            <div className='flex gap-3'>
+              <div className='flex flex-1 flex-col'>
+                <label htmlFor='name'>name*</label>
+                <input
+                  id='name'
+                  name='name'
+                  type='text'
+                  value={piece.name}
+                  required
+                  className={FORM_INPUT_CLASSES}
+                  onChange={(event) => {
+                    setPiece({ ...piece, name: event.target.value });
+                  }}
+                />
+              </div>
+
+              <div className='flex items-end gap-1'>
+                <label htmlFor='outOfProduction'>out of production</label>
+                <input
+                  id='outOfProduction'
+                  name='outOfProduction'
+                  type='checkbox'
+                  value='outOfProduction'
+                  checked={piece.outOfProduction}
+                  onChange={() => {
+                    setPiece({
+                      ...piece, outOfProduction: !piece.outOfProduction
+                    });
+                  }}
+                />
+              </div>
             </div>
 
             <div className='flex flex-col'>

@@ -5,6 +5,7 @@ import {
   IoRemoveCircleOutline
 } from 'react-icons/io5';
 import { TiDelete, TiDeleteOutline } from 'react-icons/ti';
+import { MdOutlineStarRate } from 'react-icons/md';
 import { type UseMutationResult } from '@tanstack/react-query';
 
 import { type GymGetEquipment } from '@strength-inventory/schemas';
@@ -45,11 +46,17 @@ export default function CurrentList ({
               key={piece.id}
               className='flex items-center px-1 min-w-full'
             >
-              <p
-                className='flex-1 overflow-hidden text-clip whitespace-nowrap'
+              <div
+                className='
+                  flex flex-1 items-center gap-1
+                  overflow-hidden text-clip whitespace-nowrap'
               >
-                {piece.name}
-              </p>
+                <p>{piece.name}</p>
+                {piece.outOfProduction
+                  ? <MdOutlineStarRate className='text-base' />
+                  : null}
+              </div>
+
               <div
                 className='flex justify-center gap-1 w-20'
               >

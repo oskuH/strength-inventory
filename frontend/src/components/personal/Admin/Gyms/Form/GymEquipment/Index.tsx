@@ -133,12 +133,15 @@ export default function GymEquipment (
     }
   }
 
-  const equipmentIdsAndNames
-    = equipmentQuery.data.map(({ id, name }) => ({ id, name }));
+  const equipmentIdsNamesProduction
+    = equipmentQuery.data.map(({ id, name, outOfProduction }) =>
+      ({ id, name, outOfProduction }));
 
-  let filteredEquipment: { id: string, name: string }[] = equipmentIdsAndNames;
+  let filteredEquipment: {
+    id: string, name: string, outOfProduction: boolean
+  }[] = equipmentIdsNamesProduction;
   if (search !== '') {
-    filteredEquipment = equipmentIdsAndNames.filter((piece) => {
+    filteredEquipment = equipmentIdsNamesProduction.filter((piece) => {
       return (
         piece.name.toLowerCase().includes(search.toLowerCase()));
     });
