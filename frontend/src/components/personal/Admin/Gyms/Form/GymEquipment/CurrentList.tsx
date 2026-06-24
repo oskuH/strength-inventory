@@ -81,7 +81,9 @@ export default function CurrentList ({
                       group-hover:opacity-100 group-active:opacity-100'
                   />
                 </button>
-                <span>{piece.gymequipment.count}</span>
+                <span className='w-4 text-center'>
+                  {piece.gymequipment.count}
+                </span>
                 <button
                   className='group relative flex cursor-pointer'
                   onClick={() => {

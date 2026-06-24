@@ -27,12 +27,12 @@ export default function AvailableList (
   });
 
   return (
-    <div className='flex max-h-9/10 overflow-y-scroll overflow-x-scroll'>
-      <ol
-        className='
-          min-w-full text-sm
-          bg-background dark:bg-background-dark'
-      >
+    <div
+      className='
+        flex bg-background dark:bg-background-dark
+        max-h-9/10 overflow-y-scroll overflow-x-scroll'
+    >
+      <ol className='min-w-full text-sm'>
         <hr />
         {filteredEquipment.map((piece) => (
           <li key={piece.id}>

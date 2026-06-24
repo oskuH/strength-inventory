@@ -55,6 +55,7 @@ Equipment.init({
     type: DataTypes
       .ENUM(
         'accessoryOrTool',
+        'barOrPlate',
         'cardio',
         'freeWeight',
         'handleAttachment',

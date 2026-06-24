@@ -204,7 +204,7 @@ export type UserFrontend = z.infer<typeof UserFrontendSchema>
 
 // equipment
 
-export const EquipmentCategoryEnum = z.enum(['accessoryOrTool', 'cardio', 'freeWeight', 'handleAttachment', 'strengthMachine', 'system']);
+export const EquipmentCategoryEnum = z.enum(['accessoryOrTool', 'barOrPlate', 'cardio', 'freeWeight', 'handleAttachment', 'strengthMachine', 'system']);
 export type EquipmentCategory = z.infer<typeof EquipmentCategoryEnum>;
 
 export const EquipmentWeightUnitEnum = z.enum(['kg', 'lbs'])

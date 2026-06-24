@@ -52,14 +52,14 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
       <h3>
         {notNullUrl
           ? (
-            <p className='flex gap-1'>
+            <p className='flex items-center gap-1'>
               <span>{gymequipment.count}x</span>
               <a
                 href={notNullUrl}
                 target='_blank'
                 className='
                   flex items-center gap-1 cursor-pointer font-bold
-                  hover:text-blue-600'
+                  hover:text-blue-600 dark:hover:text-blue-400'
               >
                 {name} <TbWorldWww className='text-xl' />
               </a>
@@ -84,8 +84,8 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
           className='
             flex flex-col gap-1 w-1/2 wrap-break-word'
         >
-          <p className='flex'>
-            <span className='w-30 italic'>in production:</span>
+          <div className='flex'>
+            <p className='w-30 italic'>in production:</p>
             <div className='flex-1'>
               {outOfProduction
                 ? (
@@ -96,7 +96,7 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
                 )
                 : 'yes'}
             </div>
-          </p>
+          </div>
           <p className='flex'>
             <span className='w-30 italic'>manufacturer:</span>
             <span className='flex-1'>{manufacturer}</span>

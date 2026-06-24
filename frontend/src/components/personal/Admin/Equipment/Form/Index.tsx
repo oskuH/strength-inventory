@@ -322,6 +322,7 @@ export default function Form (
               >
                 <option value=''>-- please select a category --</option>
                 <option value='system'>system</option>
+                <option value='barOrPlate'>bar or plate</option>
                 <option value='freeWeight'>free weight</option>
                 <option value='handleAttachment'>handle attachment</option>
                 <option value='strengthMachine'>strength machine</option>

@@ -88,7 +88,9 @@ export default function Membership (
             <a
               href={notNullUrl}
               target='_blank'
-              className='flex items-center gap-1 font-bold hover:text-blue-600'
+              className='
+                flex items-center gap-1
+                font-bold hover:text-blue-600 dark:hover:text-blue-400'
             >
               <h3>{name} <TbWorldWww className='text-xl' /></h3>
             </a>

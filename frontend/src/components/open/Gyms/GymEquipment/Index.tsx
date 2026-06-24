@@ -28,12 +28,12 @@ function Category ({ name, equipment, setClickedEquipment }: CategoryProps) {
           <p className='flex items-center'>
             {piece.gymequipment.count < 5
               ? (
-                <span className='font-light min-w-4'>
+                <span className='font-light min-w-6'>
                   {piece.gymequipment.count}
                 </span>
               )
               : (
-                <span className='font-light min-w-4'>
+                <span className='font-light min-w-6'>
                   {/* display counts higher than five as 5+, 10+, 15+...*/}
                   {Math.round(piece.gymequipment.count / 5) * 5}+
                 </span>
@@ -52,7 +52,13 @@ function Category ({ name, equipment, setClickedEquipment }: CategoryProps) {
     <div>
       <h3 className='mb-1 text-sm font-bold'>{name}</h3>
       {equipment.length > 0
-        ? <ul className='flex flex-col gap-1 text-xs'>{equipmentList}</ul>
+        ? (
+          <ul
+            className='flex flex-col gap-1 max-h-20 overflow-y-scroll text-xs'
+          >
+            {equipmentList}
+          </ul>
+        )
         : <p className='text-xs'>-</p>}
     </div>
   );
@@ -66,6 +72,11 @@ export default function GymEquipment ({ gym }: { gym: GymGet }) {
 
   const systems = equipment.filter((piece) => piece.category === 'system');
   systems.sort((a, b) => (a.name > b.name
+    ? 1
+    : -1));
+  const barsAndPlates = equipment
+    .filter((piece) => piece.category === 'barOrPlate');
+  barsAndPlates.sort((a, b) => (a.name > b.name
     ? 1
     : -1));
   const freeWeights = equipment.filter(
@@ -112,6 +123,11 @@ export default function GymEquipment ({ gym }: { gym: GymGet }) {
               <Category
                 name='systems'
                 equipment={systems}
+                setClickedEquipment={setClickedEquipment}
+              />
+              <Category
+                name='bars and plates'
+                equipment={barsAndPlates}
                 setClickedEquipment={setClickedEquipment}
               />
               <Category

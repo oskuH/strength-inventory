@@ -133,8 +133,18 @@ export default function GymEquipment (
     }
   }
 
+  const gymEquipment = gymEquipmentQuery.data;
+  gymEquipment.sort((a, b) => (a.name > b.name
+    ? 1
+    : -1));
+
+  const equipment = equipmentQuery.data;
+  equipment.sort((a, b) => (a.name > b.name
+    ? 1
+    : -1));
+
   const equipmentIdsNamesProduction
-    = equipmentQuery.data.map(({ id, name, outOfProduction }) =>
+    = equipment.map(({ id, name, outOfProduction }) =>
       ({ id, name, outOfProduction }));
 
   let filteredEquipment: {
@@ -157,7 +167,7 @@ export default function GymEquipment (
       <div className='flex flex-1 flex-col overflow-y-scroll'>
         <CurrentList
           gymId={gymId}
-          gymEquipment={gymEquipmentQuery.data}
+          gymEquipment={gymEquipment}
           setEquipmentCountMutation={setEquipmentCountMutation}
           removeEquipmentMutation={removeEquipmentMutation}
         />
@@ -165,7 +175,7 @@ export default function GymEquipment (
           ? (
             <AvailableList
               gymId={gymId}
-              currentEquipment={gymEquipmentQuery.data}
+              currentEquipment={gymEquipment}
               filteredEquipment={filteredEquipment}
               addEquipmentMutation={addEquipmentMutation}
             />
