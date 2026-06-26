@@ -18,8 +18,18 @@ import SubmitButton from '../../SubmitButton';
 
 import { FORM_INPUT_CLASSES } from '../../../../../constants/theme';
 
-import { type EquipmentPostAndPut, EquipmentPostAndPutSchema, maxWeight }
-  from '@strength-inventory/schemas';
+import {
+  ACCESSORIES_AND_TOOLS,
+  BARS_AND_PLATES,
+  CARDIO,
+  type EquipmentPostAndPut,
+  EquipmentPostAndPutSchema,
+  FREE_WEIGHTS,
+  HANDLE_ATTACHMENTS,
+  maxWeight,
+  STRENGTH_MACHINES,
+  SYSTEMS
+} from '@strength-inventory/schemas';
 
 interface FormProps {
   formMode: string
@@ -90,6 +100,7 @@ export default function Form (
   interface PieceProps {
     name: string,
     category: string,
+    subcategory: string,
     manufacturer: string,
     code: string,
     weightUnit: string,
@@ -105,6 +116,22 @@ export default function Form (
   const [piece, setPiece] = useState<PieceProps>({
     name: '',
     category: '',
+    subcategory: '',
+    manufacturer: '',
+    code: '',
+    weightUnit: '',
+    weight: '',
+    startingWeight: '',
+    maximumWeight: '',
+    maximumWeightType: 'load',
+    outOfProduction: false,
+    url: '',
+    notes: ''
+  });
+  const [originalPiece, setOriginalPiece] = useState<PieceProps>({
+    name: '',
+    category: '',
+    subcategory: '',
     manufacturer: '',
     code: '',
     weightUnit: '',
@@ -117,12 +144,31 @@ export default function Form (
     notes: ''
   });
 
+  let subcategoryOptions: string[];
+
+  if (piece.category === 'system') {
+    subcategoryOptions = SYSTEMS;
+  } else if (piece.category === 'barOrPlate') {
+    subcategoryOptions = BARS_AND_PLATES;
+  } else if (piece.category === 'handleAttachment') {
+    subcategoryOptions = HANDLE_ATTACHMENTS;
+  } else if (piece.category === 'freeWeight') {
+    subcategoryOptions = FREE_WEIGHTS;
+  } else if (piece.category === 'strengthMachine') {
+    subcategoryOptions = STRENGTH_MACHINES;
+  } else if (piece.category === 'accessoryOrTool') {
+    subcategoryOptions = ACCESSORIES_AND_TOOLS;
+  } else if (piece.category === 'cardio') {
+    subcategoryOptions = CARDIO;
+  } else {
+    subcategoryOptions = [];
+  }
+
   /* Available weights are visually part of the form,
   but logically they have their separate state which is merged
   with the form data in submit() */
   const [availableWeights, setAvailableWeights] = useState<number[]>([]);
   const [firstRender, setFirstRender] = useState(true);
-  const [originalName, setOriginalName] = useState('');
 
   const [notification, setNotification] = useState({
     type: '',
@@ -212,6 +258,7 @@ export default function Form (
     const {
       name,
       category,
+      subcategory,
       manufacturer,
       code,
       weightUnit,
@@ -228,6 +275,28 @@ export default function Form (
     setPiece({
       name: name,
       category: category,
+      subcategory: subcategory,
+      manufacturer: manufacturer,
+      code: code,
+      weightUnit: weightUnit ?? '',
+      weight: weight
+        ? String(weight)
+        : '',
+      startingWeight: startingWeight
+        ? String(startingWeight)
+        : '',
+      maximumWeight: maximumWeight
+        ? String(maximumWeight)
+        : '',
+      maximumWeightType: maximumWeightType,
+      outOfProduction: outOfProduction,
+      url: url ?? '',
+      notes: notes
+    });
+    setOriginalPiece({
+      name: name,
+      category: category,
+      subcategory: subcategory,
       manufacturer: manufacturer,
       code: code,
       weightUnit: weightUnit ?? '',
@@ -246,7 +315,6 @@ export default function Form (
       notes: notes
     });
     setAvailableWeights(availableWeights);
-    setOriginalName(name);
 
     setFirstRender(false);
   }
@@ -262,10 +330,10 @@ export default function Form (
           : iconMode
             ? (
               <span className='flex gap-1'>
-                <TbEdit className='text-2xl' /> {originalName}
+                <TbEdit className='text-2xl' /> {originalPiece.name}
               </span>
             )
-            : <span>editing {originalName}</span>}
+            : <span>editing {originalPiece.name}</span>}
       </h3>
 
       <div className='flex flex-col gap-3 px-3 pb-3 overflow-y-scroll text-xs'>
@@ -328,6 +396,26 @@ export default function Form (
                 <option value='strengthMachine'>strength machine</option>
                 <option value='cardio'>cardio</option>
                 <option value='accessoryOrTool'>accessory or tool</option>
+              </select>
+            </div>
+
+            <div className='flex flex-col'>
+              <label htmlFor='subcategory'>subcategory*</label>
+              <select
+                id='subcategory'
+                name='subcategory'
+                value={piece.subcategory}
+                disabled={piece.category === ''}
+                required
+                className={`${FORM_INPUT_CLASSES} cursor-pointer`}
+                onChange={(event) => {
+                  setPiece({ ...piece, subcategory: event.target.value });
+                }}
+              >
+                <option value=''>-- please select a subcategory --</option>
+                {subcategoryOptions.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
               </select>
             </div>
 
@@ -498,6 +586,9 @@ export default function Form (
             [['piece', selectedPieceId], ['equipmentIdAndName']]
           }
           setFormMode={setFormMode}
+          unsavedChanges={
+            JSON.stringify(piece) !== JSON.stringify(originalPiece)
+          }
         />
       </div>
 

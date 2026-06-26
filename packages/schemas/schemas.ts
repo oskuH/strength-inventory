@@ -207,6 +207,143 @@ export type UserFrontend = z.infer<typeof UserFrontendSchema>
 export const EquipmentCategoryEnum = z.enum(['accessoryOrTool', 'barOrPlate', 'cardio', 'freeWeight', 'handleAttachment', 'strengthMachine', 'system']);
 export type EquipmentCategory = z.infer<typeof EquipmentCategoryEnum>;
 
+export const SYSTEMS = [
+  'rack or rig',
+  'adjustable crossover cable station',
+  'high/low crossover cable station',
+  'adjustable cable station',
+  'high cable station',
+  'low cable station',
+  'smith machine',
+  'flat bench press',
+  'incline bench press',
+  'adjustable bench',
+  'fixed bench',
+  'preacher curl',
+  'rowing cable station',
+  'pulldown cable station',
+  'dip station',
+  'landmine',
+  'hip thrust pad',
+  'decline bench',
+  'back extension',
+  'captain\'s chair',
+  'safety arm',
+  'platform',
+  'other'
+];
+export const SystemCategorySchema = z.enum(SYSTEMS)
+export type SystemCategory = z.infer<typeof SystemCategorySchema>
+
+export const BARS_AND_PLATES = [
+  '20 kg bar',
+  '15 kg bar',
+  '10 kg bar',
+  'trap bar',
+  'EZ bar',
+  '25 kg plate',
+  '20 kg plate',
+  '15 kg plate',
+  '10 kg plate',
+  '5 kg plate',
+  '2.5 kg plate',
+  '1.25 kg plate',
+  '0.5 kg plate',
+  '0.25 kg plate',
+  'barbell pad',
+  'collar pair',
+  'other'
+];
+export const BarOrPlateCategorySchema = z.enum(BARS_AND_PLATES)
+export type BarOrPlateCategory = z.infer<typeof BarOrPlateCategorySchema>
+
+export const FREE_WEIGHTS = [
+  'dumbbell',
+  'barbell',
+  'kettlebell',
+  'other'
+];
+export const FreeWeightCategorySchema = z.enum(FREE_WEIGHTS)
+export type FreeWeightCategory = z.infer<typeof FreeWeightCategorySchema>
+
+export const HANDLE_ATTACHMENTS = [
+  'stirrup handle',
+  'rope',
+  'rowing handle',
+  'pulldown bar',
+  'EZ pulldown bar',
+  'arms handle',
+  'ab crunch handle',
+  'ankle strap',
+  'other'
+];
+export const HandleAttachmentCategorySchema = z.enum(HANDLE_ATTACHMENTS)
+export type handleAttachmentCategory = z.infer<typeof HandleAttachmentCategorySchema>
+
+export const STRENGTH_MACHINES = [
+  'hack squat',
+  'leg press',
+  'glute machine',
+  'leg extension',
+  'leg curl',
+  'assisted dip + pull-up',
+  'assisted dip',
+  'assisted pull-up',
+  'row',
+  'pulldown',
+  'rear delts machine + pec deck',
+  'rear delts machine',
+  'pec deck',
+  'chest press',
+  'shoulder press',
+  'abdominal crunch + back extension',
+  'abdominal crunch',
+  'back extension',
+  'rotary torso',
+  'calf machine',
+  'inner thigh machine',
+  'outer thigh machine',
+  'other'
+];
+export const StrengthMachineCategorySchema = z.enum(STRENGTH_MACHINES)
+export type StrengthMachineCategory = z.infer<typeof StrengthMachineCategorySchema>
+
+export const ACCESSORIES_AND_TOOLS = [
+  'step platform',
+  'plyobox',
+  'lifting belt',
+  'dip belt',
+  'powerlifting mat',
+  'squat ramp',
+  'suspension strap',
+  'hanging strap',
+  'exercise stick',
+  'exercise mat',
+  'resistance band',
+  'roller or arch',
+  'inflated ball',
+  'jump rope',
+  'balance trainer',
+  'push-up handle pair',
+  'other'
+];
+export const AccessoryOrToolCategorySchema = z.enum(ACCESSORIES_AND_TOOLS)
+export type AccessoryOrToolCategory = z.infer<typeof AccessoryOrToolCategorySchema>
+
+export const CARDIO = [
+  'stair climbing machine',
+  'spin bike',
+  'upright bike',
+  'recumbent bike',
+  'elliptical',
+  'rower',
+  'treadmill',
+  'skiing machine',
+  'other'
+];
+export const CardioCategorySchema = z.enum(CARDIO)
+export type CardioCategory = z.infer<typeof CardioCategorySchema>
+
 export const EquipmentWeightUnitEnum = z.enum(['kg', 'lbs'])
 export type EquipmentWeightUnit = z.infer<typeof EquipmentWeightUnitEnum>;
 
@@ -216,7 +353,6 @@ export type EquipmentMaximumWeightType = z.infer<typeof EquipmentMaximumWeightTy
 const EquipmentBaseSchema = z.object({
   id: z.uuidv4(),
   name: z.string().min(1),
-  category: EquipmentCategoryEnum,
   manufacturer: z.string().min(1),
   code: z.string().min(1),
   maximumWeightType: EquipmentMaximumWeightTypeEnum,
@@ -232,6 +368,51 @@ const EquipmentBaseSchema = z.object({
 
 // global variable that corresponds to defined database limitations
 export const maxWeight: number = 999;
+
+const SystemSchema = z.object({
+  category: z.literal('system'),
+  subcategory: SystemCategorySchema
+})
+
+const BarOrPlateSchema = z.object({
+  category: z.literal('barOrPlate'),
+  subcategory: BarOrPlateCategorySchema
+})
+
+const FreeWeightSchema = z.object({
+  category: z.literal('freeWeight'),
+  subcategory: FreeWeightCategorySchema
+})
+
+const HandleAttachmentSchema = z.object({
+  category: z.literal('handleAttachment'),
+  subcategory: HandleAttachmentCategorySchema
+})
+
+const StrengthMachineSchema = z.object({
+  category: z.literal('strengthMachine'),
+  subcategory: StrengthMachineCategorySchema
+})
+
+const AccessoryOrToolSchema = z.object({
+  category: z.literal('accessoryOrTool'),
+  subcategory: AccessoryOrToolCategorySchema
+})
+
+const CardioSchema = z.object({
+  category: z.literal('cardio'),
+  subcategory: CardioCategorySchema
+})
+
+const EquipmentCategorySchema = z.discriminatedUnion('category', [
+  SystemSchema,
+  BarOrPlateSchema,
+  FreeWeightSchema,
+  HandleAttachmentSchema,
+  StrengthMachineSchema,
+  AccessoryOrToolSchema,
+  CardioSchema
+])
 
 const EquipmentWithWeightsSchema = z.object({
   weightUnit: EquipmentWeightUnitEnum,
@@ -334,12 +515,14 @@ const EquipmentWeightsSchema = z.discriminatedUnion('weightUnit', [
   EquipmentWithWeightsSchema, EquipmentWithoutWeightsSchema
 ])
 
-export const EquipmentSchema = z.intersection(EquipmentBaseSchema, EquipmentWeightsSchema)
+const EquipmentUnions = z.intersection(EquipmentCategorySchema, EquipmentWeightsSchema)
+
+export const EquipmentSchema = z.intersection(EquipmentBaseSchema, EquipmentUnions)
 export type Equipment = z.infer<typeof EquipmentSchema>;
 
 export const EquipmentPostAndPutSchema = z.intersection(
   EquipmentBaseSchema.omit({ id: true, createdAt: true, updatedAt: true }),
-  EquipmentWeightsSchema)
+  EquipmentUnions)
 export type EquipmentPostAndPut = z.infer<typeof EquipmentPostAndPutSchema>;
 
 
@@ -421,7 +604,7 @@ export type Gym = z.infer<typeof GymSchema>;
 
 export const GymGetEquipmentSchema = z.intersection(
   EquipmentBaseSchema.extend({ gymequipment: GymEquipmentSchema }),
-  EquipmentWeightsSchema)
+  EquipmentUnions)
 export type GymGetEquipment = z.infer<typeof GymGetEquipmentSchema>;
 
 export const GymGetSchema = GymSchema.extend({

@@ -4,7 +4,17 @@ import { MdOutlineStarRate } from 'react-icons/md';
 
 import Piece from './Piece';
 
-import type { GymGet, GymGetEquipment } from '@strength-inventory/schemas';
+import {
+  ACCESSORIES_AND_TOOLS,
+  BARS_AND_PLATES,
+  CARDIO,
+  FREE_WEIGHTS,
+  type GymGet,
+  type GymGetEquipment,
+  HANDLE_ATTACHMENTS,
+  STRENGTH_MACHINES,
+  SYSTEMS
+} from '@strength-inventory/schemas';
 
 interface CategoryProps {
   name: string
@@ -14,6 +24,11 @@ interface CategoryProps {
 }
 
 function Category ({ name, equipment, setClickedEquipment }: CategoryProps) {
+  let equipmentCount = 0;
+  equipment.forEach((piece) => {
+    equipmentCount += piece.gymequipment.count;
+  });
+
   const equipmentList = equipment.map(
     (piece) => (
       <li key={piece.id}>
@@ -50,7 +65,7 @@ function Category ({ name, equipment, setClickedEquipment }: CategoryProps) {
 
   return (
     <div>
-      <h3 className='mb-1 text-sm font-bold'>{name}</h3>
+      <h3 className='mb-1 text-sm font-bold'>{name} ({equipmentCount})</h3>
       {equipment.length > 0
         ? (
           <ul
@@ -71,42 +86,102 @@ export default function GymEquipment ({ gym }: { gym: GymGet }) {
   const equipment = gym.equipment;
 
   const systems = equipment.filter((piece) => piece.category === 'system');
-  systems.sort((a, b) => (a.name > b.name
-    ? 1
-    : -1));
+  systems.sort((a, b) => {
+    const primaryDiff
+      = SYSTEMS.indexOf(a.subcategory) - SYSTEMS.indexOf(b.subcategory);
+
+    if (primaryDiff !== 0) {
+      return primaryDiff;
+    } else {
+      return a.subcategory.localeCompare(b.subcategory);
+    }
+  });
+
   const barsAndPlates = equipment
     .filter((piece) => piece.category === 'barOrPlate');
-  barsAndPlates.sort((a, b) => (a.name > b.name
-    ? 1
-    : -1));
+  barsAndPlates.sort((a, b) => {
+    const primaryDiff
+      = BARS_AND_PLATES.indexOf(a.subcategory)
+        - BARS_AND_PLATES.indexOf(b.subcategory);
+
+    if (primaryDiff !== 0) {
+      return primaryDiff;
+    } else {
+      return a.subcategory.localeCompare(b.subcategory);
+    }
+  });
+
   const freeWeights = equipment.filter(
     (piece) => piece.category === 'freeWeight'
   );
-  freeWeights.sort((a, b) => (a.name > b.name
-    ? 1
-    : -1));
+  freeWeights.sort((a, b) => {
+    const primaryDiff
+      = FREE_WEIGHTS.indexOf(a.subcategory)
+        - FREE_WEIGHTS.indexOf(b.subcategory);
+
+    if (primaryDiff !== 0) {
+      return primaryDiff;
+    } else {
+      return a.subcategory.localeCompare(b.subcategory);
+    }
+  });
+
   const handleAttachments = equipment.filter(
     (piece) => piece.category === 'handleAttachment'
   );
-  handleAttachments.sort((a, b) => (a.name > b.name
-    ? 1
-    : -1));
+  handleAttachments.sort((a, b) => {
+    const primaryDiff
+      = HANDLE_ATTACHMENTS.indexOf(a.subcategory)
+        - HANDLE_ATTACHMENTS.indexOf(b.subcategory);
+
+    if (primaryDiff !== 0) {
+      return primaryDiff;
+    } else {
+      return a.subcategory.localeCompare(b.subcategory);
+    }
+  });
+
   const strengthMachines = equipment.filter(
     (piece) => piece.category === 'strengthMachine'
   );
-  strengthMachines.sort((a, b) => (a.name > b.name
-    ? 1
-    : -1));
+  strengthMachines.sort((a, b) => {
+    const primaryDiff
+      = STRENGTH_MACHINES.indexOf(a.subcategory)
+        - STRENGTH_MACHINES.indexOf(b.subcategory);
+
+    if (primaryDiff !== 0) {
+      return primaryDiff;
+    } else {
+      return a.subcategory.localeCompare(b.subcategory);
+    }
+  });
+
   const cardios = equipment.filter((piece) => piece.category === 'cardio');
-  cardios.sort((a, b) => (a.name > b.name
-    ? 1
-    : -1));
+  cardios.sort((a, b) => {
+    const primaryDiff
+      = CARDIO.indexOf(a.subcategory) - CARDIO.indexOf(b.subcategory);
+
+    if (primaryDiff !== 0) {
+      return primaryDiff;
+    } else {
+      return a.subcategory.localeCompare(b.subcategory);
+    }
+  });
+
   const accessoriesAndTools = equipment.filter(
     (piece) => piece.category === 'accessoryOrTool'
   );
-  accessoriesAndTools.sort((a, b) => (a.name > b.name
-    ? 1
-    : -1));
+  accessoriesAndTools.sort((a, b) => {
+    const primaryDiff
+      = ACCESSORIES_AND_TOOLS.indexOf(a.subcategory)
+        - ACCESSORIES_AND_TOOLS.indexOf(b.subcategory);
+
+    if (primaryDiff !== 0) {
+      return primaryDiff;
+    } else {
+      return a.subcategory.localeCompare(b.subcategory);
+    }
+  });
 
   return (
     <div className='flex flex-1 border-x border-b p-3'>

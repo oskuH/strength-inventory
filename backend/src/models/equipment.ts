@@ -24,6 +24,7 @@ class Equipment extends Model<
   declare id: CreationOptional<string>;
   declare name: string;
   declare category: EquipmentCategory;
+  declare subcategory: string;
   declare manufacturer: string;
   declare code: string;
   declare weightUnit: EquipmentWeightUnit | null | undefined;
@@ -63,6 +64,14 @@ Equipment.init({
         'system'
       ),
     allowNull: false
+  },
+  /* at db level, subcategory is only enforced as a string instead of an enum
+  because the set of accepted subcategories
+  is subject to many small changes in the future */
+  subcategory: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'other'
   },
   manufacturer: {
     type: DataTypes.STRING,

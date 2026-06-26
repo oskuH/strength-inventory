@@ -104,6 +104,26 @@ export function Form (
     url: '',
     notes: ''
   });
+  const [originalMembership, setOriginalMembership] = useState<FormMembership>({
+    name: '',
+    chain: defaultChain,
+    country: defaultCountry,
+    initiationFee: '',
+    membershipFee: '',
+    feeCurrency: '',
+    validity: '',
+    validityUnit: '',
+    commitment: '',
+    commitmentUnit: '',
+    availability: {
+      Desk: false,
+      Web: false,
+      App: false,
+      Other: false
+    },
+    url: '',
+    notes: ''
+  });
 
   const membershipQuery = useQuery({
     queryKey: ['membership', selectedMembershipId],
@@ -225,7 +245,6 @@ export function Form (
     }
   });
 
-  const [originalName, setOriginalName] = useState('');
   const [firstRender, setFirstRender] = useState(true);
 
   const [notification, setNotification] = useState({
@@ -350,7 +369,29 @@ export function Form (
       url: url ?? '',
       notes: notes
     });
-    setOriginalName(name);
+    setOriginalMembership({
+      name: name,
+      chain: chain,
+      country: country,
+      initiationFee: initiationFee
+        ? String(initiationFee)
+        : '',
+      membershipFee: membershipFee
+        ? String(membershipFee)
+        : '',
+      feeCurrency: feeCurrency,
+      validity: validity
+        ? String(validity)
+        : '',
+      validityUnit: validityUnit,
+      commitment: commitment
+        ? String(commitment)
+        : '',
+      commitmentUnit: commitmentUnit ?? '',
+      availability: availability,
+      url: url ?? '',
+      notes: notes
+    });
 
     setFirstRender(false);
   }
@@ -374,15 +415,19 @@ export function Form (
                 : 'create new membership'
               : iconMode
                 ? readOnly
-                  ? <span className='flex gap-1'>{originalName}</span>
+                  ? (
+                    <span className='flex gap-1'>
+                      {originalMembership.name}
+                    </span>
+                  )
                   : (
                     <span className='flex gap-1'>
-                      <TbEdit className='text-2xl' /> {originalName}
+                      <TbEdit className='text-2xl' /> {originalMembership.name}
                     </span>
                   )
                 : readOnly
-                  ? <span>{originalName}</span>
-                  : <span>editing {originalName}</span>}
+                  ? <span>{originalMembership.name}</span>
+                  : <span>editing {originalMembership.name}</span>}
           </h4>
 
           {readOnly
@@ -691,6 +736,9 @@ export function Form (
           <ReturnButton
             queriesToInvalidate={[['membershipsByCountry', membership.country]]}
             setFormMode={setFormMode}
+            unsavedChanges={
+              JSON.stringify(membership) !== JSON.stringify(membership)
+            }
           />
         </div>
       </div>

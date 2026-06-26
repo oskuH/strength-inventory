@@ -7,10 +7,11 @@ import { FORM_RETURN_BUTTON_CLASSES } from '../../../constants/theme';
 interface ReturnButtonProps {
   queriesToInvalidate: string[][]
   setFormMode: React.Dispatch<React.SetStateAction<string>>;
+  unsavedChanges: boolean
 }
 
 export default function ReturnButton (
-  { queriesToInvalidate, setFormMode }: ReturnButtonProps
+  { queriesToInvalidate, setFormMode, unsavedChanges }: ReturnButtonProps
 ) {
   const queryClient = useQueryClient();
 
@@ -25,7 +26,9 @@ export default function ReturnButton (
         setFormMode('hidden');
       }}
     >
-      return without saving
+      {unsavedChanges
+        ? 'return without saving'
+        : 'return'}
     </button>
   );
 }

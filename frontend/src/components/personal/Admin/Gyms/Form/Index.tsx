@@ -1,3 +1,13 @@
+/* NOTE */
+
+/* ReturnButton has permanent unsavedChanges === true after
+any opening hours value has been changed,
+whether or not the change was subsequently reverted.
+The current structure of the component does not
+facilitate comparisons with original hours without
+adding new lines of clumsy code. */
+
+
 import { use, useActionState, useState } from 'react';
 
 import { skipToken, useMutation, useQuery, useQueryClient }
@@ -145,6 +155,11 @@ export default function Form (
       setSelectedGymId(newGymFromServer.id);
       setOriginalName(newGymFromServer.name);
       setFormMode('edit');
+      setTimeout(() => {
+        setNotification({
+          type: 'success', message: 'gym created'
+        });
+      }, 150);
     }
   });
 
@@ -183,6 +198,20 @@ export default function Form (
     openingHoursVisible: false,
     notes: ''
   });
+  const [originalGym, setOriginalGym] = useState({
+    name: '',
+    chain: '',
+    street: '',
+    streetNumber: '',
+    district: '',
+    city: '',
+    country: '',
+    url: '',
+    equipmentVisible: false,
+    membershipsVisible: false,
+    openingHoursVisible: false,
+    notes: ''
+  });
 
   /* Opening hours exceptions move with
   the above state variables and regular opening hours,
@@ -190,10 +219,13 @@ export default function Form (
   formatSubmit function attaches exceptions to
   the other variables before API calls. */
   const [exceptions, setExceptions] = useState<OpeningHoursException[]>([]);
+  const [originalExceptions, setOriginalExceptions]
+    = useState<OpeningHoursException[]>([]);
   /* editForm denotes the subform opened on top of this form. */
   const [editForm, setEditForm] = useState('');
   const [firstRender, setFirstRender] = useState(true);
   const [originalName, setOriginalName] = useState('');
+  const [hoursChanged, setHoursChanged] = useState(false);
 
   const [notification, setNotification] = useState({
     type: '',
@@ -288,10 +320,25 @@ export default function Form (
       openingHoursVisible: openingHoursVisible,
       notes: notes
     });
+    setOriginalGym({
+      name: name,
+      chain: chain,
+      street: street,
+      streetNumber: streetNumber,
+      district: district,
+      city: city,
+      country: country,
+      url: url ?? '',
+      equipmentVisible: equipmentVisible,
+      membershipsVisible: membershipsVisible,
+      openingHoursVisible: openingHoursVisible,
+      notes: notes
+    });
     setExceptions(openingHoursExceptions.data);
-    setOriginalName(name);
+    setOriginalExceptions(openingHoursExceptions.data);
 
     setFirstRender(false);
+    setOriginalName(name);
   }
 
   if (editForm === 'equipment') {
@@ -491,21 +538,25 @@ export default function Form (
                     group='everyone'
                     day='MO'
                     editedHours={gymQuery.data?.openingHoursEveryone}
+                    setHoursChanged={setHoursChanged}
                   />
                   <OpeningHoursDayInput
                     group='everyone'
                     day='TU'
                     editedHours={gymQuery.data?.openingHoursEveryone}
+                    setHoursChanged={setHoursChanged}
                   />
                   <OpeningHoursDayInput
                     group='everyone'
                     day='WE'
                     editedHours={gymQuery.data?.openingHoursEveryone}
+                    setHoursChanged={setHoursChanged}
                   />
                   <OpeningHoursDayInput
                     group='everyone'
                     day='TH'
                     editedHours={gymQuery.data?.openingHoursEveryone}
+                    setHoursChanged={setHoursChanged}
                   />
                 </div>
                 <div className='flex flex-col justify-center gap-1'>
@@ -513,16 +564,19 @@ export default function Form (
                     group='everyone'
                     day='FR'
                     editedHours={gymQuery.data?.openingHoursEveryone}
+                    setHoursChanged={setHoursChanged}
                   />
                   <OpeningHoursDayInput
                     group='everyone'
                     day='SA'
                     editedHours={gymQuery.data?.openingHoursEveryone}
+                    setHoursChanged={setHoursChanged}
                   />
                   <OpeningHoursDayInput
                     group='everyone'
                     day='SU'
                     editedHours={gymQuery.data?.openingHoursEveryone}
+                    setHoursChanged={setHoursChanged}
                   />
                 </div>
               </div>
@@ -535,21 +589,25 @@ export default function Form (
                     group='members'
                     day='MO'
                     editedHours={gymQuery.data?.openingHoursMembers}
+                    setHoursChanged={setHoursChanged}
                   />
                   <OpeningHoursDayInput
                     group='members'
                     day='TU'
                     editedHours={gymQuery.data?.openingHoursMembers}
+                    setHoursChanged={setHoursChanged}
                   />
                   <OpeningHoursDayInput
                     group='members'
                     day='WE'
                     editedHours={gymQuery.data?.openingHoursMembers}
+                    setHoursChanged={setHoursChanged}
                   />
                   <OpeningHoursDayInput
                     group='members'
                     day='TH'
                     editedHours={gymQuery.data?.openingHoursMembers}
+                    setHoursChanged={setHoursChanged}
                   />
                 </div>
                 <div className='flex flex-col justify-center gap-1'>
@@ -557,16 +615,19 @@ export default function Form (
                     group='members'
                     day='FR'
                     editedHours={gymQuery.data?.openingHoursMembers}
+                    setHoursChanged={setHoursChanged}
                   />
                   <OpeningHoursDayInput
                     group='members'
                     day='SA'
                     editedHours={gymQuery.data?.openingHoursMembers}
+                    setHoursChanged={setHoursChanged}
                   />
                   <OpeningHoursDayInput
                     group='members'
                     day='SU'
                     editedHours={gymQuery.data?.openingHoursMembers}
+                    setHoursChanged={setHoursChanged}
                   />
                 </div>
               </div>
@@ -677,6 +738,11 @@ export default function Form (
         <ReturnButton
           queriesToInvalidate={[['gym', selectedGymId], ['gymsIdAndName']]}
           setFormMode={setFormMode}
+          unsavedChanges={
+            (JSON.stringify(gym) !== JSON.stringify(originalGym))
+            || JSON.stringify(exceptions) !== JSON.stringify(originalExceptions)
+            || hoursChanged
+          }
         />
 
         {formMode === 'edit'

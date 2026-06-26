@@ -40,6 +40,7 @@ equipmentRouter.post(
     const {
       name,
       category,
+      subcategory,
       manufacturer,
       code,
       weightUnit,
@@ -56,6 +57,7 @@ equipmentRouter.post(
     const equipment = await Equipment.create({
       name,
       category,
+      subcategory,
       manufacturer,
       code,
       weightUnit,
@@ -92,6 +94,7 @@ equipmentRouter.put(
     const {
       name,
       category,
+      subcategory,
       manufacturer,
       code,
       weightUnit,
@@ -108,6 +111,7 @@ equipmentRouter.put(
     await equipment.update({
       name: name,
       category: category,
+      subcategory: subcategory,
       manufacturer: manufacturer,
       code: code,
       weightUnit: weightUnit,

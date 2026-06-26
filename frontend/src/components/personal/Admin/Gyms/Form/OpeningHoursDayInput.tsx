@@ -6,10 +6,11 @@ interface OpeningHoursDayInputProps {
   group: 'everyone' | 'members'
   day: 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU'
   editedHours: Hours | undefined
+  setHoursChanged: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function OpeningHoursDayInput (
-  { group, day, editedHours }: OpeningHoursDayInputProps
+  { group, day, editedHours, setHoursChanged }: OpeningHoursDayInputProps
 ) {
   const [openTime, setOpenTime] = useState(editedHours?.[day]
     ? editedHours[day][0] !== undefined
@@ -37,6 +38,7 @@ export default function OpeningHoursDayInput (
           invalid:text-red-dark dark:invalid:text-red'
         onChange={(event) => {
           setOpenTime(event.target.value);
+          setHoursChanged(true);
         }}
       />
       <span className='self-center'>-</span>
@@ -52,6 +54,7 @@ export default function OpeningHoursDayInput (
           invalid:text-red-dark dark:invalid:text-red'
         onChange={(event) => {
           setCloseTime(event.target.value);
+          setHoursChanged(true);
         }}
       />
     </div>
