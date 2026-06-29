@@ -1,6 +1,6 @@
 // used by Gyms and Equipment
 
-import { use, useState } from 'react';
+import { type RefObject, use, useEffect, useRef, useState } from 'react';
 
 import { TbEdit, TbMinus, TbPlus } from 'react-icons/tb';
 import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
@@ -13,6 +13,7 @@ import SimpleList from './SimpleList';
 import { PLUS_EDIT_MINUS_BUTTON_CLASSES } from '../../../constants/theme';
 
 interface CreateEditDeleteList {
+  scrollTopRef: RefObject<number>
   data: { id: string, name: string }[] | undefined
   selectedItemId: string
   setSelectedItemId: React.Dispatch<React.SetStateAction<string>>
@@ -21,11 +22,23 @@ interface CreateEditDeleteList {
     UseMutationOptions<void, Error, string>, 'mutationKey'>
 }
 
-export default function CreateEditDeleteList (
-  {
-    data, selectedItemId, setSelectedItemId, setFormMode, deleteMutationOptions
-  }: CreateEditDeleteList
-) {
+export default function CreateEditDeleteList ({
+  scrollTopRef,
+  data,
+  selectedItemId,
+  setSelectedItemId,
+  setFormMode,
+  deleteMutationOptions
+}: CreateEditDeleteList) {
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // reference [2]
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollTop = scrollTopRef.current;
+    }
+  });
+
   const iconMode = use(IconContext);
 
   const deleteMutation = useMutation(deleteMutationOptions);
@@ -100,9 +113,13 @@ export default function CreateEditDeleteList (
         </button>
       </div>
       <div
+        ref={listRef}
         className='
           flex flex-1 bg-background dark:bg-background-dark
           overflow-y-scroll overflow-x-scroll'
+        onScroll={(event) => {
+          scrollTopRef.current = event.currentTarget.scrollTop;
+        }}
       >
         <SimpleList
           data={filteredItems}

@@ -1,3 +1,5 @@
+import { type RefObject, useEffect, useRef } from 'react';
+
 import { skipToken, useQuery } from '@tanstack/react-query';
 
 import { getMembershipsByCountry } from '../../../../utils/api';
@@ -7,22 +9,38 @@ import MembershipList from '../MembershipList';
 import type { Membership } from '@strength-inventory/schemas';
 
 interface ListProps {
+  scrollTopRef: RefObject<number>
   setFormMode: React.Dispatch<React.SetStateAction<string>>
   setSelectedMembershipId: React.Dispatch<React.SetStateAction<string>>
   country: string
   setCountry: React.Dispatch<React.SetStateAction<string>>
   chain: string
   setChain: React.Dispatch<React.SetStateAction<string>>
+  setParentNotification: React.Dispatch<React.SetStateAction<{
+    type: string,
+    message: string
+  }>>
 }
 
 export default function List ({
+  scrollTopRef,
   setFormMode,
   setSelectedMembershipId,
   country,
   setCountry,
   chain,
-  setChain
+  setChain,
+  setParentNotification
 }: ListProps) {
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // reference [2]
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollTop = scrollTopRef.current;
+    }
+  });
+
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['membershipsByCountry', country],
     queryFn: country
@@ -87,8 +105,14 @@ export default function List ({
       </div>
 
       <div
+        ref={listRef}
         hidden={!country}
-        className='flex flex-1 overflow-y-scroll overflow-x-scroll'
+        className='
+          flex flex-1 bg-background dark:bg-background-dark
+          overflow-y-scroll overflow-x-scroll'
+        onScroll={(event) => {
+          scrollTopRef.current = event.currentTarget.scrollTop;
+        }}
       >
         {isPending
           ? 'loading...'
@@ -98,6 +122,7 @@ export default function List ({
                 memberships={filteredMemberships}
                 filterType='chain'
                 setFormMode={setFormMode}
+                setParentNotification={setParentNotification}
                 highlightChainMemberships={false}
                 setSelectedMembershipId={setSelectedMembershipId}
                 disabledMembershipIds={undefined}

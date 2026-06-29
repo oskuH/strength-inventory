@@ -1,4 +1,4 @@
-import { use, useState } from 'react';
+import { use, useRef, useState } from 'react';
 
 import { mutationOptions, useQuery, useQueryClient }
   from '@tanstack/react-query';
@@ -17,6 +17,8 @@ export default function AdminGyms () {
   const iconMode = use(IconContext);
 
   const queryClient = useQueryClient();
+
+  const scrollTopRef = useRef(0);
 
   const [formMode, setFormMode] = useState('hidden');
   const [selectedGymId, setSelectedGymId] = useState('');
@@ -57,7 +59,7 @@ export default function AdminGyms () {
         className='
           flex flex-1 flex-col gap-1
           border bg-secondary dark:bg-secondary-dark p-3
-          overflow-y-scroll text-primary-text dark:text-primary-text-dark'
+          text-primary-text dark:text-primary-text-dark'
       >
         <h2 className='self-center font-bold'>
           {iconMode
@@ -68,6 +70,7 @@ export default function AdminGyms () {
         {formMode === 'hidden'
           ? (
             <CreateEditDeleteList
+              scrollTopRef={scrollTopRef}
               data={data}
               selectedItemId={selectedGymId}
               setSelectedItemId={setSelectedGymId}

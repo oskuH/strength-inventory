@@ -23,6 +23,7 @@ interface SidebarLeftProps {
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+// reference [1]
 function IconToggle ({ iconMode, handleChange }: IconToggleProps) {
   return (
     <div className='flex relative p-1'>
@@ -53,6 +54,7 @@ function IconToggle ({ iconMode, handleChange }: IconToggleProps) {
   );
 }
 
+// reference [1]
 function ThemeToggle ({ iconMode, darkMode, handleChange }: ThemeToggleProps) {
   return (
     <div

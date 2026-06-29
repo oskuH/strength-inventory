@@ -26,7 +26,7 @@ import {
   EquipmentPostAndPutSchema,
   FREE_WEIGHTS,
   HANDLE_ATTACHMENTS,
-  maxWeight,
+  MAX_WEIGHT,
   STRENGTH_MACHINES,
   SYSTEMS
 } from '@strength-inventory/schemas';
@@ -35,16 +35,20 @@ interface FormProps {
   formMode: string
   setFormMode: React.Dispatch<React.SetStateAction<string>>
   selectedPieceId: string
+  setSelectedPieceId: React.Dispatch<React.SetStateAction<string>>
   setParentNotification: React.Dispatch<React.SetStateAction<{
     type: string,
     message: string
   }>>
 }
 
-export default function Form (
-  { formMode, setFormMode, selectedPieceId, setParentNotification }:
-  FormProps
-) {
+export default function Form ({
+  formMode,
+  setFormMode,
+  selectedPieceId,
+  setSelectedPieceId,
+  setParentNotification
+}: FormProps) {
   const auth = use(AuthContext);
   const iconMode = use(IconContext);
 
@@ -62,10 +66,11 @@ export default function Form (
       postEquipment({
         piece: newPiece, refresh: auth.refresh, logout: auth.logout
       }),
-    onSuccess: () => {
+    onSuccess: (newPieceFromServer) => {
       void queryClient.invalidateQueries({
         queryKey: ['equipmentIdAndName']
       });
+      setSelectedPieceId(newPieceFromServer.id);
       setFormMode('hidden');
       setTimeout(() => {
         setParentNotification({
@@ -474,7 +479,7 @@ export default function Form (
                 type='number'
                 value={piece.weight}
                 min={0.01}
-                max={maxWeight}
+                max={MAX_WEIGHT}
                 step={0.01}
                 className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
@@ -500,7 +505,7 @@ export default function Form (
                 min={0.01}
                 max={piece.maximumWeight
                   ? piece.maximumWeight
-                  : maxWeight}
+                  : MAX_WEIGHT}
                 step={0.01}
                 className={FORM_INPUT_CLASSES}
                 onChange={(event) => {
@@ -520,7 +525,7 @@ export default function Form (
                   min={piece.startingWeight
                     ? piece.startingWeight
                     : 0.01}
-                  max={maxWeight}
+                  max={MAX_WEIGHT}
                   step={0.01}
                   className={FORM_INPUT_CLASSES}
                   onChange={(event) => {

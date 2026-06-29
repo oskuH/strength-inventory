@@ -367,7 +367,7 @@ const EquipmentBaseSchema = z.object({
 })
 
 // global variable that corresponds to defined database limitations
-export const maxWeight: number = 999;
+export const MAX_WEIGHT: number = 999;
 
 const SystemSchema = z.object({
   category: z.literal('system'),

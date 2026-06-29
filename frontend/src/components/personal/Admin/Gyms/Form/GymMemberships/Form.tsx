@@ -95,6 +95,7 @@ export default function Form ({
           <ReturnButton
             queriesToInvalidate={[['gymMemberships', gymId]]}
             setFormMode={setFormMode}
+            unsavedChanges={false}
           />
         </div>
       );
@@ -131,6 +132,7 @@ export default function Form ({
           <ReturnButton
             queriesToInvalidate={[['gymMemberships', gymId]]}
             setFormMode={setFormMode}
+            unsavedChanges={false}
           />
         </div>
       );

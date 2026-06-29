@@ -1,4 +1,4 @@
-import { use, useState } from 'react';
+import { use, useRef, useState } from 'react';
 
 import { mutationOptions, useQuery, useQueryClient }
   from '@tanstack/react-query';
@@ -17,6 +17,8 @@ export default function AdminEquipment () {
   const iconMode = use(IconContext);
 
   const queryClient = useQueryClient();
+
+  const scrollTopRef = useRef(0);
 
   const [selectedPieceId, setSelectedPieceId] = useState('');
   const [formMode, setFormMode] = useState('hidden');
@@ -57,7 +59,7 @@ export default function AdminEquipment () {
       <div
         className='
           flex flex-1 flex-col gap-1 border bg-secondary dark:bg-secondary-dark
-          p-3 overflow-y-scroll text-primary-text dark:text-primary-text-dark'
+          p-3 text-primary-text dark:text-primary-text-dark'
       >
         <h2 className='self-center font-bold'>
           {iconMode
@@ -68,6 +70,7 @@ export default function AdminEquipment () {
         {formMode === 'hidden'
           ? (
             <CreateEditDeleteList
+              scrollTopRef={scrollTopRef}
               data={data}
               selectedItemId={selectedPieceId}
               setSelectedItemId={setSelectedPieceId}
@@ -80,6 +83,7 @@ export default function AdminEquipment () {
               formMode={formMode}
               setFormMode={setFormMode}
               selectedPieceId={selectedPieceId}
+              setSelectedPieceId={setSelectedPieceId}
               setParentNotification={setNotification}
             />
           )}

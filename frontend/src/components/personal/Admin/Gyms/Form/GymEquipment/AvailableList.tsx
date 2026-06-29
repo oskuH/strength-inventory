@@ -1,25 +1,18 @@
 import { MdOutlinePlaylistAddCheckCircle, MdOutlineStarRate }
   from 'react-icons/md';
-import { type UseMutationResult } from '@tanstack/react-query';
 
-import { type GymGetEquipment } from '@strength-inventory/schemas';
+import { type Equipment, type GymGetEquipment }
+  from '@strength-inventory/schemas';
 
 interface AvailableListProps {
-  gymId: string
   currentEquipment: GymGetEquipment[]
-  filteredEquipment: { id: string, name: string, outOfProduction: boolean }[]
-  addEquipmentMutation: UseMutationResult<{
-    gymId: string,
-    equipmentId: string
-  }, Error, {
-    gymId: string;
-    equipmentId: string;
-  }>
+  filteredEquipment: Equipment[]
+  setEquipmentToAdd: React.Dispatch<React.SetStateAction<Equipment | null>>
 }
 
 export default function AvailableList (
   {
-    gymId, currentEquipment, filteredEquipment, addEquipmentMutation
+    currentEquipment, filteredEquipment, setEquipmentToAdd
   }: AvailableListProps
 ) {
   const currentEquipmentIds = currentEquipment.map((piece) => {
@@ -32,18 +25,17 @@ export default function AvailableList (
         flex bg-background dark:bg-background-dark
         max-h-9/10 overflow-y-scroll overflow-x-scroll'
     >
-      <ol className='min-w-full text-sm'>
+      <ul className='min-w-full text-sm'>
         <hr />
         {filteredEquipment.map((piece) => (
           <li key={piece.id}>
             <button
-              disabled={currentEquipmentIds.includes(piece.id)
-                || addEquipmentMutation.isPending}
+              disabled={currentEquipmentIds.includes(piece.id)}
               className='
                 flex items-center gap-1 pl-1 min-w-full whitespace-nowrap
                 enabled:cursor-pointer'
               onClick={() => {
-                addEquipmentMutation.mutate({ gymId, equipmentId: piece.id });
+                setEquipmentToAdd(piece);
               }}
             >
               <span className='flex w-5'>
@@ -63,7 +55,7 @@ export default function AvailableList (
             <hr />
           </li>
         ))}
-      </ol>
+      </ul>
     </div>
   );
 }

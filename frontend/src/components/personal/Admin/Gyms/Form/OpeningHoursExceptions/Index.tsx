@@ -84,7 +84,7 @@ export default function OpeningHoursExceptions ({
           />
         )
         : ''}
-      <ol
+      <ul
         className='flex flex-col p-1 bg-background dark:bg-background-dark'
       >
         <hr />
@@ -114,7 +114,7 @@ export default function OpeningHoursExceptions ({
               </li>
             )
         ))}
-      </ol>
+      </ul>
     </div>
   );
 }

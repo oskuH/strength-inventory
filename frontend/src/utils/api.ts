@@ -114,13 +114,14 @@ export const postGym = async ({ gym, refresh, logout }: postGymProps) => {
   }
 };
 
-interface GymEquipmentProps extends TokenValidationProps {
+interface PostGymEquipmentProps extends TokenValidationProps {
   gymId: string
   equipmentId: string
+  count: number
 }
 
 export const postGymEquipment = async (
-  { gymId, equipmentId, refresh, logout }: GymEquipmentProps
+  { gymId, equipmentId, count, refresh, logout }: PostGymEquipmentProps
 ) => {
   /* only admins and managers have permission */
   const token = await syncToken({ refresh, logout });
@@ -131,7 +132,7 @@ export const postGymEquipment = async (
         'Content-Type': 'application/json',
         Authorization: `bearer ${token}`
       },
-      body: JSON.stringify({ equipmentId: equipmentId }),
+      body: JSON.stringify({ equipmentId: equipmentId, count: count }),
       credentials: 'include'
     });
 
@@ -274,8 +275,13 @@ export const deleteGym = async ({ id, refresh, logout }: deleteItemProps) => {
   }
 };
 
+interface DeleteGymEquipmentProps extends TokenValidationProps {
+  gymId: string
+  equipmentId: string
+}
+
 export const deleteGymEquipment = async (
-  { gymId, equipmentId, refresh, logout }: GymEquipmentProps
+  { gymId, equipmentId, refresh, logout }: DeleteGymEquipmentProps
 ) => {
   /* only admins and managers have permission */
   const token = await syncToken({ refresh, logout });

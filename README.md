@@ -2,7 +2,7 @@
 **Web application for comparing gym equipment, memberships, and opening hours.**
 
 ## Status
-First Alpha release planned in June 26. Some essential frontend features still under development.
+First Alpha release planned in July 26.
 
 ## Stack
 Frontend: **React** with **TanStack Router** and **TanStack Query**. **Vite** as the build tool.

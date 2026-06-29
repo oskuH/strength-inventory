@@ -125,7 +125,8 @@ gymsRouter.post(
   ...isAdminOrManager,
   targetGymExtractor,
   async (
-    req: Request<{ id: string }, unknown, { equipmentId: string }>,
+    req:
+    Request<{ id: string }, unknown, { equipmentId: string, count: number }>,
     res
   ) => {
     if (!req.targetGym) {
@@ -133,8 +134,8 @@ gymsRouter.post(
     }  // Should never trigger after middleware.
 
     const gym = req.targetGym;
-    const { equipmentId } = req.body;
-    await gym.addEquipment(equipmentId);
+    const { equipmentId, count } = req.body;
+    await gym.addEquipment(equipmentId, { through: { count: count } });
 
     return res.status(201).json({ gymId: gym.id, equipmentId: equipmentId });
   }

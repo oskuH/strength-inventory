@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 
@@ -24,6 +24,8 @@ export default function GymMemberships (
   { gymId, gymName, gymCountry, gymChain, setEditForm, setParentNotification }:
   GymMembershipsProps
 ) {
+  const scrollTopRef = useRef(0);
+
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['gymMemberships', gymId],
     queryFn: () => getGymMemberships({ gymId: gymId })
@@ -56,8 +58,9 @@ export default function GymMemberships (
       <div className='flex flex-1 flex-col overflow-y-scroll'>
         {formMode === 'hidden'
           ? (
-            <div className='flex flex-1'>
+            <div className='flex flex-1 overflow-y-scroll'>
               <List
+                scrollTopRef={scrollTopRef}
                 memberships={data}
                 setFormMode={setFormMode}
                 setSelectedMembershipId={setSelectedMembershipId}

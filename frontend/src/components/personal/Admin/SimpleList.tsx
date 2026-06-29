@@ -12,18 +12,18 @@ export default function SimpleList (
 ) {
   if (!data) {
     return (
-      <ol>
+      <ul>
         <li>no data</li>
-      </ol>
+      </ul>
     );
   }
 
-  data.sort((a, b) => (a.name > b.name
+  data.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()
     ? 1
     : -1));
 
   return (
-    <ol className='min-w-full text-sm'>
+    <ul className='min-w-full text-sm'>
       {data.map((item) => (
         <li key={item.id}>
           <button
@@ -43,6 +43,6 @@ export default function SimpleList (
           </button>
         </li>
       ))}
-    </ol>
+    </ul>
   );
 }

@@ -1,4 +1,4 @@
-import { use, useState } from 'react';
+import { use, useRef, useState } from 'react';
 
 import { FaRegAddressCard } from 'react-icons/fa';
 
@@ -10,6 +10,8 @@ import Notification from '../../../Notification';
 
 export default function AdminMemberships () {
   const iconMode = use(IconContext);
+
+  const scrollTopRef = useRef(0);
 
   const [formMode, setFormMode] = useState('hidden');
   const [selectedMembershipId, setSelectedMembershipId] = useState('');
@@ -38,12 +40,14 @@ export default function AdminMemberships () {
         {formMode === 'hidden'
           ? (
             <List
+              scrollTopRef={scrollTopRef}
               setFormMode={setFormMode}
               setSelectedMembershipId={setSelectedMembershipId}
               country={country}
               setCountry={setCountry}
               chain={chain}
               setChain={setChain}
+              setParentNotification={setNotification}
             />
           )
           : (

@@ -29,39 +29,37 @@ function Category ({ name, equipment, setClickedEquipment }: CategoryProps) {
     equipmentCount += piece.gymequipment.count;
   });
 
-  const equipmentList = equipment.map(
-    (piece) => (
-      <li key={piece.id}>
-        <button
-          className='
-            rounded-sm px-1 w-full text-left cursor-pointer
-            hover:bg-primary dark:hover:bg-background-dark active:font-semibold'
-          onClick={() => {
-            setClickedEquipment(piece);
-          }}
-        >
-          <p className='flex items-center'>
-            {piece.gymequipment.count < 5
-              ? (
-                <span className='font-light min-w-6'>
-                  {piece.gymequipment.count}
-                </span>
-              )
-              : (
-                <span className='font-light min-w-6'>
-                  {/* display counts higher than five as 5+, 10+, 15+...*/}
-                  {Math.round(piece.gymequipment.count / 5) * 5}+
-                </span>
-              )}
-            <span>{piece.name}</span>
-            {piece.outOfProduction
-              ? <MdOutlineStarRate className='ml-1' />
-              : null}
-          </p>
-        </button>
-      </li>
-    )
-  );
+  const equipmentList = equipment.map((piece) => (
+    <li key={piece.id}>
+      <button
+        className='
+          rounded-sm px-1 w-full text-left cursor-pointer
+          hover:bg-primary dark:hover:bg-background-dark active:font-semibold'
+        onClick={() => {
+          setClickedEquipment(piece);
+        }}
+      >
+        <p className='flex items-center'>
+          {piece.gymequipment.count < 5
+            ? (
+              <span className='font-light min-w-6'>
+                {piece.gymequipment.count}
+              </span>
+            )
+            : (
+              <span className='font-light min-w-6'>
+                {/* display counts higher than five as 5+, 10+, 15+...*/}
+                {Math.round(piece.gymequipment.count / 5) * 5}+
+              </span>
+            )}
+          <span>{piece.name}</span>
+          {piece.outOfProduction
+            ? <MdOutlineStarRate className='ml-1' />
+            : null}
+        </p>
+      </button>
+    </li>
+  ));
 
   return (
     <div>
@@ -156,10 +154,13 @@ export default function GymEquipment ({ gym }: { gym: GymGet }) {
     }
   });
 
-  const cardios = equipment.filter((piece) => piece.category === 'cardio');
-  cardios.sort((a, b) => {
+  const accessoriesAndTools = equipment.filter(
+    (piece) => piece.category === 'accessoryOrTool'
+  );
+  accessoriesAndTools.sort((a, b) => {
     const primaryDiff
-      = CARDIO.indexOf(a.subcategory) - CARDIO.indexOf(b.subcategory);
+      = ACCESSORIES_AND_TOOLS.indexOf(a.subcategory)
+        - ACCESSORIES_AND_TOOLS.indexOf(b.subcategory);
 
     if (primaryDiff !== 0) {
       return primaryDiff;
@@ -168,13 +169,10 @@ export default function GymEquipment ({ gym }: { gym: GymGet }) {
     }
   });
 
-  const accessoriesAndTools = equipment.filter(
-    (piece) => piece.category === 'accessoryOrTool'
-  );
-  accessoriesAndTools.sort((a, b) => {
+  const cardio = equipment.filter((piece) => piece.category === 'cardio');
+  cardio.sort((a, b) => {
     const primaryDiff
-      = ACCESSORIES_AND_TOOLS.indexOf(a.subcategory)
-        - ACCESSORIES_AND_TOOLS.indexOf(b.subcategory);
+      = CARDIO.indexOf(a.subcategory) - CARDIO.indexOf(b.subcategory);
 
     if (primaryDiff !== 0) {
       return primaryDiff;
@@ -229,7 +227,7 @@ export default function GymEquipment ({ gym }: { gym: GymGet }) {
               />
               <Category
                 name='cardio'
-                equipment={cardios}
+                equipment={cardio}
                 setClickedEquipment={setClickedEquipment}
               />
             </div>

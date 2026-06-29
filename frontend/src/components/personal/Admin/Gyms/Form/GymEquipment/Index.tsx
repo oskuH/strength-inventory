@@ -13,9 +13,12 @@ import {
 } from '../../../../../../utils/api';
 import { AuthContext } from '../../../../../../utils/contexts';
 
+import AddNew from './AddNew';
 import AvailableList from './AvailableList';
 import CurrentList from './CurrentList';
 import EditFormReturnButton from '../EditFormReturnButton';
+
+import { type Equipment } from '@strength-inventory/schemas';
 
 interface GymEquipmentProps {
   gymId: string
@@ -45,11 +48,12 @@ export default function GymEquipment (
   });
 
   const addEquipmentMutation = useMutation({
-    mutationFn: ({ gymId, equipmentId }:
-    { gymId: string, equipmentId: string }) =>
+    mutationFn: ({ gymId, equipmentId, count }:
+    { gymId: string, equipmentId: string, count: number }) =>
       postGymEquipment({
         gymId: gymId,
         equipmentId: equipmentId,
+        count: count,
         refresh: auth.refresh,
         logout: auth.logout
       }),
@@ -113,6 +117,7 @@ export default function GymEquipment (
   });
 
   const [search, setSearch] = useState('');
+  const [equipmentToAdd, setEquipmentToAdd] = useState<Equipment | null>(null);
 
   if (gymEquipmentQuery.isPending || equipmentQuery.isPending) {
     return <p>Loading...</p>;
@@ -134,24 +139,18 @@ export default function GymEquipment (
   }
 
   const gymEquipment = gymEquipmentQuery.data;
-  gymEquipment.sort((a, b) => (a.name > b.name
+  gymEquipment.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()
     ? 1
     : -1));
 
   const equipment = equipmentQuery.data;
-  equipment.sort((a, b) => (a.name > b.name
+  equipment.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()
     ? 1
     : -1));
 
-  const equipmentIdsNamesProduction
-    = equipment.map(({ id, name, outOfProduction }) =>
-      ({ id, name, outOfProduction }));
-
-  let filteredEquipment: {
-    id: string, name: string, outOfProduction: boolean
-  }[] = equipmentIdsNamesProduction;
+  let filteredEquipment = equipment;
   if (search !== '') {
-    filteredEquipment = equipmentIdsNamesProduction.filter((piece) => {
+    filteredEquipment = equipment.filter((piece) => {
       return (
         piece.name.toLowerCase().includes(search.toLowerCase()));
     });
@@ -172,14 +171,22 @@ export default function GymEquipment (
           removeEquipmentMutation={removeEquipmentMutation}
         />
         {search
-          ? (
-            <AvailableList
-              gymId={gymId}
-              currentEquipment={gymEquipment}
-              filteredEquipment={filteredEquipment}
-              addEquipmentMutation={addEquipmentMutation}
-            />
-          )
+          ? !equipmentToAdd
+            ? (
+              <AvailableList
+                currentEquipment={gymEquipment}
+                filteredEquipment={filteredEquipment}
+                setEquipmentToAdd={setEquipmentToAdd}
+              />
+            )
+            : (
+              <AddNew
+                piece={equipmentToAdd}
+                gymId={gymId}
+                addEquipmentMutation={addEquipmentMutation}
+                setEquipmentToAdd={setEquipmentToAdd}
+              />
+            )
           : (
             null
           )}

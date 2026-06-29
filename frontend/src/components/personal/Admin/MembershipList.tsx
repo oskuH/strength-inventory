@@ -92,14 +92,13 @@ export default function MembershipList ({
     );
   }
 
-  memberships.sort((a, b) => (a.name > b.name
+  memberships.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()
     ? 1
     : -1));
 
   return (
-    <ol
-      className='
-      flex-1 bg-background dark:bg-background-dark min-w-full overflow-y-scroll'
+    <ul
+      className='flex-1 min-w-full'
     >
       <hr />
       {memberships.map((membership) => (
@@ -201,6 +200,6 @@ export default function MembershipList ({
           </li>
         )
         : null}
-    </ol>
+    </ul>
   );
 }

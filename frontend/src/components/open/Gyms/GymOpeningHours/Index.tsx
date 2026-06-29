@@ -105,6 +105,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
           : null}
       </div>
 
+      {/* reference [1] */}
       <div
         className='
           flex relative justify-center items-center'

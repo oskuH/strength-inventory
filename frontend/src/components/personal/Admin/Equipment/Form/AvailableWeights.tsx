@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 
-import { maxWeight } from '@strength-inventory/schemas';
+import { MAX_WEIGHT } from '@strength-inventory/schemas';
 
 interface AvailableWeightsProps {
   availableWeights: number[]
@@ -91,7 +91,7 @@ export default function AvailableWeights ({
             type='number'
             value={newWeight}
             min={0}
-            max={maxWeight}
+            max={MAX_WEIGHT}
             step={0.01}
             className='bg-secondary dark:bg-secondary-dark w-20'
             onChange={(event) => {
