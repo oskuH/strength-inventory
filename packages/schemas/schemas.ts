@@ -51,7 +51,7 @@ const MembershipBaseSchema = z.object({
   validityUnit: MembershipTimeUnitEnum,
   availability: MembershipAvailabilitySchema,
   url: z.preprocess(
-    (val) => (val === '' ? undefined : val),
+    (val) => (val === '' ? null : val),
     z.url().nullish()
   ),
   notes: z.string(),
@@ -358,7 +358,7 @@ const EquipmentBaseSchema = z.object({
   maximumWeightType: EquipmentMaximumWeightTypeEnum,
   outOfProduction: z.boolean(),
   url: z.preprocess(
-    (val) => (val === '' ? undefined : val),
+    (val) => (val === '' ? null : val),
     z.url().nullish()
   ),
   notes: z.string(),
@@ -418,13 +418,13 @@ const EquipmentWithWeightsSchema = z.object({
   weightUnit: EquipmentWeightUnitEnum,
   weight: z.preprocess((val) => {
     if (!val) {
-      return undefined
+      return null
     }
     if (typeof val === 'string') {
       if (val) {
         return Number.parseFloat(val)
       } else {
-        return undefined
+        return null
       }
     }
     return val;
@@ -434,7 +434,7 @@ const EquipmentWithWeightsSchema = z.object({
       if (val) {
         return Number.parseFloat(val)
       } else {
-        return undefined
+        return null
       }
     }
     return val;
@@ -445,7 +445,7 @@ const EquipmentWithWeightsSchema = z.object({
       if (val) {
         return Number.parseFloat(val)
       } else {
-        return undefined
+        return null
       }
     }
     return val;
@@ -590,9 +590,10 @@ export const GymSchema = z.object({
   openingHoursMembers: HoursSchema,
   openingHoursExceptions: HoursExceptionsSchema,
   url: z.preprocess(
-    (val) => (val === '' ? undefined : val),
+    (val) => (val === '' ? null : val),
     z.url().nullish()
   ),
+  location: z.url(),
   equipmentVisible: z.boolean(),
   membershipsVisible: z.boolean(),
   openingHoursVisible: z.boolean(),
@@ -638,6 +639,7 @@ export const GymPostSchema = GymSchema.pick({
   openingHoursMembers: true,
   openingHoursExceptions: true,
   url: true,
+  location: true,
   equipmentVisible: true,
   membershipsVisible: true,
   openingHoursVisible: true,
@@ -655,6 +657,7 @@ export const GymPostFrontendSchema = GymSchema.pick({
   city: true,
   country: true,
   url: true,
+  location: true,
   notes: true
 }).extend({
   equipmentVisibility: z.string().optional(),
@@ -706,6 +709,7 @@ export const GymPatchSchema = GymSchema.pick({
   district: true,
   city: true,
   url: true,
+  location: true,
   equipmentVisible: true,
   membershipsVisible: true,
   openingHoursVisible: true,

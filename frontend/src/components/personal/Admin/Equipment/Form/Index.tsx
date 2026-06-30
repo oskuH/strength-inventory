@@ -412,7 +412,7 @@ export default function Form ({
                 value={piece.subcategory}
                 disabled={piece.category === ''}
                 required
-                className={`${FORM_INPUT_CLASSES} cursor-pointer`}
+                className={`${FORM_INPUT_CLASSES} enabled:cursor-pointer`}
                 onChange={(event) => {
                   setPiece({ ...piece, subcategory: event.target.value });
                 }}

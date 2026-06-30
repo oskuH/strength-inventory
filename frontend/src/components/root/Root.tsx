@@ -77,6 +77,7 @@ export default function Root () {
           <Footer />
           <SidebarLeft
             sidebarLeftVisible={sidebarLeftVisible}
+            setSidebarLeftVisible={setSidebarLeftVisible}
             iconMode={iconMode}
             setIconMode={setIconMode}
             darkMode={darkMode}
@@ -84,6 +85,7 @@ export default function Root () {
           />
           <SidebarRight
             sidebarRightVisible={sidebarRightVisible}
+            setSidebarRightVisible={setSidebarRightVisible}
             iconMode={iconMode}
           />
         </div>

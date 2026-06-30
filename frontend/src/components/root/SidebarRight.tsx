@@ -53,11 +53,12 @@ function Role ({ role, iconMode }: RoleProps) {
 
 interface SidebarRightProps {
   sidebarRightVisible: boolean
+  setSidebarRightVisible: React.Dispatch<React.SetStateAction<boolean>>
   iconMode: boolean
 }
 
 export default function SidebarRight (
-  { sidebarRightVisible, iconMode }: SidebarRightProps
+  { sidebarRightVisible, setSidebarRightVisible, iconMode }: SidebarRightProps
 ) {
   const auth = use(AuthContext);
   const navigate = useNavigate();
@@ -109,6 +110,9 @@ export default function SidebarRight (
             ? 'bg-primary dark:bg-background-dark font-semibold'
             : ''
           }`}
+              onClick={() => {
+                setSidebarRightVisible(false);
+              }}
             >
               {iconMode
                 ? <TbLogin2 className='text-xl' />
@@ -128,6 +132,9 @@ export default function SidebarRight (
             ? 'bg-primary dark:bg-background-dark font-semibold'
             : ''
           }`}
+              onClick={() => {
+                setSidebarRightVisible(false);
+              }}
             >
               {iconMode
                 ? <MdOutlineAdminPanelSettings className='text-xl' />
@@ -149,13 +156,14 @@ export default function SidebarRight (
                 </div>
               </div>
               <button
-                onClick={() => {
-                  handleLogout().catch(() => {});
-                }}
                 className='
                   flex justify-end py-1 pr-2 cursor-pointer
                   hover:bg-primary dark:hover:bg-background-dark
                   active:font-semibold'
+                onClick={() => {
+                  handleLogout().catch(() => {});
+                  setSidebarRightVisible(false);
+                }}
               >
                 {iconMode
                   ? <TbLogout2 className='text-base' />

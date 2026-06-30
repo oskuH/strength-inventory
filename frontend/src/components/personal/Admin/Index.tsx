@@ -50,7 +50,7 @@ function AdminLink ({ pathname }: { pathname: string }) {
       to={to}
       disabled={to === '/admin'}
       className={`
-        flex flex-1 justify-center border
+        flex flex-1 justify-center border rounded-sm
         bg-tertiary dark:bg-tertiary-dark py-1 min-w-20
         text-primary-text dark:text-primary-text-dark text-xs
         hover:inset-ring active:font-bold

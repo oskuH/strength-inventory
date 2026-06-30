@@ -58,7 +58,7 @@ export default function AdminGyms () {
       <div
         className='
           flex flex-1 flex-col gap-1
-          border bg-secondary dark:bg-secondary-dark p-3
+          border rounded-sm bg-secondary dark:bg-secondary-dark p-3
           text-primary-text dark:text-primary-text-dark'
       >
         <h2 className='self-center font-bold'>

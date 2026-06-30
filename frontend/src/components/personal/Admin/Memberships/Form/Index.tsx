@@ -4,7 +4,9 @@ import { use, useActionState, useState } from 'react';
 
 import { skipToken, useMutation, useQuery, useQueryClient }
   from '@tanstack/react-query';
-import { TbEdit, TbPlus } from 'react-icons/tb';
+import { TbEdit, TbPlus, TbTrashX } from 'react-icons/tb';
+import { FaRegAddressCard } from 'react-icons/fa';
+import { IoRemoveCircleOutline } from 'react-icons/io5';
 import { z } from 'zod';
 
 import { AuthContext, IconContext } from '../../../../../utils/contexts';
@@ -410,9 +412,17 @@ export function Form (
           <h4 className='flex justify-center text-base'>
             {/* formMode is either 'create' or 'edit' */}
             {formMode === 'create'
-              ? iconMode
-                ? <TbPlus className='text-2xl' />
-                : 'create new membership'
+              ? usedInGymMemberships
+                ? iconMode
+                  ? (
+                    <span className='flex gap-1 text-2xl'>
+                      <TbPlus /> <FaRegAddressCard />
+                    </span>
+                  )
+                  : 'create new membership'
+                : iconMode
+                  ? <TbPlus className='text-2xl' />
+                  : 'create new membership'
               : iconMode
                 ? readOnly
                   ? (
@@ -705,9 +715,10 @@ export function Form (
 
           <button
             disabled={deleteMutation.isPending}
+            hidden={formMode === 'create'}
             className={`
-              flex justify-center border border-black dark:border-white
-              bg-red dark:bg-red-dark px-3 w-full
+              flex justify-center border rounded-sm border-black
+              dark:border-white bg-red dark:bg-red-dark px-3 w-full
               text-primary-text dark:text-primary-text-dark text-base
               hover:border-white hover:dark:border-black
               active:border-white active:dark:border-black active:font-bold
@@ -726,11 +737,27 @@ export function Form (
           >
             {!deleteMutation.isPending && !removeMutation.isPending
               ? !readOnly
-                ? 'delete'
-                : 'remove'
+                ? iconMode
+                  ? <TbTrashX className='my-0.5 text-xl' />
+                  : 'delete'
+                : iconMode
+                  ? <IoRemoveCircleOutline className='my-0.5 text-xl' />
+                  : 'remove'
               : !readOnly
-                ? 'deleting...'
-                : 'removing...'}
+                ? iconMode
+                  ? (
+                    <span className='flex'>
+                      <TbTrashX className='my-0.5 text-xl' />...
+                    </span>
+                  )
+                  : 'deleting'
+                : iconMode
+                  ? (
+                    <span className='flex'>
+                      <IoRemoveCircleOutline className='my-0.5 text-xl' />...
+                    </span>
+                  )
+                  : 'removing'}
           </button>
 
           <ReturnButton

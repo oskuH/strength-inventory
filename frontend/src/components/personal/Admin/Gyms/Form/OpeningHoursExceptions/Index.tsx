@@ -1,6 +1,6 @@
 import { use, useState } from 'react';
 
-import { TbEdit, TbMinus, TbPlus } from 'react-icons/tb';
+import { TbClockExclamation, TbEdit, TbPlus, TbTrashX } from 'react-icons/tb';
 
 import { IconContext } from '../../../../../../utils/contexts';
 
@@ -29,7 +29,11 @@ export default function OpeningHoursExceptions ({
 
   return (
     <div className='flex flex-col gap-1'>
-      <h4 className='text-sm font-bold'>exceptional opening hours</h4>
+      <h4 className='text-sm font-bold'>
+        {iconMode
+          ? <TbClockExclamation className='text-xl' />
+          : <span>exceptional opening hours</span>}
+      </h4>
       <div className='flex justify-around gap-1'>
         <button
           disabled={addException}
@@ -69,7 +73,7 @@ export default function OpeningHoursExceptions ({
           }}
         >
           {iconMode
-            ? <TbMinus className='text-base' />
+            ? <TbTrashX className='text-base' />
             : 'remove'}
         </button>
       </div>

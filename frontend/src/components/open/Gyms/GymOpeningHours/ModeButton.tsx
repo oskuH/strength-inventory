@@ -2,13 +2,16 @@ import { use } from 'react';
 
 import { BiCalendarWeek } from 'react-icons/bi';
 import { BsCalendar4Week } from 'react-icons/bs';
+import { MdKeyboardArrowRight } from 'react-icons/md';
 
 import { IconContext } from '../../../../utils/contexts';
 
 function ModeButtonIcon ({ title }: { title: string }) {
   if (title === 'next seven days') {
     return (
-      <BsCalendar4Week className='text-xl' />
+      <p className='flex gap-1 ml-2 text-xl'>
+        <BsCalendar4Week /> <MdKeyboardArrowRight />
+      </p>
     );
   }
 

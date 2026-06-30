@@ -9,20 +9,6 @@ interface IconToggleProps {
   handleChange: () => void;
 }
 
-interface ThemeToggleProps {
-  iconMode: boolean;
-  darkMode: boolean;
-  handleChange: () => void;
-}
-
-interface SidebarLeftProps {
-  sidebarLeftVisible: boolean
-  iconMode: boolean
-  setIconMode: React.Dispatch<React.SetStateAction<boolean>>
-  darkMode: boolean
-  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>
-}
-
 // reference [1]
 function IconToggle ({ iconMode, handleChange }: IconToggleProps) {
   return (
@@ -52,6 +38,10 @@ function IconToggle ({ iconMode, handleChange }: IconToggleProps) {
       />
     </div>
   );
+}
+
+interface ThemeToggleProps extends IconToggleProps {
+  darkMode: boolean;
 }
 
 // reference [1]
@@ -105,10 +95,23 @@ function ThemeToggle ({ iconMode, darkMode, handleChange }: ThemeToggleProps) {
   );
 }
 
-export default function SidebarLeft (
-  { sidebarLeftVisible, iconMode, setIconMode, darkMode, setDarkMode }:
-  SidebarLeftProps
-) {
+interface SidebarLeftProps {
+  sidebarLeftVisible: boolean
+  setSidebarLeftVisible: React.Dispatch<React.SetStateAction<boolean>>
+  iconMode: boolean
+  setIconMode: React.Dispatch<React.SetStateAction<boolean>>
+  darkMode: boolean
+  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export default function SidebarLeft ({
+  sidebarLeftVisible,
+  setSidebarLeftVisible,
+  iconMode,
+  setIconMode,
+  darkMode,
+  setDarkMode
+}: SidebarLeftProps) {
   const pathname = useLocation({
     select: (location) => location.pathname
   });
@@ -137,6 +140,9 @@ export default function SidebarLeft (
       ? 'bg-primary dark:bg-background-dark font-semibold'
       : ''
     }`}
+        onClick={() => {
+          setSidebarLeftVisible(false);
+        }}
       >
         {iconMode
           ? <MdOutlineLocationOn className='text-xl' />

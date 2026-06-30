@@ -1,8 +1,11 @@
-import { useRef, useState } from 'react';
+import { use, useRef, useState } from 'react';
 
+import { FaRegAddressCard } from 'react-icons/fa';
+import { TbEdit } from 'react-icons/tb';
 import { useQuery } from '@tanstack/react-query';
 
 import { getGymMemberships } from '../../../../../../utils/api';
+import { IconContext } from '../../../../../../utils/contexts';
 
 import Form from './Form';
 import List from './List';
@@ -25,6 +28,8 @@ export default function GymMemberships (
   GymMembershipsProps
 ) {
   const scrollTopRef = useRef(0);
+
+  const iconMode = use(IconContext);
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['gymMemberships', gymId],
@@ -49,10 +54,18 @@ export default function GymMemberships (
 
   return (
     <div
-      className='flex flex-1 flex-col gap-3 min-h-0'
+      className='flex flex-1 flex-col gap-5 min-h-0'
     >
       <h3 className='self-center text-center'>
-        editing memberships for {gymName}
+        {iconMode
+          ? (
+            <span className='flex gap-2 items-center'>
+              <TbEdit className='text-2xl' />
+              <FaRegAddressCard className='text-2xl' />
+              {gymName}
+            </span>
+          )
+          : <span>editing memberships for {gymName}</span>}
       </h3>
 
       <div className='flex flex-1 flex-col overflow-y-scroll'>

@@ -58,7 +58,7 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
                 href={notNullUrl}
                 target='_blank'
                 className='
-                  flex items-center gap-1 cursor-pointer font-bold
+                  flex items-center gap-1 font-bold
                   hover:text-blue-600 dark:hover:text-blue-400'
               >
                 {name} <TbWorldWww className='text-xl' />

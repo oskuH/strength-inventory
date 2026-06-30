@@ -1,8 +1,13 @@
-import { useState } from 'react';
+import { use, useState } from 'react';
 
+import { FaRegAddressCard } from 'react-icons/fa';
+import { GiMeshNetwork } from 'react-icons/gi';
+import { IoAddCircleOutline } from 'react-icons/io5';
+import { MdOutlineLocationOn } from 'react-icons/md';
 import { useQuery } from '@tanstack/react-query';
 
 import { getMembershipsByCountry } from '../../../../../../utils/api';
+import { IconContext } from '../../../../../../utils/contexts';
 
 import { Form as MembershipForm } from '../../../Memberships/Form/Index';
 import MembershipList from '../../../MembershipList';
@@ -36,6 +41,8 @@ export default function Form ({
   setSelectedMembershipId,
   setParentNotification
 }: FormProps) {
+  const iconMode = use(IconContext);
+
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['membershipsByCountry', gymCountry],
     queryFn: () => getMembershipsByCountry({ country: gymCountry })
@@ -59,14 +66,29 @@ export default function Form ({
     if (!createMode) {
       return (
         <div className='flex flex-col gap-3'>
-          <h4 className='self-center'>add new membership</h4>
+          <h4 className='self-center'>
+            {iconMode
+              ? (
+                <span className='flex justify-center gap-1 text-2xl'>
+                  <IoAddCircleOutline /> <FaRegAddressCard />
+                </span>
+              )
+              : 'add new membership'}
+          </h4>
+
           <button
             className={`${FORM_RETURN_BUTTON_CLASSES} w-full`}
             onClick={() => {
               setCreateMode('noChain');
             }}
           >
-            <p className='text-sm'>gym's own membership</p>
+            {iconMode
+              ? (
+                <span className='flex gap-1 text-xl'>
+                  <MdOutlineLocationOn /> <FaRegAddressCard />
+                </span>
+              )
+              : <span className='text-sm'>gym's own membership</span>}
           </button>
 
           <div className='flex flex-col gap-0.5'>
@@ -81,7 +103,13 @@ export default function Form ({
                 setCreateMode('chain');
               }}
             >
-              <p className='text-sm'>chain membership</p>
+              {iconMode
+                ? (
+                  <span className='flex gap-1 text-xl'>
+                    <GiMeshNetwork /> <FaRegAddressCard />
+                  </span>
+                )
+                : <span className='text-sm'>chain membership</span>}
             </button>
             {chainMemberships.length === 0
               ? (
@@ -117,18 +145,28 @@ export default function Form ({
       return (
         <div className='flex flex-col gap-3'>
           <h3 className='flex justify-center text-base'>
-            select a chain membership to add
+            {iconMode
+              ? (
+                <span className='flex justify-center gap-1 text-2xl'>
+                  <IoAddCircleOutline /> <GiMeshNetwork /> <FaRegAddressCard />
+                </span>
+              )
+              : 'select a chain membership to add'}
           </h3>
-          <MembershipList
-            memberships={chainMemberships}
-            filterType='chain'
-            setFormMode={setFormMode}
-            setParentNotification={setParentNotification}
-            highlightChainMemberships={false}
-            setSelectedMembershipId={setSelectedMembershipId}
-            disabledMembershipIds={currentMembershipIds}
-            gymId={gymId}
-          />
+
+          <div className='bg-background dark:bg-background-dark'>
+            <MembershipList
+              memberships={chainMemberships}
+              filterType='chain'
+              setFormMode={setFormMode}
+              setParentNotification={setParentNotification}
+              highlightChainMemberships={false}
+              setSelectedMembershipId={setSelectedMembershipId}
+              disabledMembershipIds={currentMembershipIds}
+              gymId={gymId}
+            />
+          </div>
+
           <ReturnButton
             queriesToInvalidate={[['gymMemberships', gymId]]}
             setFormMode={setFormMode}

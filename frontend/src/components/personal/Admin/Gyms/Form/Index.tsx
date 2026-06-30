@@ -10,9 +10,14 @@ adding new lines of clumsy code. */
 
 import { use, useActionState, useState } from 'react';
 
+import { FaEye, FaRegAddressCard } from 'react-icons/fa';
 import { skipToken, useMutation, useQuery, useQueryClient }
   from '@tanstack/react-query';
-import { TbEdit, TbPlus } from 'react-icons/tb';
+import { TbClock, TbClockFilled, TbEdit, TbPlus, TbUserStar }
+  from 'react-icons/tb';
+import { BsPeople } from 'react-icons/bs';
+import { CgGym } from 'react-icons/cg';
+import { LuSave } from 'react-icons/lu';
 
 import { AuthContext, IconContext } from '../../../../../utils/contexts';
 import { getGym, postGym, putGym } from '../../../../../utils/api';
@@ -87,6 +92,7 @@ export default function Form (
       city,
       country,
       url,
+      location,
       equipmentVisibility,
       membershipsVisibility,
       openingHoursVisibility,
@@ -127,6 +133,7 @@ export default function Form (
       openingHoursMembers: openingHoursMembers,
       openingHoursExceptions: { data: exceptions },
       url: url,
+      location: location,
       equipmentVisible: equipmentVisible,
       membershipsVisible: membershipsVisible,
       openingHoursVisible: openingHoursVisible,
@@ -193,6 +200,7 @@ export default function Form (
     city: '',
     country: '',
     url: '',
+    location: '',
     equipmentVisible: false,
     membershipsVisible: false,
     openingHoursVisible: false,
@@ -207,6 +215,7 @@ export default function Form (
     city: '',
     country: '',
     url: '',
+    location: '',
     equipmentVisible: false,
     membershipsVisible: false,
     openingHoursVisible: false,
@@ -300,6 +309,7 @@ export default function Form (
       country,
       openingHoursExceptions,
       url,
+      location,
       equipmentVisible,
       membershipsVisible,
       openingHoursVisible,
@@ -315,6 +325,7 @@ export default function Form (
       city: city,
       country: country,
       url: url ?? '',
+      location: location,
       equipmentVisible: equipmentVisible,
       membershipsVisible: membershipsVisible,
       openingHoursVisible: openingHoursVisible,
@@ -329,6 +340,7 @@ export default function Form (
       city: city,
       country: country,
       url: url ?? '',
+      location: location,
       equipmentVisible: equipmentVisible,
       membershipsVisible: membershipsVisible,
       openingHoursVisible: openingHoursVisible,
@@ -513,6 +525,21 @@ export default function Form (
             </div>
 
             <div className='flex flex-col'>
+              <label htmlFor='location'>location link</label>
+              <input
+                id='location'
+                name='location'
+                type='url'
+                value={gym.location}
+                required
+                className={FORM_INPUT_CLASSES}
+                onChange={(event) => {
+                  setGym({ ...gym, location: event.target.value });
+                }}
+              />
+            </div>
+
+            <div className='flex flex-col'>
               <label htmlFor='notes'>notes</label>
               <textarea
                 id='notes'
@@ -528,10 +555,22 @@ export default function Form (
             <p>* = required</p>
           </div>
 
-          <div className='flex flex-col gap-1'>
-            <h4 className='text-sm font-bold'>regular opening hours</h4>
+          <div className='flex flex-col gap-2'>
+            <h4>
+              {iconMode
+                ? <TbClockFilled className='text-xl' />
+                : (
+                  <span className='text-sm font-bold'>
+                    regular opening hours
+                  </span>
+                )}
+            </h4>
             <div>
-              <h5>everyone</h5>
+              <h5>
+                {iconMode
+                  ? <BsPeople className='text-base' />
+                  : 'everyone'}
+              </h5>
               <div className='flex flex-row gap-10'>
                 <div className='flex flex-col gap-1'>
                   <OpeningHoursDayInput
@@ -582,7 +621,11 @@ export default function Form (
               </div>
             </div>
             <div>
-              <h5>members</h5>
+              <h5>
+                {iconMode
+                  ? <FaRegAddressCard className='text-base' />
+                  : 'members'}
+              </h5>
               <div className='flex flex-row gap-10'>
                 <div className='flex flex-col gap-1'>
                   <OpeningHoursDayInput
@@ -635,14 +678,19 @@ export default function Form (
           </div>
 
           <div className='flex flex-col gap-1'>
-            <h4 className='text-sm font-bold'>visibility toggles</h4>
+            <h4>
+              {iconMode
+                ? <FaEye className='text-xl' />
+                : <span className='text-sm font-bold'>visibility toggles</span>}
+            </h4>
             <div className='flex gap-1'>
               <label
                 htmlFor='equipmentVisibility'
                 hidden={formMode === 'create'}
-                className='w-30'
               >
-                equipment visible
+                {iconMode
+                  ? <span className='flex w-5 text-base'><CgGym /></span>
+                  : <span className='flex w-30'>equipment visible</span>}
               </label>
               <input
                 id='equipmentVisibility'
@@ -660,9 +708,14 @@ export default function Form (
               <label
                 htmlFor='membershipsVisibility'
                 hidden={formMode === 'create'}
-                className='w-30'
               >
-                memberships visible
+                {iconMode
+                  ? (
+                    <span className='flex w-5 text-base'>
+                      <FaRegAddressCard />
+                    </span>
+                  )
+                  : <span className='flex w-30'>memberships visible</span>}
               </label>
               <input
                 id='membershipsVisibility'
@@ -679,8 +732,10 @@ export default function Form (
               />
             </div>
             <div className='flex gap-1'>
-              <label htmlFor='openingHoursVisibility' className='w-30'>
-                opening hours visible
+              <label htmlFor='openingHoursVisibility'>
+                {iconMode
+                  ? <span className='flex w-5 text-base'><TbClock /></span>
+                  : <span className='flex w-30'>opening hours visible</span>}
               </label>
               <input
                 id='openingHoursVisibility'
@@ -716,7 +771,7 @@ export default function Form (
           htmlFor='submit-form'
           tabIndex={0} /* make tabbable */
           className={`
-            flex justify-center mt-3 border
+            flex justify-center mt-3 border rounded-sm
             bg-green dark:bg-green-dark px-3 w-full
             text-primary-text dark:text-primary-text-dark text-base
             hover:border-white hover:dark:border-black
@@ -728,11 +783,27 @@ export default function Form (
         >
           {formMode === 'create'
             ? !isPending
-              ? <span>create</span>
-              : <span>creating...</span>
+              ? iconMode
+                ? <TbPlus className='my-0.5 text-xl' />
+                : 'create'
+              : iconMode
+                ? (
+                  <span className='flex'>
+                    <TbPlus className='my-0.5 text-xl' />...
+                  </span>
+                )
+                : 'creating...'
             : !isPending
-              ? <span>save</span>
-              : <span>saving...</span>}
+              ? iconMode
+                ? <LuSave className='my-0.5 text-xl' />
+                : 'save'
+              : iconMode
+                ? (
+                  <span className='flex'>
+                    <LuSave className='my-0.5 text-xl' />...
+                  </span>
+                )
+                : 'saving...'}
         </label>
 
         <ReturnButton
@@ -755,37 +826,55 @@ export default function Form (
               <>
                 <button
                   className='
-                    border bg-tertiary dark:bg-tertiary-dark py-1 cursor-pointer
-                    hover:bg-background dark:hover:bg-background-dark
-                    active:font-bold'
+                    border rounded-sm bg-tertiary dark:bg-tertiary-dark py-1
+                    cursor-pointer hover:bg-background
+                    dark:hover:bg-background-dark active:font-bold'
                   onClick={() => {
                     setEditForm('equipment');
                   }}
                 >
-                  edit equipment
+                  {iconMode
+                    ? (
+                      <span className='flex justify-center gap-1 text-base'>
+                        <TbEdit /> <CgGym />
+                      </span>
+                    )
+                    : 'edit equipment'}
                 </button>
                 <button
                   className='
-                    border bg-tertiary dark:bg-tertiary-dark py-1 cursor-pointer
-                    hover:bg-background dark:hover:bg-background-dark
-                    active:font-bold'
+                    border rounded-sm bg-tertiary dark:bg-tertiary-dark py-1
+                    cursor-pointer hover:bg-background
+                    dark:hover:bg-background-dark active:font-bold'
                   onClick={() => {
                     setEditForm('memberships');
                   }}
                 >
-                  edit memberships
+                  {iconMode
+                    ? (
+                      <span className='flex justify-center gap-1 text-base'>
+                        <TbEdit /> <FaRegAddressCard />
+                      </span>
+                    )
+                    : 'edit memberships'}
                 </button>
                 <button
                   disabled /* upcoming post-1.0 feature */
                   className='
-                    border bg-tertiary dark:bg-tertiary-dark py-1
+                    border rounded-sm bg-tertiary dark:bg-tertiary-dark py-1
                     text-red-dark dark:text-red
                     cursor-not-allowed enabled:cursor-pointer
                     enabled:hover:bg-background
                     enabled:dark:hover:bg-background-dark
                     enabled:active:font-bold'
                 >
-                  edit managers
+                  {iconMode
+                    ? (
+                      <span className='flex justify-center gap-1 text-base'>
+                        <TbEdit /> <TbUserStar />
+                      </span>
+                    )
+                    : 'edit managers'}
                 </button>
               </>
             )

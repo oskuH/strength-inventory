@@ -2,7 +2,7 @@
 
 import { type RefObject, use, useEffect, useRef, useState } from 'react';
 
-import { TbEdit, TbMinus, TbPlus } from 'react-icons/tb';
+import { TbEdit, TbPlus, TbTrashX } from 'react-icons/tb';
 import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
 import { FaRegClone } from 'react-icons/fa6';
 
@@ -86,7 +86,7 @@ export default function CreateEditDeleteList ({
           }}
         >
           {iconMode
-            ? <FaRegClone className='text-xl md:text-2xl' />
+            ? <FaRegClone className='my-0.5 text-base md:text-xl' />
             : 'clone'}
         </button>
         <button
@@ -108,7 +108,7 @@ export default function CreateEditDeleteList ({
           }}
         >
           {iconMode
-            ? <TbMinus className='text-xl md:text-2xl' />
+            ? <TbTrashX className='text-xl md:text-2xl' />
             : 'delete'}
         </button>
       </div>

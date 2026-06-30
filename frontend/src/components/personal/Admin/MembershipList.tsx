@@ -6,10 +6,12 @@
 import { use } from 'react';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { FaRegAddressCard } from 'react-icons/fa';
 import { GiMeshNetwork } from 'react-icons/gi';
+import { IoAddCircleOutline } from 'react-icons/io5';
 import { MdOutlinePlaylistAddCheckCircle } from 'react-icons/md';
 
-import { AuthContext } from '../../../utils/contexts';
+import { AuthContext, IconContext } from '../../../utils/contexts';
 import { postGymMembership } from '../../../utils/api';
 
 import type { Membership } from '@strength-inventory/schemas';
@@ -45,6 +47,7 @@ export default function MembershipList ({
   gymId
 }: MembershipListProps) {
   const auth = use(AuthContext);
+  const iconMode = use(IconContext);
 
   const queryClient = useQueryClient();
 
@@ -194,7 +197,13 @@ export default function MembershipList ({
                 setFormMode('create');
               }}
             >
-              add new membership
+              {iconMode
+                ? (
+                  <span className='flex justify-center gap-1 text-2xl'>
+                    <IoAddCircleOutline /> <FaRegAddressCard />
+                  </span>
+                )
+                : 'add new membership'}
             </button>
             <hr />
           </li>

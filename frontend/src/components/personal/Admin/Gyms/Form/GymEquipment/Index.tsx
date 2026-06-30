@@ -3,7 +3,10 @@ import { use, useState } from 'react';
 import {
   useMutation, useQuery, useQueryClient
 } from '@tanstack/react-query';
+import { CgGym } from 'react-icons/cg';
+import { TbEdit } from 'react-icons/tb';
 
+import { AuthContext, IconContext } from '../../../../../../utils/contexts';
 import {
   deleteGymEquipment,
   getEquipment,
@@ -11,7 +14,6 @@ import {
   postGymEquipment,
   setGymEquipmentCount
 } from '../../../../../../utils/api';
-import { AuthContext } from '../../../../../../utils/contexts';
 
 import AddNew from './AddNew';
 import AvailableList from './AvailableList';
@@ -34,6 +36,7 @@ export default function GymEquipment (
   { gymId, gymName, setEditForm, setParentNotification }: GymEquipmentProps
 ) {
   const auth = use(AuthContext);
+  const iconMode = use(IconContext);
 
   const queryClient = useQueryClient();
 
@@ -161,7 +164,15 @@ export default function GymEquipment (
       className='flex flex-1 flex-col min-h-0'
     >
       <h3 className='self-center mb-3 text-center'>
-        editing equipment for {gymName}
+        {iconMode
+          ? (
+            <span className='flex gap-2 items-center'>
+              <TbEdit className='text-2xl' />
+              <CgGym className='text-2xl' />
+              {gymName}
+            </span>
+          )
+          : <span>editing equipment for {gymName}</span>}
       </h3>
       <div className='flex flex-1 flex-col overflow-y-scroll'>
         <CurrentList
