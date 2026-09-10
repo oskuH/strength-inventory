@@ -57,7 +57,12 @@ ModelListProps) {
               : <span className='font-light min-w-8'>:</span>}
             <span>{piece.name}</span>
             {piece.outOfProduction
-              ? <MdOutlineStarRate className='ml-1' />
+              ? (
+                <span>
+                  <MdOutlineStarRate aria-hidden='true' className='ml-1' />
+                  <span className='sr-only'>out of production</span>
+                </span>
+              )
               : null}
           </p>
         </button>
@@ -168,7 +173,7 @@ export default function Category ({
 
   return (
     <div>
-      <h3 className='mb-1 text-sm font-bold'>{name} ({equipmentCount})</h3>
+      <h5 className='mb-1 text-sm font-bold'>{name} ({equipmentCount})</h5>
       {equipment.length > 0
         ? (
           <div className='flex items-center gap-1'>
@@ -182,14 +187,15 @@ export default function Category ({
                     setSelectedSubcategory('');
                   }}
                 >
-                  <FaCaretLeft />
+                  <FaCaretLeft aria-hidden='true' />
+                  <span className='sr-only'>close subcategory list</span>
                 </button>
               )
               : null}
 
             <div className='flex flex-1 flex-col gap-1 h-20 text-xs'>
               {selectedSubcategory && !modelView
-                ? <h4 className='font-semibold'>{selectedSubcategory}</h4>
+                ? <h5 className='font-semibold'>{selectedSubcategory}</h5>
                 : null}
 
               <ul

@@ -84,6 +84,8 @@ export default function Navbar ({
         text-primary-text dark:text-primary-text-dark md:hidden'
     >
       <button
+        aria-expanded={sidebarLeftVisible}
+        aria-controls='sidebar-left'
         className='group relative w-4 h-4 cursor-pointer'
         onClick={() => {
           setSidebarLeftVisible(!sidebarLeftVisible);
@@ -93,28 +95,38 @@ export default function Navbar ({
           ? (
             <div>
               <TbLayoutSidebarLeftCollapseFilled
+                aria-hidden='true'
                 className='
                   absolute inset-0 opacity-0 m-auto group-hover:opacity-100'
               />
               <TbLayoutSidebarLeftCollapse
+                aria-hidden='true'
                 className='absolute inset-0 m-auto group-hover:opacity-0'
               />
+              <span className='sr-only'>hide left sidebar</span>
             </div>
           )
           : (
             <div>
               <TbLayoutSidebarLeftExpandFilled
+                aria-hidden='true'
                 className='
                   absolute inset-0 opacity-0 m-auto group-hover:opacity-100'
               />
               <TbLayoutSidebarLeftExpand
+                aria-hidden='true'
                 className='absolute inset-0 m-auto group-hover:opacity-0'
               />
+              <span className='sr-only'>show left sidebar</span>
             </div>
           )}
       </button>
+
       <PageTitle pathname={pathname} iconMode={iconMode} />
+
       <button
+        aria-expanded={sidebarRightVisible}
+        aria-controls='sidebar-right'
         className='group relative w-4 h-4 cursor-pointer'
         onClick={() => {
           setSidebarRightVisible(!sidebarRightVisible);
@@ -124,23 +136,29 @@ export default function Navbar ({
           ? (
             <div>
               <TbLayoutSidebarRightCollapseFilled
+                aria-hidden='true'
                 className='
                   absolute inset-0 opacity-0 m-auto group-hover:opacity-100'
               />
               <TbLayoutSidebarRightCollapse
+                aria-hidden='true'
                 className='absolute inset-0 m-auto group-hover:opacity-0'
               />
+              <span className='sr-only'>hide right sidebar</span>
             </div>
           )
           : (
             <div>
               <TbLayoutSidebarRightExpandFilled
+                aria-hidden='true'
                 className='
                   absolute inset-0 opacity-0 m-auto group-hover:opacity-100'
               />
               <TbLayoutSidebarRightExpand
+                aria-hidden='true'
                 className='absolute inset-0 m-auto group-hover:opacity-0'
               />
+              <span className='sr-only'>show right sidebar</span>
             </div>
           )}
       </button>

@@ -22,7 +22,8 @@ function LeftArrow ({ membershipIndex, setMembershipIndex }: LeftArrowProps) {
           bg-secondary dark:bg-secondary-dark w-25
           text-primary dark:text-primary-dark'
       >
-        <FaCaretLeft />
+        <FaCaretLeft className='aria-hidden' />
+        <span className='sr-only'>previous membership</span>
       </button>
     );
   }
@@ -37,7 +38,8 @@ function LeftArrow ({ membershipIndex, setMembershipIndex }: LeftArrowProps) {
         setMembershipIndex(membershipIndex - 1);
       }}
     >
-      <FaCaretLeft />
+      <FaCaretLeft className='aria-hidden' />
+      <span className='sr-only'>previous membership</span>
     </button>
   );
 }
@@ -62,7 +64,8 @@ function RightArrow ({
           bg-secondary dark:bg-secondary-dark w-25
           text-primary dark:text-primary-dark'
       >
-        <FaCaretRight />
+        <FaCaretRight className='aria-hidden' />
+        <span className='sr-only'>next membership</span>
       </button>
     );
   }
@@ -76,7 +79,8 @@ function RightArrow ({
         setMembershipIndex(membershipIndex + 1);
       }}
     >
-      <FaCaretRight />
+      <FaCaretRight className='aria-hidden' />
+      <span className='sr-only'>next membership</span>
     </button>
   );
 }
@@ -90,13 +94,19 @@ export default function GymMemberships ({ gym }: { gym: GymGet }) {
   if (membershipCount === 0) {
     return (
       <div className='flex border-x border-b p-3'>
+        <h4 className='sr-only'>memberships at {gym.name}</h4>
         {gym.name} does not have available memberships.
       </div>
     );
   }
 
   return (
-    <div className='flex flex-col border-x border-b gap-3 p-3'>
+    <div
+      id={`${gym.id}-memberships`}
+      className='flex flex-col border-x border-b gap-3 p-3'
+    >
+      <h4 className='sr-only'>memberships at {gym.name}</h4>
+
       <div className='flex justify-center gap-3 md:mr-66'>
         <LeftArrow
           membershipIndex={membershipIndex}

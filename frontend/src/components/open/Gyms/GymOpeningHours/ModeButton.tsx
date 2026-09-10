@@ -10,14 +10,19 @@ function ModeButtonIcon ({ title }: { title: string }) {
   if (title === 'next seven days') {
     return (
       <p className='flex gap-1 ml-2 text-xl'>
-        <BsCalendar4Week /> <MdKeyboardArrowRight />
+        <BsCalendar4Week aria-hidden='true' />
+        <MdKeyboardArrowRight aria-hidden='true' />
+        <span className='sr-only'>{title}</span>
       </p>
     );
   }
 
   if (title === 'regular') {
     return (
-      <BiCalendarWeek className='text-xl' />
+      <p>
+        <BiCalendarWeek aria-hidden='true' className='text-xl' />
+        <span className='sr-only'>{title}</span>
+      </p>
     );
   }
 }

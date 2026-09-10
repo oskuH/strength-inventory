@@ -14,7 +14,14 @@ function AvailabilityItem ({ itemName, availability }: AvailabilityItemProps) {
     <div className='mr-1'>
       {availability
         ? <p className='text-green-dark dark:text-green'>{itemName}</p>
-        : <p className='text-red-dark dark:text-red'>{itemName}</p>}
+        : (
+          <p
+            aria-hidden='true'
+            className='line-through text-red-dark dark:text-red'
+          >
+            {itemName}
+          </p>
+        )}
     </div>
   );
 }
@@ -89,22 +96,27 @@ export default function Membership (
       <div className='flex flex-col gap-1 wrap-break-word pr-2 w-2/3 min-w-0'>
         {notNullUrl
           ? (
-            <a
-              href={notNullUrl}
-              target='_blank'
+            <h5
               className='
                 flex items-center gap-1
                 font-bold hover:text-blue-600 dark:hover:text-blue-400'
             >
-              <h3 className='flex flex-1 items-center gap-1'>
+              <a
+                href={notNullUrl}
+                target='_blank'
+                className='flex flex-1 items-center gap-1'
+              >
                 <span className='flex-1'>{name}</span>
-                <span className='w-5'><TbWorldWww className='text-xl' /></span>
-              </h3>
-            </a>
+                <span aria-hidden='true' className='w-5'>
+                  <TbWorldWww className='text-xl' />
+                </span>
+              </a>
+            </h5>
           )
-          : <p className='font-bold'>{name}</p>}
+          : <h5 className='font-bold'>{name}</h5>}
+
         <div>
-          <h4>Availability</h4>
+          <h6>Availability</h6>
           <div className='flex text-xs'>
             <AvailabilityItem
               itemName='desk'
@@ -124,8 +136,9 @@ export default function Membership (
             />
           </div>
         </div>
+
         <div>
-          <h4>Notes</h4>
+          <h6>Notes</h6>
           <p className='wrap-break-word text-xs'>
             {notes
               ? notes
@@ -135,6 +148,7 @@ export default function Membership (
       </div>
 
       <div className='flex flex-col gap-1 basis-1/3'>
+        <h6 className='sr-only'>Price:</h6>
         <div className='flex items-center gap-3 h-5'>
           <Price fee={membershipFee} currency={feeCurrency} />
           {autoRenewal
@@ -143,21 +157,26 @@ export default function Membership (
         </div>
 
         <div className='flex items-center gap-1'>
-          <h4>Visits:</h4>
+          <h6>Visits:</h6>
           {!visits
-            ? <BiInfinite className='mt-1' />
+            ? (
+              <p>
+                <BiInfinite aria-hidden='true' className='mt-1' />
+                <span className='sr-only'>unlimited</span>
+              </p>
+            )
             : <p className='mt-0.5 text-xs'>{visits}</p>}
         </div>
 
         <div>
-          <h4>Valid for:</h4>
+          <h6>Valid for:</h6>
           {validity === 1
             ? <p className='text-xs'>{validity} {validityUnit}</p>
             : <p className='text-xs'>{validity} {validityUnit}s</p>}
         </div>
 
         <div>
-          <h4>Commitment:</h4>
+          <h6>Commitment:</h6>
           <div className='text-xs'>
             {commitment
               ? commitment === 1
@@ -168,7 +187,7 @@ export default function Membership (
         </div>
 
         <div>
-          <h4>Initiation fee:</h4>
+          <h6>Initiation fee:</h6>
           <div className='text-xs'>
             {initiationFee
               ? (

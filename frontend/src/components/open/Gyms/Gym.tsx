@@ -37,7 +37,7 @@ export default function Gym ({ gym }: { gym: GymWithDistance }) {
               pr-1 pl-3'
           >
             <div className='flex flex-col w-1/2 md:w-full'>
-              <h2 className='font-bold'>
+              <h3 className='font-bold'>
                 {gym.url
                   ? (
                     <a
@@ -52,7 +52,7 @@ export default function Gym ({ gym }: { gym: GymWithDistance }) {
                     </a>
                   )
                   : <span>{gym.name}</span>}
-              </h2>
+              </h3>
               <a
                 href={gym.location}
                 target='_blank'
@@ -86,8 +86,10 @@ export default function Gym ({ gym }: { gym: GymWithDistance }) {
           >
             <button
               aria-pressed={showNotes}
+              aria-expanded={showNotes}
+              aria-controls={`${gym.id}-notes`}
               className='
-                hidden md:flex justify-center items-center border-t
+                flex justify-center items-center border-t
                 md:rounded-bl-sm py-0.5 w-full cursor-pointer
                 hover:inset-ring active:inset-ring
                 inset-ring-black dark:inset-ring-neutral-400
@@ -97,22 +99,9 @@ export default function Gym ({ gym }: { gym: GymWithDistance }) {
                 setShowNotes(!showNotes);
               }}
             >
-              <FaPlus className='text-xs' /> <TiInfoLarge />
-            </button>
-            <button
-              aria-pressed={showNotes}
-              className='
-                md:hidden flex justify-center items-center
-                border-t py-0.5 w-full cursor-pointer
-                hover:inset-ring active:inset-ring
-                inset-ring-black dark:inset-ring-neutral-400
-                aria-pressed:bg-background
-                dark:aria-pressed:bg-background-dark'
-              onClick={() => {
-                setShowNotes(!showNotes);
-              }}
-            >
-              <FaPlus className='text-xs' /> <TiInfoLarge />
+              <FaPlus aria-hidden='true' className='text-xs' />
+              <TiInfoLarge aria-hidden='true' />
+              <span className='sr-only'>more info</span>
             </button>
           </div>
         </div>
@@ -121,6 +110,7 @@ export default function Gym ({ gym }: { gym: GymWithDistance }) {
         {showNotes
           ? (
             <div
+              id={`${gym.id}-notes`}
               className='
                 md:hidden bg-background dark:bg-background-dark p-1
                 border-x border-t text-center text-sm'
@@ -139,18 +129,21 @@ export default function Gym ({ gym }: { gym: GymWithDistance }) {
             activeExtension={activeExtension}
             disabled={!gym.equipmentVisible}
             handleToggle={handleToggle}
+            gymId={gym.id}
             title='equipment'
           />
           <GymExtensionButton
             activeExtension={activeExtension}
             disabled={!gym.membershipsVisible}
             handleToggle={handleToggle}
+            gymId={gym.id}
             title='memberships'
           />
           <GymExtensionButton
             activeExtension={activeExtension}
             disabled={!gym.openingHoursVisible}
             handleToggle={handleToggle}
+            gymId={gym.id}
             title='opening hours'
           />
         </div>
@@ -160,6 +153,7 @@ export default function Gym ({ gym }: { gym: GymWithDistance }) {
       {showNotes
         ? (
           <div
+            id={`${gym.id}-notes`}
             className='
               hidden md:block bg-background dark:bg-background-dark p-1
               border-x border-b text-center text-sm'

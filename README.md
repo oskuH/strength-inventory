@@ -35,7 +35,6 @@ Prioritized database: **PostgreSQL** (Postgres-specific implementations are avoi
 
 ## In the TODO list
 - Timezones
-- Accessibility
 - Equipment category for amenities
 - User account creation and personal features such as managing lists, saving equipment PRs and some type of gamification for motivation
 - Internationalization, starting from the Nordic countries

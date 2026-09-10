@@ -38,25 +38,26 @@ export default function Day ({
       {hours !== '-'
         ? (
           <p className='flex justify-between items-center w-full'>
-            <span className='text-xs md:text-sm'>{day}</span>
+            <span className='w-8 text-left text-xs md:text-sm'>{day}</span>
             <span>{hours}</span>
           </p>
         )
         : iconMode
           ? (
             <p className='flex justify-between items-center w-full'>
-              <span className='text-xs md:text-sm'>{day}</span>
+              <span className='w-8 text-left text-xs md:text-sm'>{day}</span>
               <span
                 className='
                   flex justify-center items-center ml-2 w-full h-5 md:h-6'
               >
-                <FaLock className='text-base' />
+                <FaLock aria-hidden='true' className='text-base' />
+                <span className='sr-only'>closed</span>
               </span>
             </p>
           )
           : (
             <p className='flex justify-between items-center w-full'>
-              <span className='text-xs md:text-sm'>{day}</span>
+              <span className='w-8 text-left text-xs md:text-sm'>{day}</span>
               <span>closed</span>
             </p>
           )}

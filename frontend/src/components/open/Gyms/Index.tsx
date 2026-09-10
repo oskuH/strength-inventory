@@ -92,12 +92,17 @@ export default function Gyms () {
         flex flex-col gap-3 self-center p-3 md:px-27 mx-auto
         w-full min-w-90 md:min-w-135 max-w-250'
     >
+      <h1 className='sr-only'>gyms</h1>
+
       <p
         className='
           flex justify-center items-center gap-3 rounded-sm
           bg-tertiary dark:bg-tertiary-dark p-3 text-center'
       >
-        <span><BsInfoCircle className='text-2xl' /></span>
+        <h2>
+          <BsInfoCircle aria-hidden='true' className='text-2xl' />
+          <span className='sr-only'>info</span>
+        </h2>
         <span className='text-sm'>
           This preview showcases the functionalities of the website.
           The underlying database currently lacks sufficient coverage
@@ -125,6 +130,8 @@ export default function Gyms () {
                     ${String(filteredGyms.length)} gyms in the database`
                     : `${selectedCity.name} has 1 gym in the database`}
                 </p>
+
+                <h2 className='sr-only'>gyms in {selectedCity.name}</h2>
                 <ol className='flex flex-col gap-3'>
                   {gymsWithDistance.map((gym) =>
                     <li key={gym.id}><Gym gym={gym} /></li>)}

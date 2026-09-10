@@ -81,8 +81,11 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
 
   return (
     <div
+      id={`${gym.id}-opening-hours`}
       className='flex flex-col border-x border-b py-3'
     >
+      <h4 className='sr-only'>opening hours at {gym.name}</h4>
+
       <div className='flex pb-3'>
         {hoursMode === 'regular'
           ? (
@@ -152,7 +155,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
           type='checkbox'
           disabled={disableMembersOnlySwitch}
           checked={membersOnly}
-          className='order-2 peer hidden'
+          className='order-2 peer sr-only'
           onChange={() => {
             setMembersOnly(!membersOnly);
             setExceptionReason('');
@@ -160,6 +163,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
         />
         <label
           htmlFor={membersOnlyCheckboxId}
+          aria-label='members only'
           className='
             flex order-3 items-center peer-enabled:cursor-pointer
             before:rounded-md
@@ -176,6 +180,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
             peer-hover:peer-enabled:after:scale-120'
         />
         <div
+          aria-hidden='true'
           className='
             flex order-1 justify-end pr-3 flex-1 font-bold
             peer-checked:font-normal
@@ -193,6 +198,7 @@ export default function GymOpeningHours ({ gym }: { gym: GymGet }) {
 
         </div>
         <div
+          aria-hidden='true'
           className='
             flex order-4 pl-3 flex-1 peer-checked:font-bold
             peer-checked:text-secondary-dark dark:peer-checked:text-secondary

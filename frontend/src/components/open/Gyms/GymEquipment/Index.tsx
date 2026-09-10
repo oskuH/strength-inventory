@@ -136,7 +136,11 @@ export default function GymEquipment ({ gym }: { gym: GymGet }) {
   });
 
   return (
-    <div className='relative flex flex-col flex-1 gap-3 border-x border-b'>
+    <div
+      id={`${gym.id}-equipment`}
+      className='relative flex flex-col flex-1 gap-3 border-x border-b'
+    >
+      <h4 className='sr-only'>equipment at {gym.name}</h4>
       <div
         className={`
           flex flex-col flex-1 gap-3 p-3

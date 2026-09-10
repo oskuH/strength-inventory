@@ -11,24 +11,33 @@ export default function Footer () {
         text-primary-text dark:text-primary-text-dark text-sm'
     >
       <p className='flex gap-1'>
-        made with <CiHeart className='text-xl' /> in Helsinki
+        made with <CiHeart aria-label='love' className='text-xl' /> in Helsinki
       </p>
-      <a
-        href='https://github.com/OskarBones/strength-inventory'
-        target='_blank'
-        className='absolute flex items-center right-2 md:right-25 gap-2'
-      >
-        <p
-          className='
-            rounded-xl bg-secondary-dark dark:bg-secondary px-2 h-5.5
-            text-sm text-primary-text-dark dark:text-primary-text'
+
+      <div className='absolute flex items-center right-2 md:right-25 gap-2'>
+        <a
+          href='https://github.com/OskarBones/strength-inventory/releases'
+          target='_blank'
         >
-          v{VERSION}
-        </p>
-        <FaGithub
-          className='mb-0.5 text-xl text-secondary-dark dark:text-secondary'
-        />
-      </a>
+          <p
+            className='
+              rounded-xl bg-secondary-dark dark:bg-secondary px-2 h-5.5
+              text-sm text-primary-text-dark dark:text-primary-text'
+          >
+            v{VERSION}
+          </p>
+        </a>
+        <a
+          href='https://github.com/OskarBones/strength-inventory'
+          target='_blank'
+          aria-label='GitHub'
+        >
+          <FaGithub
+            aria-hidden='true'
+            className='mb-0.5 text-xl text-secondary-dark dark:text-secondary'
+          />
+        </a>
+      </div>
     </div>
   );
 }

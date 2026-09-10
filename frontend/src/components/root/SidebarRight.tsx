@@ -20,32 +20,60 @@ function Role ({ role, iconMode }: RoleProps) {
     return (
       <div className='flex justify-end pr-2'>
         {iconMode
-          ? <TbUser className='text-base' />
-          : <p className='cursor-default'>Gym-Goer</p>}
+          && <TbUser aria-hidden='true' className='text-base' />}
+
+        <p
+          className={`cursor-default ${iconMode
+            ? 'sr-only'
+            : ''}`}
+        >
+          Gym-Goer
+        </p>
       </div>
     );
   } else if (role === 'MANAGER') {
     return (
       <div className='flex justify-end pr-2'>
         {iconMode
-          ? <TbUserStar className='text-base' />
-          : <p className='cursor-default'>Manager</p>}
+          && <TbUserStar aria-hidden='true' className='text-base' />}
+
+        <p
+          className={`cursor-default ${iconMode
+            ? 'sr-only'
+            : ''}`}
+        >
+          Manager
+        </p>
       </div>
     );
   } else if (role === 'ADMIN') {
     return (
       <div className='flex justify-end pr-2'>
         {iconMode
-          ? <TbUserShield className='text-base' />
-          : <p className='cursor-default'>Admin</p>}
+          && <TbUserShield aria-hidden='true' className='text-base' />}
+
+        <p
+          className={`cursor-default ${iconMode
+            ? 'sr-only'
+            : ''}`}
+        >
+          Admin
+        </p>
       </div>
     );
   } else {
     return (
       <div className='flex justify-end pr-2'>
         {iconMode
-          ? <TbUserCode className='text-base' />
-          : <p className='cursor-default'>Superuser</p>}
+          && <TbUserCode aria-hidden='true' className='text-base' />}
+
+        <p
+          className={`cursor-default ${iconMode
+            ? 'sr-only'
+            : ''}`}
+        >
+          Superuser
+        </p>
       </div>
     );
   }
@@ -87,6 +115,7 @@ export default function SidebarRight (
 
   return (
     <nav
+      id='sidebar-right'
       className={`
         absolute right-0 md:translate-x-0 flex flex-col items-stretch
         border-t border-l
@@ -102,6 +131,11 @@ export default function SidebarRight (
             <Link
               to='/login'
               search={() => ({ redirect: location.pathname })}
+              aria-current={
+                pathname === '/login'
+                  ? 'page'
+                  : false
+              }
               className={`
                 flex justify-end py-1 pr-2 cursor-pointer
                 hover:bg-primary dark:hover:bg-background-dark
@@ -115,8 +149,16 @@ export default function SidebarRight (
               }}
             >
               {iconMode
-                ? <TbLogin2 className='text-xl' />
-                : 'log in'}
+                ? <TbLogin2 aria-hidden='true' className='text-xl' />
+                : null}
+
+              <span
+                className={iconMode
+                  ? 'sr-only'
+                  : ''}
+              >
+                log in
+              </span>
             </Link>
           </div>
         )
@@ -124,6 +166,11 @@ export default function SidebarRight (
           <div className='flex flex-1 flex-col items-stretch gap-1'>
             <Link
               to='/admin'
+              aria-current={
+                pathname === '/admin'
+                  ? 'page'
+                  : false
+              }
               className={`
                 flex justify-end py-1 pr-2
                 hover:bg-primary dark:hover:bg-background-dark
@@ -137,8 +184,21 @@ export default function SidebarRight (
               }}
             >
               {iconMode
-                ? <MdOutlineAdminPanelSettings className='text-xl' />
-                : 'admin'}
+                ? (
+                  <MdOutlineAdminPanelSettings
+                    aria-hidden='true'
+                    className='text-xl'
+                  />
+                )
+                : null}
+
+              <span
+                className={iconMode
+                  ? 'sr-only'
+                  : ''}
+              >
+                admin
+              </span>
             </Link>
 
             <div className='flex flex-col gap-3 mt-auto text-xs'>
@@ -166,8 +226,16 @@ export default function SidebarRight (
                 }}
               >
                 {iconMode
-                  ? <TbLogout2 className='text-base' />
-                  : 'log out'}
+                  ? <TbLogout2 aria-hidden='true' className='text-base' />
+                  : null}
+
+                <span
+                  className={iconMode
+                    ? 'sr-only'
+                    : ''}
+                >
+                  log out
+                </span>
               </button>
             </div>
           </div>

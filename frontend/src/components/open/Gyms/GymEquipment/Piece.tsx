@@ -74,7 +74,12 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
                   {name} <TbWorldWww className='text-xl' />
                 </a>
                 {outOfProduction
-                  ? <MdOutlineStarRate />
+                  ? (
+                    <span>
+                      <MdOutlineStarRate aria-hidden='true' />
+                      <span className='sr-only'>out of production</span>
+                    </span>
+                  )
                   : null}
               </p>
             )
@@ -85,7 +90,12 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
                   : null}
                 <span className='font-bold'>{name}</span>
                 {outOfProduction
-                  ? <MdOutlineStarRate />
+                  ? (
+                    <span>
+                      <MdOutlineStarRate aria-hidden='true' />
+                      <span className='sr-only'>out of production</span>
+                    </span>
+                  )
                   : null}
               </p>
             )}
@@ -97,26 +107,26 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
               flex flex-col gap-1 w-1/2 wrap-break-word'
           >
             <div className='flex'>
-              <p className='w-30 italic'>in production:</p>
+              <h4 className='w-30 italic'>in production:</h4>
               <div className='flex-1'>
                 {outOfProduction
                   ? (
                     <p className='flex gap-1 items-center'>
                       <span>no</span>
-                      <MdOutlineStarRate />
+                      <MdOutlineStarRate aria-hidden='true' />
                     </p>
                   )
                   : 'yes'}
               </div>
             </div>
-            <p className='flex'>
-              <span className='w-30 italic'>manufacturer:</span>
-              <span className='flex-1'>{manufacturer}</span>
-            </p>
-            <p className='flex'>
-              <span className='w-30 italic'>code:</span>
-              <span className='flex-1'>{code}</span>
-            </p>
+            <div className='flex'>
+              <h4 className='w-30 italic'>manufacturer:</h4>
+              <p className='flex-1'>{manufacturer}</p>
+            </div>
+            <div className='flex'>
+              <h4 className='w-30 italic'>code:</h4>
+              <p className='flex-1'>{code}</p>
+            </div>
           </div>
 
           {weightUnit
@@ -134,7 +144,7 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
                   ? (
                     <div className='flex'>
                       <h4 className='w-35 italic'>starting weight:</h4>
-                      {startingWeight} {weightUnit}
+                      <p>{startingWeight} {weightUnit}</p>
                     </div>
                   )
                   : null}
@@ -144,7 +154,7 @@ export default function Piece ({ equipment, setClickedEquipment }: PieceProps) {
                       {maximumWeightType === 'load'
                         ? <h4 className='w-35 italic'>maximum load:</h4>
                         : <h4 className='w-35 italic'>maximum weight:</h4>}
-                      {maximumWeight} {weightUnit}
+                      <p>{maximumWeight} {weightUnit}</p>
                     </div>
                   )
                   : null}

@@ -13,18 +13,19 @@ interface IconToggleProps {
 function IconToggle ({ iconMode, handleChange }: IconToggleProps) {
   return (
     <div className='flex relative p-1'>
-      <div className='flex flex-1 text-xs items-center'>
+      <div aria-hidden='true' className='flex flex-1 text-xs items-center'>
         <CgGym /><TbContract /><TbClock />
       </div>
       <input
-        type='checkbox'
         id='icon-mode-checkbox'
+        type='checkbox'
         checked={iconMode}
-        className='peer hidden'
+        className='peer sr-only'
         onChange={handleChange}
       />
       <label
         htmlFor='icon-mode-checkbox'
+        aria-label='icon mode'
         className='
           flex items-center cursor-pointer before:rounded-md
           before:bg-red dark:before:bg-red-dark before:transition
@@ -54,6 +55,7 @@ function ThemeToggle ({ iconMode, darkMode, handleChange }: ThemeToggleProps) {
         text-primary-text-dark dark:text-primary-text'
     >
       <div
+        aria-hidden='true'
         className='flex flex-1 flex-col justify-between items-center text-sm'
       >
         {iconMode
@@ -73,14 +75,15 @@ function ThemeToggle ({ iconMode, darkMode, handleChange }: ThemeToggleProps) {
           )}
       </div>
       <input
-        type='checkbox'
         id='dark-mode-checkbox'
+        type='checkbox'
         checked={darkMode}
-        className='peer hidden'
+        className='peer sr-only'
         onChange={handleChange}
       />
       <label
         htmlFor='dark-mode-checkbox'
+        aria-label='dark mode'
         className='
           flex items-center cursor-pointer before:transition after:transition
           before:rounded-md before:bg-tertiary dark:before:bg-tertiary-dark
@@ -118,21 +121,36 @@ export default function SidebarLeft ({
 
   return (
     <nav
+      id='sidebar-left'
       className={`
-        absolute left-0 md:translate-x-0 flex flex-col gap-1 border-t border-r
+        absolute left-0 flex flex-col gap-1 border-t border-r
         bg-secondary dark:bg-secondary-dark pt-3 pb-12 w-24 h-full
         text-primary-text dark:text-primary-text-dark text-sm
         ${sidebarLeftVisible
-      ? 'translate-x-0'
-      : '-translate-x-full'}`}
+      ? ''
+      : 'hidden md:flex'}`}
     >
       <h2 className='pb-1 pl-2 text-base font-bold cursor-default'>
         {iconMode
-          ? <FaSearch className='text-2xl' />
-          : 'FIND'}
+          ? <FaSearch aria-hidden='true' className='text-2xl' />
+          : null}
+
+        <span
+          className={iconMode
+            ? 'sr-only'
+            : ''}
+        >
+          FIND
+        </span>
       </h2>
+
       <Link
         to='/gyms'
+        aria-current={
+          pathname === '/gyms'
+            ? 'page'
+            : false
+        }
         className={`
           py-1 pl-2 hover:bg-primary dark:hover:bg-background-dark
           active:font-semibold
@@ -145,8 +163,16 @@ export default function SidebarLeft ({
         }}
       >
         {iconMode
-          ? <MdOutlineLocationOn className='text-xl' />
-          : 'gyms'}
+          ? <MdOutlineLocationOn aria-hidden='true' className='text-xl' />
+          : null}
+
+        <span
+          className={iconMode
+            ? 'sr-only'
+            : ''}
+        >
+          gyms
+        </span>
       </Link>
 
       <div className='flex flex-col gap-1 mt-auto p-1'>

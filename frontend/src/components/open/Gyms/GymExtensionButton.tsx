@@ -9,38 +9,64 @@ import { IconContext } from '@/utils/contexts';
 function ButtonIcon ({ title }: { title: string }) {
   if (title === 'equipment') {
     return (
-      <CgGym className='text-2xl md:text-5xl' />
+      <span>
+        <CgGym aria-hidden='true' className='text-2xl md:text-5xl' />
+        <span className='sr-only'>equipment</span>
+      </span>
     );
   }
 
   if (title === 'memberships') {
     return (
-      <FaRegAddressCard className='text-2xl md:text-5xl' />
+      <span>
+        <FaRegAddressCard className='text-2xl md:text-5xl' />
+        <span className='sr-only'>memberships</span>
+      </span>
     );
   }
 
   if (title === 'opening hours') {
     return (
-      <TbClock className='text-2xl md:text-5xl' />
+      <span>
+        <TbClock className='text-2xl md:text-5xl' />
+        <span className='sr-only'>opening hours</span>
+      </span>
     );
   }
 }
 
-interface GymEntryButtonProps {
+interface GymExtensionButtonProps {
   activeExtension: string | null
   disabled: boolean
   handleToggle: (title: string) => void
+  gymId: string
   title: string
 }
 
-export default function GymButton (
-  { activeExtension, disabled, handleToggle, title }: GymEntryButtonProps
+export default function GymExtensionButton (
+  { activeExtension, disabled, handleToggle, gymId, title }:
+  GymExtensionButtonProps
 ) {
   const iconMode = use(IconContext);
+
+  let controls = '';
+  switch (title) {
+    case ('equipment'):
+      controls = `${gymId}-equipment`;
+      break;
+    case ('memberships'):
+      controls = `${gymId}-memberships`;
+      break;
+    case ('opening hours'):
+      controls = `${gymId}-opening-hours`;
+      break;
+  }
 
   return (
     <button
       aria-pressed={activeExtension === title}
+      aria-expanded={activeExtension === title}
+      aria-controls={controls}
       disabled={disabled}
       className='
         group flex flex-1 justify-center items-center p-2 cursor-pointer
@@ -54,7 +80,7 @@ export default function GymButton (
         handleToggle(title);
       }}
     >
-      <h3
+      <p
         className='
           group-aria-pressed:text-primary-text-dark
           dark:group-aria-pressed:text-primary-text'
@@ -62,7 +88,7 @@ export default function GymButton (
         {iconMode
           ? <ButtonIcon title={title} />
           : <span className='text-xs'>{title}</span>}
-      </h3>
+      </p>
     </button>
   );
 }
